@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
+import { InvoiceModal } from './InvoiceModal';
 import type {
   Festival,
   JuryMember,
@@ -35,14 +36,46 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [editingFestivalId, setEditingFestivalId] = useState<string>(festivals[0]?.id || '');
   const [savedNotice, setSavedNotice] = useState<string | null>(null);
 
+  // Subscription & Invoice State
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<'planB' | 'planA'>('planB');
+
   // Inclusions Availment Mock State
-  const [availedItems, setAvailedItems] = useState<Record<string, boolean>>({});
+  const [availedItems, setAvailedItems] = useState<Record<string, boolean>>({
+    'video-1': false,
+    'video-2': false,
+    'poster-1': false,
+    'booklet-1': false,
+    'news-1': true, // Dispatched on Nov 3
+    'news-2': false,
+    'web-1': false,
+  });
 
   const handleAvailInclusion = (serviceName: string, id: string) => {
     setAvailedItems((prev) => ({ ...prev, [id]: true }));
-    setSavedNotice(`Preview Mode: Task Request for "${serviceName}" simulated. Service fulfillment activates upon contract signing.`);
+    setSavedNotice(`✓ Task Request logged for "${serviceName}". Registered in Jezreel's priority production queue (24–48h SLA).`);
     setTimeout(() => setSavedNotice(null), 5000);
   };
+
+  const handleResetInclusions = () => {
+    setAvailedItems({
+      'video-1': false,
+      'video-2': false,
+      'poster-1': false,
+      'booklet-1': false,
+      'news-1': true,
+      'news-2': false,
+      'web-1': false,
+    });
+    setSavedNotice('Monthly Inclusions Quota reset to fresh cycle state.');
+    setTimeout(() => setSavedNotice(null), 4000);
+  };
+
+  // Health Bar Calculation
+  const totalUnits = 8;
+  const usedUnits = Object.entries(availedItems).filter(([_, v]) => v).length;
+  const availableUnits = Math.max(0, totalUnits - usedUnits);
+  const healthPercent = Math.round((availableUnits / totalUnits) * 100);
 
   // New Jury Member Form State
   const [newJuryName, setNewJuryName] = useState('');
@@ -139,11 +172,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         )}
 
         {/* Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="flex items-center gap-2 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab('inclusions')}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable ${
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable shrink-0 ${
               activeTab === 'inclusions'
                 ? 'bg-[#DC143C] text-white shadow'
                 : 'text-[#3B3B3B] hover:bg-slate-100'
@@ -159,7 +192,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('code')}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable ${
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable shrink-0 ${
               activeTab === 'code'
                 ? 'bg-[#DC143C] text-white shadow'
                 : 'text-[#3B3B3B] hover:bg-slate-100'
@@ -175,7 +208,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('festivals')}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable ${
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable shrink-0 ${
               activeTab === 'festivals'
                 ? 'bg-[#DC143C] text-white shadow'
                 : 'text-[#3B3B3B] hover:bg-slate-100'
@@ -188,7 +221,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('applications')}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable ${
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable shrink-0 ${
               activeTab === 'applications'
                 ? 'bg-[#DC143C] text-white shadow'
                 : 'text-[#3B3B3B] hover:bg-slate-100'
@@ -201,7 +234,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('jury')}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable ${
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable shrink-0 ${
               activeTab === 'jury'
                 ? 'bg-[#DC143C] text-white shadow'
                 : 'text-[#3B3B3B] hover:bg-slate-100'
@@ -215,60 +248,456 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* TAB 0: INCLUSIONS & SERVICE AVAILMENT HUB */}
         {activeTab === 'inclusions' && (
           <div className="space-y-6">
-            {/* Top Status Overview */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-200">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-                    <span>Active Partnership • All-Inclusive Digital Retainer</span>
+            {/* 1. SUBSCRIPTION & PAYMENT STATUS BAR */}
+            <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-7 border border-slate-800 shadow-xl space-y-5">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 pb-5 border-b border-slate-800">
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                      <span>Partnership Active • Paid In Full</span>
+                    </span>
+                    <span className="text-xs text-slate-400 font-medium">
+                      Partnered Since <strong className="text-slate-200 font-bold">December 2020</strong>
+                    </span>
                   </div>
-                  <h2 className="font-display text-xl sm:text-2xl font-extrabold text-[#3B3B3B]">
-                    Monthly Inclusions &amp; Service Availment Tracker
+                  <h2 className="font-display text-xl sm:text-2xl font-extrabold text-white">
+                    {selectedPlan === 'planB'
+                      ? 'Option B: All-Inclusive Retainer (€649/mo • €0 Setup Fee)'
+                      : 'Option A: Custom Festival Build & Retainer (€1,599 + €499/mo)'}
                   </h2>
-                  <p className="text-xs sm:text-sm text-[#4A5568] mt-1">
-                    See exactly which services are active, what monthly deliverables you can still avail, and submit 1-click requests directly to Jezreel Dave.
+                  <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                    Continuous festival management covering cloud hosting ($28/mo covered), 5 festival CMS, 4K video reportages, poster suites, booklet layout, and automated conductor newsletter outreach.
                   </p>
                 </div>
-                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center shrink-0 min-w-[200px]">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                    Cycle: November 2026
-                  </div>
-                  <div className="text-2xl font-black text-[#DC143C] mt-0.5">
-                    4 Deliverables Ready
-                  </div>
-                  <div className="text-[11px] text-emerald-700 font-semibold mt-0.5">
-                    ✓ 24–48h Priority Delivery
+
+                {/* Receipt Trigger & Plan Toggle */}
+                <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end gap-3 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsInvoiceModalOpen(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs sm:text-sm shadow-lg cursor-pointer transition-all apple-pressable"
+                  >
+                    <Icon icon="mage:receipt" width={18} height={18} />
+                    <span>View Official Receipt (#FC-2026-11)</span>
+                  </button>
+
+                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                    <span>Preview Plan:</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPlan('planB')}
+                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                        selectedPlan === 'planB'
+                          ? 'bg-[#DC143C] text-white'
+                          : 'bg-slate-800 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Option B (€649)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPlan('planA')}
+                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                        selectedPlan === 'planA'
+                          ? 'bg-[#DC143C] text-white'
+                          : 'bg-slate-800 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Option A (€499)
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {/* Quick Status Pillars */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-5 text-center">
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <div className="text-xs text-slate-500 font-medium">Domain &amp; Server</div>
-                  <div className="text-sm font-bold text-slate-800 mt-0.5">100% Active</div>
-                  <div className="text-[10.5px] text-slate-400">$28/mo server covered</div>
+              {/* Billing Cycle Metadata Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 text-xs">
+                <div className="p-3 rounded-2xl bg-slate-800/70 border border-slate-700/60">
+                  <div className="text-slate-400 text-[11px] font-medium">Current Billing Period</div>
+                  <div className="text-sm font-bold text-white mt-0.5">15 Nov – 15 Dec 2026</div>
+                  <div className="text-[10.5px] text-emerald-400 font-semibold mt-0.5">✓ Cleared &amp; Active</div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <div className="text-xs text-slate-500 font-medium">Active Choir Inquiries</div>
-                  <div className="text-sm font-bold text-[#DC143C] mt-0.5">{applications.length} Received</div>
-                  <div className="text-[10.5px] text-slate-400">Real-time leads</div>
+
+                <div className="p-3 rounded-2xl bg-slate-800/70 border border-slate-700/60">
+                  <div className="text-slate-400 text-[11px] font-medium">Next Scheduled Renewal</div>
+                  <div className="text-sm font-bold text-white mt-0.5">15 December 2026</div>
+                  <div className="text-[10.5px] text-slate-400">Monthly auto-cycle</div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <div className="text-xs text-slate-500 font-medium">Outbound Outreach</div>
-                  <div className="text-sm font-bold text-slate-800 mt-0.5">420 Choirs Emailed</div>
-                  <div className="text-[10.5px] text-slate-400">Worldwide campaign</div>
+
+                <div className="p-3 rounded-2xl bg-slate-800/70 border border-slate-700/60">
+                  <div className="text-slate-400 text-[11px] font-medium">Payment Route on File</div>
+                  <div className="text-sm font-bold text-white mt-0.5">SEPA Wire / IBAN</div>
+                  <div className="text-[10.5px] text-slate-400">Banca Intesa Sanpaolo</div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <div className="text-xs text-slate-500 font-medium">Revision Policy</div>
-                  <div className="text-sm font-bold text-emerald-700 mt-0.5">Unlimited Revisions</div>
-                  <div className="text-[10.5px] text-slate-400">Zero extra charges</div>
+
+                <div className="p-3 rounded-2xl bg-slate-800/70 border border-slate-700/60">
+                  <div className="text-slate-400 text-[11px] font-medium">Punctuality SLA Status</div>
+                  <div className="text-sm font-bold text-emerald-400 mt-0.5">100% On-Time Record</div>
+                  <div className="text-[10.5px] text-slate-400">€100 Late Guarantee</div>
                 </div>
               </div>
             </div>
 
-            {/* Inclusions Cards Grid */}
+            {/* 2. THE "BROKEN HEALTH BAR" SUBSCRIPTION QUOTA METER */}
+            <div className="bg-slate-950 text-white rounded-3xl p-6 sm:p-7 border border-slate-800 shadow-xl space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                <div>
+                  <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">
+                    <Icon icon="mage:battery-charging" width={16} height={16} />
+                    <span>Monthly Retainer Health Bar • Deliverable Quota Meter</span>
+                  </div>
+                  <h3 className="font-display font-extrabold text-lg sm:text-xl text-white">
+                    Cycle Retainer Health: {healthPercent}% Available Capacity
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Discrete deliverable cells deplete to amber when availed or in production, proving unspent value every month.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 shrink-0">
+                  <div className="text-right">
+                    <div className="text-sm font-black text-emerald-400">
+                      {availableUnits} of {totalUnits} Units Ready
+                    </div>
+                    <div className="text-[11px] text-slate-400">
+                      {usedUnits} availed / in progress
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResetInclusions}
+                    title="Reset Health Bar Demo State"
+                    className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold cursor-pointer transition-colors"
+                  >
+                    <Icon icon="mage:refresh" width={16} height={16} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Segmented Broken Health Bar Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 pt-2">
+                {/* Segment 1: Video 1 */}
+                <div
+                  className={`p-3 rounded-2xl border text-center transition-all flex flex-col justify-between min-h-[92px] ${
+                    availedItems['video-1']
+                      ? 'bg-amber-500/15 border-amber-500/60 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                      : 'bg-emerald-500/15 border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                  }`}
+                >
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Video Slot 1
+                  </div>
+                  <div className="text-xs font-black my-1 text-white">
+                    {availedItems['video-1'] ? '⚡ In 4K Cut' : '✓ 4K Reportage'}
+                  </div>
+                  <div
+                    className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full ${
+                      availedItems['video-1']
+                        ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                        : 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30'
+                    }`}
+                  >
+                    {availedItems['video-1'] ? 'IN PRODUCTION' : 'READY TO AVAIL'}
+                  </div>
+                </div>
+
+                {/* Segment 2: Video 2 */}
+                <div
+                  className={`p-3 rounded-2xl border text-center transition-all flex flex-col justify-between min-h-[92px] ${
+                    availedItems['video-2']
+                      ? 'bg-amber-500/15 border-amber-500/60 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                      : 'bg-emerald-500/15 border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                  }`}
+                >
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Video Slot 2
+                  </div>
+                  <div className="text-xs font-black my-1 text-white">
+                    {availedItems['video-2'] ? '⚡ In Render' : '✓ Social Reel'}
+                  </div>
+                  <div
+                    className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full ${
+                      availedItems['video-2']
+                        ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                        : 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30'
+                    }`}
+                  >
+                    {availedItems['video-2'] ? 'IN PRODUCTION' : 'READY TO AVAIL'}
+                  </div>
+                </div>
+
+                {/* Segment 3: Poster Suite */}
+                <div
+                  className={`p-3 rounded-2xl border text-center transition-all flex flex-col justify-between min-h-[92px] ${
+                    availedItems['poster-1']
+                      ? 'bg-amber-500/15 border-amber-500/60 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                      : 'bg-emerald-500/15 border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                  }`}
+                >
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Poster Suite
+                  </div>
+                  <div className="text-xs font-black my-1 text-white">
+                    {availedItems['poster-1'] ? '⚡ In Design' : '✓ 5-Size Suite'}
+                  </div>
+                  <div
+                    className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full ${
+                      availedItems['poster-1']
+                        ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                        : 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30'
+                    }`}
+                  >
+                    {availedItems['poster-1'] ? 'IN PRODUCTION' : 'READY TO AVAIL'}
+                  </div>
+                </div>
+
+                {/* Segment 4: 31-Page Booklet */}
+                <div
+                  className={`p-3 rounded-2xl border text-center transition-all flex flex-col justify-between min-h-[92px] ${
+                    availedItems['booklet-1']
+                      ? 'bg-amber-500/15 border-amber-500/60 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                      : 'bg-blue-500/15 border-blue-500/60 shadow-[0_0_12px_rgba(59,130,246,0.2)]'
+                  }`}
+                >
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    31p Booklet
+                  </div>
+                  <div className="text-xs font-black my-1 text-white">
+                    {availedItems['booklet-1'] ? '⚡ Page Updates' : '6th Leonardo'}
+                  </div>
+                  <div className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-full bg-blue-400/20 text-blue-300 border border-blue-400/30">
+                    STAGE 3 ACTIVE
+                  </div>
+                </div>
+
+                {/* Segment 5: Newsletter 1 */}
+                <div className="p-3 rounded-2xl border border-slate-700 bg-slate-900 text-center flex flex-col justify-between min-h-[92px]">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    Newsletter #1
+                  </div>
+                  <div className="text-xs font-black my-1 text-slate-300">
+                    ✓ 420 Choirs
+                  </div>
+                  <div className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                    DELIVERED NOV 3
+                  </div>
+                </div>
+
+                {/* Segment 6: Newsletter 2 */}
+                <div
+                  className={`p-3 rounded-2xl border text-center transition-all flex flex-col justify-between min-h-[92px] ${
+                    availedItems['news-2']
+                      ? 'bg-amber-500/15 border-amber-500/60 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                      : 'bg-emerald-500/15 border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                  }`}
+                >
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Newsletter #2
+                  </div>
+                  <div className="text-xs font-black my-1 text-white">
+                    {availedItems['news-2'] ? '⚡ Scheduled' : '✓ Draft Ready'}
+                  </div>
+                  <div
+                    className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full ${
+                      availedItems['news-2']
+                        ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                        : 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30'
+                    }`}
+                  >
+                    {availedItems['news-2'] ? 'QUEUED' : 'READY TO AVAIL'}
+                  </div>
+                </div>
+
+                {/* Segment 7: Web Fixes A */}
+                <div
+                  className={`p-3 rounded-2xl border text-center transition-all flex flex-col justify-between min-h-[92px] ${
+                    availedItems['web-1']
+                      ? 'bg-amber-500/15 border-amber-500/60 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                      : 'bg-emerald-500/15 border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                  }`}
+                >
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Web Updates
+                  </div>
+                  <div className="text-xs font-black my-1 text-white">
+                    {availedItems['web-1'] ? '⚡ In Revision' : '✓ 24–48h SLA'}
+                  </div>
+                  <div
+                    className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full ${
+                      availedItems['web-1']
+                        ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                        : 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30'
+                    }`}
+                  >
+                    {availedItems['web-1'] ? 'TASK LOGGED' : 'ACTIVE QUEUE'}
+                  </div>
+                </div>
+
+                {/* Segment 8: Server & Hosting */}
+                <div className="p-3 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 text-center flex flex-col justify-between min-h-[92px]">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Cloud Server
+                  </div>
+                  <div className="text-xs font-black my-1 text-white">
+                    100% Uptime
+                  </div>
+                  <div className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    UNLIMITED 24/7
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. ON-TIME DELIVERY SLA ASSURANCE HUB */}
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-200">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold uppercase tracking-wider mb-2">
+                    <Icon icon="mage:lightning-bolt-fill" width={16} height={16} className="text-amber-500" />
+                    <span>Guaranteed Punctuality • SLA Delivery Assurance Engine</span>
+                  </div>
+                  <h3 className="font-display text-xl sm:text-2xl font-extrabold text-[#3B3B3B]">
+                    Active Production Steppers &amp; Delivery Covenant
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#4A5568] mt-1 max-w-2xl">
+                    Choral festival printing and announcements cannot wait. Inspect live production milestones and rely on our contractual punctuality guarantee.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 shrink-0 text-center sm:text-right">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    Historical Track Record
+                  </div>
+                  <div className="text-lg font-black text-emerald-700 mt-0.5">
+                    100% On-Time (0 Missed Deadlines)
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium">
+                    Average Turnaround: 22.4 Hours (SLA: 24–48h)
+                  </div>
+                </div>
+              </div>
+
+              {/* Two Column Layout: Active Workstream Stepper + Covenant Box */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Active Workstream Stepper (Col 7) */}
+                <div className="lg:col-span-7 space-y-4">
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="p-1.5 rounded-lg bg-blue-100 text-[#136597]">
+                          <Icon icon="mage:book" width={18} height={18} />
+                        </span>
+                        <div>
+                          <h4 className="font-display font-bold text-sm text-[#3B3B3B]">
+                            6th Leonardo da Vinci ICF — 31-Page Master Booklet
+                          </h4>
+                          <p className="text-[11px] text-slate-500">Official Programme &amp; Repertoire Rulebook</p>
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        ON TRACK (Ahead of Schedule)
+                      </span>
+                    </div>
+
+                    {/* 4-Step Stepper */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-center text-xs">
+                      <div className="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-xs">
+                        <div className="text-emerald-600 font-bold flex items-center justify-center gap-1 text-[11px]">
+                          <Icon icon="mage:check-circle-fill" width={14} height={14} />
+                          <span>Stage 1</span>
+                        </div>
+                        <div className="font-semibold text-slate-800 mt-1 text-[11.5px]">Repertoire Intake</div>
+                        <div className="text-[10px] text-slate-400">Completed Nov 12</div>
+                      </div>
+
+                      <div className="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-xs">
+                        <div className="text-emerald-600 font-bold flex items-center justify-center gap-1 text-[11px]">
+                          <Icon icon="mage:check-circle-fill" width={14} height={14} />
+                          <span>Stage 2</span>
+                        </div>
+                        <div className="font-semibold text-slate-800 mt-1 text-[11.5px]">Patronage Seals</div>
+                        <div className="text-[10px] text-slate-400">Completed Nov 14</div>
+                      </div>
+
+                      <div className="p-2.5 rounded-xl bg-blue-50/80 border-2 border-blue-400 shadow-xs">
+                        <div className="text-blue-700 font-black flex items-center justify-center gap-1 text-[11px]">
+                          <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
+                          <span>Stage 3 (85%)</span>
+                        </div>
+                        <div className="font-bold text-slate-900 mt-1 text-[11.5px]">Typography Proof</div>
+                        <div className="text-[10px] text-blue-700 font-semibold">Active Right Now</div>
+                      </div>
+
+                      <div className="p-2.5 rounded-xl bg-slate-100/60 border border-slate-200 text-slate-400">
+                        <div className="font-semibold text-[11px]">Stage 4</div>
+                        <div className="font-medium mt-1 text-[11.5px]">Certified Print PDF</div>
+                        <div className="text-[10px] text-slate-400">Due Nov 18, 17:00</div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 font-medium">
+                        <Icon icon="mage:clock" width={16} height={16} className="text-emerald-600" />
+                        <span>Committed Delivery: <strong>Tomorrow, Nov 18 @ 17:00 CET</strong></span>
+                      </span>
+                      <span className="font-bold text-emerald-800">18 Hours Ahead of Print Deadline</span>
+                    </div>
+                  </div>
+
+                  {/* Recently Delivered Item */}
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2.5">
+                      <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-700">
+                        <Icon icon="mage:check-circle-fill" width={16} height={16} />
+                      </span>
+                      <div>
+                        <strong className="text-slate-800">5th Verrocchio ICF — 4K Video Documentary Teaser</strong>
+                        <div className="text-slate-500 text-[11px]">Delivered Nov 14 (6 Hours Ahead of SLA) • Available in Archive</div>
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 font-bold text-slate-700">
+                      Delivered
+                    </span>
+                  </div>
+                </div>
+
+                {/* The Punctuality Covenant Card (Col 5) */}
+                <div className="lg:col-span-5 bg-gradient-to-br from-amber-50 to-orange-50/40 rounded-2xl p-6 border-2 border-amber-200 shadow-sm flex flex-col justify-between space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                        ⚜
+                      </span>
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-amber-800 block">
+                          Contractual Guarantee
+                        </span>
+                        <h4 className="font-display font-extrabold text-base text-slate-900">
+                          The Florence Choral Punctuality Covenant
+                        </h4>
+                      </div>
+                    </div>
+
+                    <blockquote className="text-xs text-slate-700 leading-relaxed italic bg-white/70 p-3.5 rounded-xl border border-amber-200/60">
+                      "If Jezreel Dave ever fails to deliver an agreed festival poster, video reportage, or programme booklet revision before your confirmed festival announcement or printing deadline, Florence Choral automatically receives a <strong>€100 credit</strong> deducted from the subsequent month's invoice, zero questions asked."
+                    </blockquote>
+                  </div>
+
+                  <div className="pt-3 border-t border-amber-200/80 flex items-center justify-between text-xs">
+                    <div>
+                      <div className="font-display font-bold text-slate-900">Jezreel Dave Leybag</div>
+                      <div className="text-[11px] text-slate-500">Continuous Partner Since Dec 2020</div>
+                    </div>
+                    <div className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-200/60 px-2 py-0.5 rounded-full">
+                      <Icon icon="mage:shield-check-fill" width={14} height={14} className="text-amber-700" />
+                      <span>100% Guaranteed</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 4. INCLUSIONS CARDS GRID WITH LOCAL HEALTH METERS */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Card 1: Video Reportages */}
               <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-[#DC143C]/40 transition-colors">
@@ -287,8 +716,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
                     5–7 min multi-day documentary cut with Basilica live audio leveling, logo openers, and vertical 9:16 social cutdowns.
                   </p>
-                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                    <strong>Monthly Quota:</strong> 2 Full Reportages / Teasers (100% Digital 4K/HD Renders)
+                  
+                  {/* Discrete Mini Health Bar */}
+                  <div className="mt-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex justify-between text-[11px] font-bold text-slate-600">
+                      <span>Monthly Video Slots:</span>
+                      <span className="text-slate-800">{availedItems['video-1'] ? '1 of 2 Ready' : '2 of 2 Ready'}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className={`py-1.5 px-2 rounded-lg text-center text-[10px] font-bold border ${
+                        availedItems['video-1'] 
+                          ? 'bg-amber-100 text-amber-800 border-amber-300' 
+                          : 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      }`}>
+                        Slot 1: {availedItems['video-1'] ? 'In Production' : 'Available'}
+                      </div>
+                      <div className={`py-1.5 px-2 rounded-lg text-center text-[10px] font-bold border ${
+                        availedItems['video-2'] 
+                          ? 'bg-amber-100 text-amber-800 border-amber-300' 
+                          : 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      }`}>
+                        Slot 2: {availedItems['video-2'] ? 'In Production' : 'Available'}
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-100">
@@ -296,13 +746,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     type="button"
                     onClick={() => handleAvailInclusion('Festival Video Reportage', 'video-1')}
                     disabled={availedItems['video-1']}
-                    className={`w-full py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       availedItems['video-1']
                         ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
                         : 'bg-[#DC143C] hover:bg-[#B81032] text-white shadow'
                     }`}
                   >
-                    {availedItems['video-1'] ? '✓ Request Submitted' : 'Avail Video Edit Request'}
+                    {availedItems['video-1'] ? '✓ Video Request Logged' : 'Avail Video Edit Request'}
                   </button>
                 </div>
               </div>
@@ -324,8 +774,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
                     70×100cm print master, A2, A3, A5 certified print-ready PDFs, plus 2×2 social media and jury announcement cards.
                   </p>
-                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                    <strong>Monthly Quota:</strong> 1 Full Campaign Suite per Festival Cycle (Digital Master Files)
+                  
+                  {/* Discrete Mini Health Bar */}
+                  <div className="mt-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex justify-between text-[11px] font-bold text-slate-600">
+                      <span>Monthly Poster Quota:</span>
+                      <span className="text-slate-800">{availedItems['poster-1'] ? 'In Production' : '1 Suite Ready'}</span>
+                    </div>
+                    <div className={`py-1.5 px-2 rounded-lg text-center text-[10px] font-bold border ${
+                      availedItems['poster-1'] 
+                        ? 'bg-amber-100 text-amber-800 border-amber-300' 
+                        : 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                    }`}>
+                      Suite #1: {availedItems['poster-1'] ? 'Generating Master Formats' : 'Available to Avail'}
+                    </div>
                   </div>
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-100">
@@ -333,13 +795,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     type="button"
                     onClick={() => handleAvailInclusion('Festival Poster Campaign', 'poster-1')}
                     disabled={availedItems['poster-1']}
-                    className={`w-full py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       availedItems['poster-1']
                         ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
                         : 'bg-[#0B0C0E] hover:bg-neutral-800 text-white shadow'
                     }`}
                   >
-                    {availedItems['poster-1'] ? '✓ Request Submitted' : 'Avail Poster Suite Request'}
+                    {availedItems['poster-1'] ? '✓ Poster Request Submitted' : 'Avail Poster Suite Request'}
                   </button>
                 </div>
               </div>
@@ -352,7 +814,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <Icon icon="mage:book" width={22} height={22} />
                     </span>
                     <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
-                      Active Priority
+                      Stage 3 Active
                     </span>
                   </div>
                   <h3 className="font-display font-bold text-base text-[#3B3B3B]">
@@ -361,15 +823,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
                     Full cover-to-cover print-ready layout: repertoire schedules, jury biographies, competition categories &amp; official Florence patronage seals.
                   </p>
-                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                    <strong>Current Edition:</strong> 6th Leonardo da Vinci ICF (Digital Flipbook &amp; PDF Master)
+                  
+                  {/* Mini Stepper Indicator */}
+                  <div className="mt-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                    <div className="flex justify-between text-[11px] font-bold text-slate-600">
+                      <span>Current Edition:</span>
+                      <span className="text-slate-800">6th Leonardo da Vinci</span>
+                    </div>
+                    <div className="text-[11px] text-blue-700 font-semibold">
+                      ⚡ Typesetting &amp; Page Layout (85% Done)
+                    </div>
                   </div>
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-100">
                   <button
                     type="button"
                     onClick={() => handleAvailInclusion('Booklet Revisions', 'booklet-1')}
-                    className="w-full py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer"
                   >
                     {availedItems['booklet-1'] ? '✓ Revisions Logged' : 'Request Booklet Page Updates'}
                   </button>
@@ -384,7 +854,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <Icon icon="mage:email" width={22} height={22} />
                     </span>
                     <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                      {availedItems['news-1'] ? '2 of 2 Dispatched' : '1 Dispatch Available'}
+                      {availedItems['news-2'] ? '2 of 2 Dispatched' : '1 Dispatch Available'}
                     </span>
                   </div>
                   <h3 className="font-display font-bold text-base text-[#3B3B3B]">
@@ -393,22 +863,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
                     Professionally written and formatted editorial emails sent directly to your existing conductor contact database to announce deadlines and repertoire.
                   </p>
-                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                    <strong>Monthly Quota:</strong> 2 Dispatches / Month (1 Dispatched Nov 3, 1 Available)
+                  
+                  {/* Discrete Mini Health Bar */}
+                  <div className="mt-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex justify-between text-[11px] font-bold text-slate-600">
+                      <span>Monthly Dispatches:</span>
+                      <span className="text-slate-800">2 Dispatches / Month</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="py-1.5 px-2 rounded-lg text-center text-[10px] font-bold bg-slate-200 text-slate-600 border border-slate-300">
+                        Dispatch 1: Sent Nov 3
+                      </div>
+                      <div className={`py-1.5 px-2 rounded-lg text-center text-[10px] font-bold border ${
+                        availedItems['news-2'] 
+                          ? 'bg-amber-100 text-amber-800 border-amber-300' 
+                          : 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      }`}>
+                        Dispatch 2: {availedItems['news-2'] ? 'Queued' : 'Ready'}
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-100">
                   <button
                     type="button"
-                    onClick={() => handleAvailInclusion('Newsletter Dispatch', 'news-1')}
-                    disabled={availedItems['news-1']}
-                    className={`w-full py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      availedItems['news-1']
+                    onClick={() => handleAvailInclusion('Newsletter Dispatch #2', 'news-2')}
+                    disabled={availedItems['news-2']}
+                    className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      availedItems['news-2']
                         ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
                         : 'bg-[#DC143C] hover:bg-[#B81032] text-white shadow'
                     }`}
                   >
-                    {availedItems['news-1'] ? '✓ Scheduled for Dispatch' : 'Avail Newsletter #2 Draft'}
+                    {availedItems['news-2'] ? '✓ Scheduled for Dispatch' : 'Avail Newsletter #2 Draft'}
                   </button>
                 </div>
               </div>
@@ -441,7 +928,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       setSavedNotice('Choir outreach analytics report: 420 emails sent, 68% open rate, 28 brochure downloads!');
                       setTimeout(() => setSavedNotice(null), 5000);
                     }}
-                    className="w-full py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer"
                   >
                     View Outreach Engagement Stats
                   </button>
@@ -473,7 +960,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <button
                     type="button"
                     onClick={() => handleAvailInclusion('Website Content Update', 'web-1')}
-                    className="w-full py-2 px-4 rounded-xl bg-[#0B0C0E] hover:bg-neutral-800 text-white text-xs font-bold transition-all cursor-pointer shadow"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#0B0C0E] hover:bg-neutral-800 text-white text-xs font-bold transition-all cursor-pointer shadow"
                   >
                     {availedItems['web-1'] ? '✓ Update Task Logged' : 'Submit Website Content Update'}
                   </button>
@@ -869,6 +1356,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Official Florence Choral Invoice Modal */}
+      <InvoiceModal
+        isOpen={isInvoiceModalOpen}
+        onClose={() => setIsInvoiceModalOpen(false)}
+        planName={
+          selectedPlan === 'planB'
+            ? 'Option B: All-Inclusive Digital Retainer (€649/mo • €0 Setup Fee)'
+            : 'Option A: Custom Festival Build & Maintenance (€1,599 + €499/mo)'
+        }
+        amount={selectedPlan === 'planB' ? 649 : 499}
+        invoiceNumber="FC-2026-11"
+        billingPeriod="15 Nov 2026 – 15 Dec 2026"
+      />
     </section>
   );
 };
