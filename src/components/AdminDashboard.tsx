@@ -96,10 +96,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onResetDemoData,
   onSwitchToPublic,
 }) => {
-  const [activeTab, setActiveTab] = useState<'code' | 'festivals' | 'applications' | 'jury'>('code');
+  const [activeTab, setActiveTab] = useState<
+    'inclusions' | 'code' | 'festivals' | 'applications' | 'jury'
+  >('inclusions');
   const [selectedFileKey, setSelectedFileKey] = useState<string>('florenceData.ts');
   const [editingFestivalId, setEditingFestivalId] = useState<string>(festivals[0]?.id || '');
   const [savedNotice, setSavedNotice] = useState<string | null>(null);
+
+  // Inclusions Availment Mock State
+  const [availedItems, setAvailedItems] = useState<Record<string, boolean>>({});
+
+  const handleAvailInclusion = (serviceName: string, id: string) => {
+    setAvailedItems((prev) => ({ ...prev, [id]: true }));
+    setSavedNotice(`Task Request for "${serviceName}" submitted to Jezreel Dave (24–48h delivery)!`);
+    setTimeout(() => setSavedNotice(null), 5000);
+  };
 
   // New Jury Member Form State
   const [newJuryName, setNewJuryName] = useState('');
@@ -215,6 +226,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="flex flex-wrap items-center gap-2 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
           <button
             type="button"
+            onClick={() => setActiveTab('inclusions')}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable ${
+              activeTab === 'inclusions'
+                ? 'bg-[#DC143C] text-white shadow'
+                : 'text-[#3B3B3B] hover:bg-slate-100'
+            }`}
+          >
+            <Icon icon="mage:dashboard" width={18} height={18} />
+            <span>1. Inclusions &amp; Availment Hub</span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-[#F79223] text-black">
+              TRACKER
+            </span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => setActiveTab('code')}
             className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer apple-pressable ${
               activeTab === 'code'
@@ -223,7 +250,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             }`}
           >
             <Icon icon="mage:folder-open" width={18} height={18} />
-            <span>1. Source Code Files &amp; Keys</span>
+            <span>2. Source Code &amp; Keys</span>
           </button>
 
           <button
@@ -236,7 +263,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             }`}
           >
             <Icon icon="mage:edit" width={18} height={18} />
-            <span>2. Edit 5 Festivals (Live CMS)</span>
+            <span>3. Edit 5 Festivals</span>
           </button>
 
           <button
@@ -249,7 +276,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             }`}
           >
             <Icon icon="mage:inbox" width={18} height={18} />
-            <span>3. Choir Applications ({applications.length})</span>
+            <span>4. Choir Inquiries ({applications.length})</span>
           </button>
 
           <button
@@ -262,9 +289,280 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             }`}
           >
             <Icon icon="mage:users" width={18} height={18} />
-            <span>4. Artistic Committee ({juryMembers.length})</span>
+            <span>5. Artistic Committee ({juryMembers.length})</span>
           </button>
         </div>
+
+        {/* TAB 0: INCLUSIONS & SERVICE AVAILMENT HUB */}
+        {activeTab === 'inclusions' && (
+          <div className="space-y-6">
+            {/* Top Status Overview */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-200">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                    <span>Active Partnership • All-Inclusive Digital Retainer</span>
+                  </div>
+                  <h2 className="font-display text-xl sm:text-2xl font-extrabold text-[#3B3B3B]">
+                    Monthly Inclusions &amp; Service Availment Tracker
+                  </h2>
+                  <p className="text-xs sm:text-sm text-[#4A5568] mt-1">
+                    See exactly which services are active, what monthly deliverables you can still avail, and submit 1-click requests directly to Jezreel Dave.
+                  </p>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center shrink-0 min-w-[200px]">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    Cycle: November 2026
+                  </div>
+                  <div className="text-2xl font-black text-[#DC143C] mt-0.5">
+                    4 Deliverables Ready
+                  </div>
+                  <div className="text-[11px] text-emerald-700 font-semibold mt-0.5">
+                    ✓ 24–48h Priority Delivery
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Status Pillars */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-5 text-center">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-xs text-slate-500 font-medium">Domain &amp; Server</div>
+                  <div className="text-sm font-bold text-slate-800 mt-0.5">100% Active</div>
+                  <div className="text-[10.5px] text-slate-400">$28/mo server covered</div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-xs text-slate-500 font-medium">Active Choir Inquiries</div>
+                  <div className="text-sm font-bold text-[#DC143C] mt-0.5">{applications.length} Received</div>
+                  <div className="text-[10.5px] text-slate-400">Real-time leads</div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-xs text-slate-500 font-medium">Outbound Outreach</div>
+                  <div className="text-sm font-bold text-slate-800 mt-0.5">420 Choirs Emailed</div>
+                  <div className="text-[10.5px] text-slate-400">Worldwide campaign</div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-xs text-slate-500 font-medium">Revision Policy</div>
+                  <div className="text-sm font-bold text-emerald-700 mt-0.5">Unlimited Revisions</div>
+                  <div className="text-[10.5px] text-slate-400">Zero extra charges</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Inclusions Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Card 1: Video Reportages */}
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-[#DC143C]/40 transition-colors">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="p-2 rounded-xl bg-[#DC143C]/10 text-[#DC143C]">
+                      <Icon icon="mage:video" width={22} height={22} />
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      {availedItems['video-1'] ? '1 Available (1 In Review)' : '2 Available to Avail'}
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#3B3B3B]">
+                    Festival Video Reportages &amp; Reels
+                  </h3>
+                  <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
+                    5–7 min multi-day documentary cut with Basilica live audio leveling, logo openers, and vertical 9:16 social cutdowns.
+                  </p>
+                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                    <strong>Monthly Quota:</strong> 2 Full Reportages / Teasers (100% Digital 4K/HD Renders)
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => handleAvailInclusion('Festival Video Reportage', 'video-1')}
+                    disabled={availedItems['video-1']}
+                    className={`w-full py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      availedItems['video-1']
+                        ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                        : 'bg-[#DC143C] hover:bg-[#B81032] text-white shadow'
+                    }`}
+                  >
+                    {availedItems['video-1'] ? '✓ Request Submitted' : 'Avail Video Edit Request'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Card 2: Festival Poster Suites */}
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-[#DC143C]/40 transition-colors">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="p-2 rounded-xl bg-[#F79223]/15 text-[#B45309]">
+                      <Icon icon="mage:image" width={22} height={22} />
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      {availedItems['poster-1'] ? 'Active in Design' : '1 Suite Available'}
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#3B3B3B]">
+                    Digital Festival Poster Suite (5 Sizes)
+                  </h3>
+                  <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
+                    70×100cm print master, A2, A3, A5 certified print-ready PDFs, plus 2×2 social media and jury announcement cards.
+                  </p>
+                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                    <strong>Monthly Quota:</strong> 1 Full Campaign Suite per Festival Cycle (Digital Master Files)
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => handleAvailInclusion('Festival Poster Campaign', 'poster-1')}
+                    disabled={availedItems['poster-1']}
+                    className={`w-full py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      availedItems['poster-1']
+                        ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                        : 'bg-[#0B0C0E] hover:bg-neutral-800 text-white shadow'
+                    }`}
+                  >
+                    {availedItems['poster-1'] ? '✓ Request Submitted' : 'Avail Poster Suite Request'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Card 3: 31-Page Programme Booklets */}
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-[#DC143C]/40 transition-colors">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="p-2 rounded-xl bg-purple-100 text-purple-700">
+                      <Icon icon="mage:book" width={22} height={22} />
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                      Active Priority
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#3B3B3B]">
+                    31-Page Official Programme &amp; Rulebook
+                  </h3>
+                  <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
+                    Full cover-to-cover print-ready layout: repertoire schedules, jury biographies, competition categories &amp; official Florence patronage seals.
+                  </p>
+                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                    <strong>Current Edition:</strong> 6th Leonardo da Vinci ICF (Digital Flipbook &amp; PDF Master)
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => handleAvailInclusion('Booklet Revisions', 'booklet-1')}
+                    className="w-full py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer"
+                  >
+                    {availedItems['booklet-1'] ? '✓ Revisions Logged' : 'Request Booklet Page Updates'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Card 4: Monthly Email Newsletters */}
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-[#DC143C]/40 transition-colors">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="p-2 rounded-xl bg-blue-100 text-blue-700">
+                      <Icon icon="mage:email" width={22} height={22} />
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      {availedItems['news-1'] ? '2 of 2 Dispatched' : '1 Dispatch Available'}
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#3B3B3B]">
+                    Monthly Email Newsletter Dispatch
+                  </h3>
+                  <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
+                    Professionally written and formatted editorial emails sent directly to your existing conductor contact database to announce deadlines and repertoire.
+                  </p>
+                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                    <strong>Monthly Quota:</strong> 2 Dispatches / Month (1 Dispatched Nov 3, 1 Available)
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => handleAvailInclusion('Newsletter Dispatch', 'news-1')}
+                    disabled={availedItems['news-1']}
+                    className={`w-full py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      availedItems['news-1']
+                        ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                        : 'bg-[#DC143C] hover:bg-[#B81032] text-white shadow'
+                    }`}
+                  >
+                    {availedItems['news-1'] ? '✓ Scheduled for Dispatch' : 'Avail Newsletter #2 Draft'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Card 5: Global Choir Recruitment Outreach */}
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-[#DC143C]/40 transition-colors">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="p-2 rounded-xl bg-amber-100 text-amber-700">
+                      <Icon icon="mage:globe" width={22} height={22} />
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      Active Campaign
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#3B3B3B]">
+                    Global Choir Email Recruitment
+                  </h3>
+                  <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
+                    Proactive outbound outreach sending official festival invitations to choral associations, youth choirs, and university ensembles across Europe and worldwide.
+                  </p>
+                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                    <strong>Current Progress:</strong> 420 Choirs Contacted • 28 Brochure Downloads
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSavedNotice('Choir outreach analytics report: 420 emails sent, 68% open rate, 28 brochure downloads!');
+                      setTimeout(() => setSavedNotice(null), 5000);
+                    }}
+                    className="w-full py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer"
+                  >
+                    View Outreach Engagement Stats
+                  </button>
+                </div>
+              </div>
+
+              {/* Card 6: Website Maintenance & Updates */}
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-[#DC143C]/40 transition-colors">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="p-2 rounded-xl bg-emerald-100 text-emerald-700">
+                      <Icon icon="mage:refresh" width={22} height={22} />
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      Unlimited Active
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-base text-[#3B3B3B]">
+                    Website Maintenance &amp; Changes
+                  </h3>
+                  <p className="text-xs text-[#4A5568] mt-1.5 leading-relaxed">
+                    Update festival competition categories, modify rules, publish newly confirmed international jury members, or post news announcements.
+                  </p>
+                  <div className="mt-3 text-[11.5px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                    <strong>Service Guarantee:</strong> Unlimited Tasks (24–48h Turnaround Time)
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => handleAvailInclusion('Website Content Update', 'web-1')}
+                    className="w-full py-2 px-4 rounded-xl bg-[#0B0C0E] hover:bg-neutral-800 text-white text-xs font-bold transition-all cursor-pointer shadow"
+                  >
+                    {availedItems['web-1'] ? '✓ Update Task Logged' : 'Submit Website Content Update'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* TAB 1: SOURCE CODE FILES & KEYS VAULT */}
         {activeTab === 'code' && (

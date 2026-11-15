@@ -118,12 +118,12 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
     calcPosters * 50 + calcBooklets * 150 + calcVideos * 150 + calcMonths * (75 + 150 + 250);
   const totalYear1PerProject = oneTimePerProject + recurringPerProject;
 
-  const planAYear1 = 1600 + 500 * calcMonths; // €1,600 down + €500/mo = €7,600
-  const planBYear1 = 650 * calcMonths; // €0 down + €650/mo = €7,800
+  const planAYear1 = 1599 + 499 * calcMonths; // €1,599 down + €499/mo = €7,587
+  const planBYear1Monthly = 649 * calcMonths; // €649/mo = €7,788
 
-  const activePlanYear1 = selectedPlan === 'planA' ? planAYear1 : planBYear1;
+  const activePlanYear1 = selectedPlan === 'planA' ? planAYear1 : planBYear1Monthly;
   const year1Savings = totalYear1PerProject - activePlanYear1;
-  const year2Savings = recurringPerProject - 500 * calcMonths;
+  const year2Savings = recurringPerProject - 499 * calcMonths;
 
   const handleFileAttach = (slotId: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -135,15 +135,15 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
   const getAcceptMailto = () => {
     const planLabel =
       selectedPlan === 'planA'
-        ? 'Option A: €1,600 EUR One-Time Setup + €500 EUR / Month All-Inclusive Partnership'
-        : 'Option B: €0 Upfront + €650 EUR / Month (Year 1), then €500 EUR / Month';
+        ? 'Option A: €1,599 EUR One-Time Setup + €499 EUR / Month All-Inclusive Digital Partnership'
+        : 'Option B: €0 Downpayment — €6,853 EUR / Year (or €649 EUR / Month)';
     const subject = encodeURIComponent(
       `Florence Choral (florencechoral.org) — Partnership Approval [${
-        selectedPlan === 'planA' ? '€1,600 + €500/mo' : '€650/mo Zero Upfront'
+        selectedPlan === 'planA' ? '€1,599 + €499/mo' : '€0 Downpayment Plan'
       }]`
     );
     const body = encodeURIComponent(
-      `Dear Jezreel,\n\nI have reviewed the Florence Choral Website Development, Dashboard, Marketing & Unlimited Media Proposal and Terms of Agreement.\n\nI would like to proceed with:\n• Selected Plan: ${planLabel}\n• Included Scope: Full Website Rebuild (florencechoral.org), Custom Admin & Inquiry Dashboard, Cloud Backend & Domain Covered, Monthly Email Newsletters, Global Choir Email Outreach, Unlimited Graphic Design (Posters, 31-Page Booklets, Diplomas), and Unlimited Video Editing (Reportages & Promo Reels).\n\nPlease send the onboarding steps and first invoice so we can launch florencechoral.org.\n\nBest regards,\nDr. Leonardo Sagliocca\nFounder & Artistic Director, Florence Choral`
+      `Dear Jezreel,\n\nI have reviewed the Florence Choral Website Development, Dashboard, Marketing & Unlimited Digital Media Proposal and Terms of Agreement.\n\nI would like to proceed with:\n• Selected Plan: ${planLabel}\n• Included Scope: Full Website Rebuild (florencechoral.org), Custom Admin & Inquiry Dashboard with Monthly Inclusion Availment Tracker, Cloud Backend & Domain Covered, Monthly Email Newsletters, Global Choir Email Outreach, Unlimited Digital Graphic Design (Posters, 31-Page Booklets, Diplomas - Certified Print-Ready Master Files), and Unlimited Video Editing (Reportages & Promo Reels).\n\nPlease send the onboarding steps and first invoice so we can launch florencechoral.org.\n\nBest regards,\nDr. Leonardo Sagliocca\nFounder & Artistic Director, Florence Choral`
     );
     return `mailto:jezreelleybag@gmail.com?subject=${subject}&body=${body}`;
   };
@@ -1267,17 +1267,17 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                         <td className="py-2">€1,500 one-time</td>
                         <td className="py-2 font-semibold">€1,500 EUR</td>
                         <td className="py-2 text-right font-bold text-[#0B0C0E]">
-                          Covered by €1,600
+                          Covered by €1,599
                         </td>
                       </tr>
                       <tr>
                         <td className="py-2">
-                          <strong>2. Custom Admin &amp; Choir Inquiry Dashboard</strong>
+                          <strong>2. Custom Admin Dashboard &amp; Inclusions Tracker</strong>
                         </td>
                         <td className="py-2">€600 one-time</td>
                         <td className="py-2 font-semibold">€600 EUR</td>
                         <td className="py-2 text-right font-bold text-[#0B0C0E]">
-                          Downpayment (Saves €500)
+                          Setup (Saves €501)
                         </td>
                       </tr>
                       <tr>
@@ -1292,35 +1292,32 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                       </tr>
                       <tr>
                         <td className="py-2">
-                          <strong>4. Festival Poster Sets &amp; Social Packs</strong> (Your €50
-                          rate)
+                          <strong>4. Digital Festival Posters &amp; Social Suites</strong> (Your €50 rate)
                         </td>
                         <td className="py-2">€50 × {calcPosters} sets/yr</td>
                         <td className="py-2 font-semibold">€{calcPosters * 50} EUR / yr</td>
                         <td className="py-2 text-right font-bold text-[#B45309]">
-                          ✓ Unlimited Included
+                          ✓ Unlimited Digital
                         </td>
                       </tr>
                       <tr>
                         <td className="py-2">
-                          <strong>5. 31-Page Booklets, Rulebooks &amp; Diplomas</strong> (Your €150
-                          rate)
+                          <strong>5. Digital 31-Page Booklets &amp; Rulebooks</strong> (Your €150 rate)
                         </td>
                         <td className="py-2">€150 × {calcBooklets} editions/yr</td>
                         <td className="py-2 font-semibold">€{calcBooklets * 150} EUR / yr</td>
                         <td className="py-2 text-right font-bold text-[#B45309]">
-                          ✓ Unlimited Included
+                          ✓ Unlimited Digital
                         </td>
                       </tr>
                       <tr>
                         <td className="py-2">
-                          <strong>6. Video Reportages (5–7m) &amp; Trailers</strong> (Your €150
-                          rate)
+                          <strong>6. Video Reportages (5–7m) &amp; Reels</strong> (Your €150 rate)
                         </td>
                         <td className="py-2">€150 × {calcVideos} videos/yr</td>
                         <td className="py-2 font-semibold">€{calcVideos * 150} EUR / yr</td>
                         <td className="py-2 text-right font-bold text-[#B45309]">
-                          ✓ Unlimited Included
+                          ✓ Unlimited Digital
                         </td>
                       </tr>
                       <tr>
@@ -1350,7 +1347,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                           €{totalYear1PerProject.toLocaleString()} EUR
                         </td>
                         <td className="py-2.5 pr-2 text-right text-[#0B0C0E]">
-                          €{planAYear1.toLocaleString()} EUR (€1,600 + €500/mo)
+                          €{planAYear1.toLocaleString()} EUR (€1,599 + €499/mo)
                         </td>
                       </tr>
                     </tbody>
@@ -1396,7 +1393,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
             <section className="tpl-page tpl-ambient-center">
               <div>
                 {renderTemplateHeader(
-                  'ONGOING FEES & OFFER',
+                  'CHOOSE YOUR PLAN',
                   '06 / PARTNERSHIP',
                   <svg
                     className="w-4 h-4 stroke-current"
@@ -1409,158 +1406,426 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                   </svg>
                 )}
 
-                <p className="text-center text-[20px] leading-[1.42] text-[#0B0C0E] max-w-[670px] mx-auto mt-3 mb-6">
-                  Choose the payment structure that works best for{' '}
-                  <strong>Florence Choral’s</strong> festival calendar. Both options include the
-                  exact same <strong>all-inclusive scope</strong> and{' '}
-                  <strong>100% Client Ownership</strong>:
-                </p>
-
-                <div className="tpl-frosted-card py-7 px-8">
-                  <div className="grid grid-cols-2 gap-5">
-                    {/* Option A: Recommended (€1,600 Down + €500/mo) */}
-                    <div
-                      onClick={() => setSelectedPlan('planA')}
-                      className={`rounded-[24px] p-5 border-2 transition-all cursor-pointer flex flex-col justify-between ${
-                        selectedPlan === 'planA'
-                          ? 'bg-white border-[#0B0C0E] shadow-xl ring-2 ring-[#F79223]'
-                          : 'bg-white/60 border-black/20 hover:bg-white/80'
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="tpl-font-heading text-[10px] font-bold uppercase tracking-wider bg-[#F79223] text-[#0B0C0E] px-2.5 py-0.5 rounded-full">
-                            Option A • Recommended (Maximum Savings)
-                          </span>
-                          {selectedPlan === 'planA' && (
-                            <span className="text-xs font-bold text-[#0B0C0E]">✓ Selected</span>
-                          )}
-                        </div>
-                        <h3 className="tpl-font-heading text-[20px] font-bold text-[#0B0C0E]">
-                          Setup + Low Monthly Salary
-                        </h3>
-                        <div className="mt-3 pb-3 border-b border-black/15">
-                          <div className="tpl-font-heading text-[28px] font-extrabold text-[#0B0C0E] leading-none">
-                            €1,600 EUR{' '}
-                            <span className="text-[13px] font-semibold text-neutral-600">
-                              One-Time Downpayment
-                            </span>
-                          </div>
-                          <div className="tpl-font-heading text-[22px] font-bold text-[#B45309] mt-1">
-                            + €500 EUR / Month
-                          </div>
-                        </div>
-
-                        <ul className="mt-3 space-y-1.5 text-[12px] text-neutral-800">
-                          <li>
-                            ✓ <strong>€1,600 Downpayment</strong> covers Full Website Rebuild
-                            (florencechoral.org) + Custom Admin Dashboard.
-                          </li>
-                          <li>
-                            ✓ <strong>€500/Month Salary</strong> covers all ongoing web updates,{' '}
-                            <strong>$28/mo backend &amp; $10/yr domain</strong>.
-                          </li>
-                          <li>
-                            ✓ <strong>Unlimited Graphic Design</strong> (All 5 festival poster sets,
-                            31-page booklets, diplomas &amp; banners).
-                          </li>
-                          <li>
-                            ✓ <strong>Unlimited Video Editing</strong> (5–7 min festival reportages,
-                            trailers &amp; reels).
-                          </li>
-                          <li>
-                            ✓ <strong>Monthly Newsletters &amp; Global Choir Outreach</strong>.
-                          </li>
-                        </ul>
-                      </div>
-
-                      <div className="mt-4 pt-3 border-t border-black/10 text-[11.5px] font-bold text-[#0B0C0E] flex items-center justify-between">
-                        <span>Year 1 Total: €7,600 EUR</span>
-                        <span className="text-green-800">Saves €2,950 EUR</span>
-                      </div>
+                {/* Exclusive Feature Callout: Client Dashboard & Inclusion Availment Tracker */}
+                <div className="bg-[#0B0C0E] text-white rounded-[16px] px-4 py-2.5 mb-3 border border-[#F79223]/50 shadow-md flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#F79223]/20 border border-[#F79223] flex items-center justify-center text-[#F79223] shrink-0 font-bold">
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0-18v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z" />
+                      </svg>
                     </div>
-
-                    {/* Option B: Zero Upfront (€0 Down + €650/mo Year 1, then €500/mo) */}
-                    <div
-                      onClick={() => setSelectedPlan('planB')}
-                      className={`rounded-[24px] p-5 border-2 transition-all cursor-pointer flex flex-col justify-between ${
-                        selectedPlan === 'planB'
-                          ? 'bg-white border-[#0B0C0E] shadow-xl ring-2 ring-[#F79223]'
-                          : 'bg-white/60 border-black/20 hover:bg-white/80'
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="tpl-font-heading text-[10px] font-bold uppercase tracking-wider bg-[#0B0C0E] text-white px-2.5 py-0.5 rounded-full">
-                            Option B • Zero Upfront Cash-Flow Plan
-                          </span>
-                          {selectedPlan === 'planB' && (
-                            <span className="text-xs font-bold text-[#0B0C0E]">✓ Selected</span>
-                          )}
-                        </div>
-                        <h3 className="tpl-font-heading text-[20px] font-bold text-[#0B0C0E]">
-                          Zero Downpayment Flat Monthly
-                        </h3>
-                        <div className="mt-3 pb-3 border-b border-black/15">
-                          <div className="tpl-font-heading text-[28px] font-extrabold text-[#0B0C0E] leading-none">
-                            €0 EUR{' '}
-                            <span className="text-[13px] font-semibold text-neutral-600">
-                              Upfront Downpayment
-                            </span>
-                          </div>
-                          <div className="tpl-font-heading text-[22px] font-bold text-[#B45309] mt-1">
-                            €650 EUR / Month{' '}
-                            <span className="text-[11.5px] font-medium text-neutral-600">
-                              (Drops to €500/mo in Yr 2)
-                            </span>
-                          </div>
-                        </div>
-
-                        <ul className="mt-3 space-y-1.5 text-[12px] text-neutral-800">
-                          <li>
-                            ✓ <strong>€0 Upfront:</strong> Spreads the website &amp; dashboard build
-                            smoothly across Year 1.
-                          </li>
-                          <li>
-                            ✓ <strong>Automatically drops to €500/month</strong> after Month 12 so
-                            you never overpay for the website build.
-                          </li>
-                          <li>
-                            ✓ Includes <strong>$28/mo backend &amp; $10/yr domain</strong> covered
-                            by me.
-                          </li>
-                          <li>
-                            ✓ Includes <strong>Unlimited Graphic Design &amp; Video Editing</strong>
-                            .
-                          </li>
-                          <li>
-                            ✓ Includes{' '}
-                            <strong>Monthly Newsletters &amp; Global Choir Outreach</strong>.
-                          </li>
-                        </ul>
+                    <div>
+                      <div className="text-[11px] font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        <span>Exclusive Feature: Client Dashboard &amp; Monthly Inclusion Tracker</span>
+                        <span className="text-[8px] bg-[#F79223] text-black px-1.5 py-0.5 rounded font-extrabold">
+                          INCLUDED
+                        </span>
                       </div>
-
-                      <div className="mt-4 pt-3 border-t border-black/10 text-[11.5px] font-bold text-[#0B0C0E] flex items-center justify-between">
-                        <span>Year 1 Total: €7,800 EUR</span>
-                        <span className="text-green-800">Saves €2,750 EUR</span>
-                      </div>
+                      <p className="text-[10px] text-neutral-300 mt-0.5 leading-snug">
+                        Your dedicated portal lets you see active service status and <strong>what monthly inclusions you can still avail</strong> (video edits, newsletter dispatches, poster suites) with 1-click requests.
+                      </p>
                     </div>
                   </div>
+                  <button
+                    type="button"
+                    onClick={onOpenDashboard}
+                    className="no-print shrink-0 px-3 py-1 rounded-full bg-[#F79223] text-[#0B0C0E] font-bold text-[10px] hover:bg-[#ffa742] transition-colors cursor-pointer"
+                  >
+                    Preview Dashboard ↗
+                  </button>
+                </div>
 
-                  {/* Hard Infrastructure Cost Transparency Note */}
-                  <div className="mt-5 p-3.5 rounded-2xl bg-white/80 border border-black/15 text-[11.5px] text-neutral-800 flex items-center justify-between gap-4">
+                {/* SaaS Subscription Comparison Matrix Table (Matches Client Screenshot) */}
+                <div className="bg-[#0B0C0E] text-white rounded-[22px] px-5 py-4 border border-black/80 shadow-2xl">
+                  <div className="text-center mb-3">
+                    <h3 className="tpl-font-heading text-[22px] font-bold text-white uppercase tracking-tight">
+                      Choose your plan
+                    </h3>
+                    <p className="text-[10.5px] text-neutral-400 mt-0.5">
+                      Upgrade, pause, or adjust anytime • 100% Digital Delivery &amp; Client Ownership
+                    </p>
+                  </div>
+
+                  <table className="w-full border-collapse text-left">
+                    <thead>
+                      <tr className="align-top">
+                        <th className="w-[38%] pb-3 pt-1"></th>
+
+                        {/* Option A Column Header */}
+                        <th
+                          onClick={() => setSelectedPlan('planA')}
+                          className={`w-[31%] pb-3 pt-2 px-3 text-center rounded-t-2xl transition-all cursor-pointer ${
+                            selectedPlan === 'planA'
+                              ? 'bg-white/10 border-t-2 border-x-2 border-[#F79223]'
+                              : 'hover:bg-white/5'
+                          }`}
+                        >
+                          <div className="text-[9.5px] font-bold uppercase tracking-wider text-[#F79223] mb-0.5">
+                            Option A • Recommended
+                          </div>
+                          <div className="text-[12.5px] font-bold text-white">Setup + Monthly</div>
+                          <div className="tpl-font-heading text-[22px] font-extrabold text-white mt-1 leading-none">
+                            €499.00<span className="text-[11px] font-medium text-neutral-400">/month</span>
+                          </div>
+                          <div className="text-[9.5px] text-neutral-300 mt-0.5">
+                            + €1,599.00 one-time setup
+                          </div>
+                          <div className="text-[9px] font-bold text-[#F79223] mt-0.5">
+                            Saves €201 in Year 1 vs. Monthly Plan**
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedPlan('planA')}
+                            className={`mt-2 w-full py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
+                              selectedPlan === 'planA'
+                                ? 'bg-[#F79223] text-[#0B0C0E] shadow-lg'
+                                : 'bg-white text-[#0B0C0E] hover:bg-neutral-200'
+                            }`}
+                          >
+                            {selectedPlan === 'planA' ? '✓ Selected Plan' : 'Select Plan'}
+                          </button>
+                        </th>
+
+                        {/* Option B Column Header */}
+                        <th
+                          onClick={() => setSelectedPlan('planB')}
+                          className={`w-[31%] pb-3 pt-2 px-3 text-center rounded-t-2xl transition-all cursor-pointer ${
+                            selectedPlan === 'planB'
+                              ? 'bg-white/10 border-t-2 border-x-2 border-[#F79223]'
+                              : 'hover:bg-white/5'
+                          }`}
+                        >
+                          <div className="text-[9.5px] font-bold uppercase tracking-wider text-neutral-400 mb-0.5">
+                            Option B • Zero Upfront
+                          </div>
+                          <div className="text-[12.5px] font-bold text-white">Flat Monthly / Yearly</div>
+                          <div className="tpl-font-heading text-[22px] font-extrabold text-white mt-1 leading-none">
+                            €649.00<span className="text-[11px] font-medium text-neutral-400">/month</span>
+                          </div>
+                          <div className="text-[9.5px] text-neutral-300 mt-0.5">
+                            or <strong>€6,853.00/year</strong> (Prepaid)
+                          </div>
+                          <div className="text-[9px] font-bold text-[#F79223] mt-0.5">
+                            Save €935/year with Yearly Billing**
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedPlan('planB')}
+                            className={`mt-2 w-full py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
+                              selectedPlan === 'planB'
+                                ? 'bg-[#F79223] text-[#0B0C0E] shadow-lg'
+                                : 'bg-white text-[#0B0C0E] hover:bg-neutral-200'
+                            }`}
+                          >
+                            {selectedPlan === 'planB' ? '✓ Selected Plan' : 'Select Plan'}
+                          </button>
+                        </th>
+                      </tr>
+                      <tr className="border-b border-white/20">
+                        <th colSpan={3} className="pb-1"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10 text-[10.5px]">
+                      {/* Row 1: Dashboard & Inclusions (Highlighted) */}
+                      <tr className="bg-white/5">
+                        <td className="py-2 pr-2 font-bold text-white">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#F79223]" />
+                            <span>Client Dashboard &amp; Inclusion Tracker</span>
+                          </div>
+                          <div className="text-[9px] font-normal text-neutral-400 pl-3">
+                            Live portal: see remaining credits &amp; avail inclusions
+                          </div>
+                        </td>
+                        <td
+                          className={`py-2 px-2 text-center font-bold ${
+                            selectedPlan === 'planA' ? 'bg-white/10 text-[#F79223]' : 'text-neutral-200'
+                          }`}
+                        >
+                          ✓ Live Tracker (Avail in 1 Click)
+                        </td>
+                        <td
+                          className={`py-2 px-2 text-center font-bold ${
+                            selectedPlan === 'planB' ? 'bg-white/10 text-[#F79223]' : 'text-neutral-200'
+                          }`}
+                        >
+                          ✓ Live Tracker (Avail in 1 Click)
+                        </td>
+                      </tr>
+
+                      {/* Row 2: Website Platform */}
+                      <tr>
+                        <td className="py-1.5 pr-2 font-bold text-white">
+                          <span>Website Rebuild (florencechoral.org)</span>
+                          <div className="text-[9px] font-normal text-neutral-400">
+                            5 festivals, programmes, jury, venues &amp; 100% code
+                          </div>
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Full 5-Festival Platform
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Full 5-Festival Platform
+                        </td>
+                      </tr>
+
+                      {/* Row 3: Festival Posters */}
+                      <tr>
+                        <td className="py-1.5 pr-2 font-bold text-white">
+                          <span>Festival Poster Campaigns (5 Editions)</span>
+                          <div className="text-[9px] font-normal text-neutral-400">
+                            Digital print-ready PDFs (A2, A3, A5, 70×100) + social
+                          </div>
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Unlimited Digital Masters
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Unlimited Digital Masters
+                        </td>
+                      </tr>
+
+                      {/* Row 4: Booklets */}
+                      <tr>
+                        <td className="py-1.5 pr-2 font-bold text-white">
+                          <span>31-Page Booklets &amp; Rulebooks</span>
+                          <div className="text-[9px] font-normal text-neutral-400">
+                            Print-ready digital PDF layouts &amp; digital flipbook
+                          </div>
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Unlimited Digital Layouts
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Unlimited Digital Layouts
+                        </td>
+                      </tr>
+
+                      {/* Row 5: Videos */}
+                      <tr>
+                        <td className="py-1.5 pr-2 font-bold text-white">
+                          <span>Festival Video Reportages &amp; Reels</span>
+                          <div className="text-[9px] font-normal text-neutral-400">
+                            5–7 min 4K/HD documentary reportages, audio &amp; reels
+                          </div>
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Unlimited 4K/HD Renders
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Unlimited 4K/HD Renders
+                        </td>
+                      </tr>
+
+                      {/* Row 6: Email Newsletters */}
+                      <tr>
+                        <td className="py-1.5 pr-2 font-bold text-white">
+                          <span>Monthly Email Newsletters</span>
+                          <div className="text-[9px] font-normal text-neutral-400">
+                            Formatted dispatches to past choir contacts
+                          </div>
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ 2 Editions / Month
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ 2 Editions / Month
+                        </td>
+                      </tr>
+
+                      {/* Row 7: Outreach */}
+                      <tr>
+                        <td className="py-1.5 pr-2 font-bold text-white">
+                          <span>Global Choir Email Outreach</span>
+                          <div className="text-[9px] font-normal text-neutral-400">
+                            Active outbound recruitment of choirs worldwide
+                          </div>
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Active Worldwide Outreach
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Active Worldwide Outreach
+                        </td>
+                      </tr>
+
+                      {/* Row 8: Hosting */}
+                      <tr>
+                        <td className="py-1.5 pr-2 font-bold text-white">
+                          <span>Hosting ($28/mo) &amp; Domain ($10/yr)</span>
+                          <div className="text-[9px] font-normal text-neutral-400">
+                            Fast cloud server, database &amp; domain renewal
+                          </div>
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Covered 100% by Jezreel
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          ✓ Covered 100% by Jezreel
+                        </td>
+                      </tr>
+
+                      {/* Row 9: Turnaround */}
+                      <tr>
+                        <td className="py-1.5 pr-2 font-bold text-white">
+                          <span>Turnaround &amp; Revisions</span>
+                          <div className="text-[9px] font-normal text-neutral-400">
+                            Speed of delivery &amp; feedback cycles
+                          </div>
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          24–48h • Unlimited
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
+                          }`}
+                        >
+                          24–48h • Unlimited
+                        </td>
+                      </tr>
+
+                      {/* Row 10: Downpayment */}
+                      <tr className="bg-white/5">
+                        <td className="py-1.5 pr-2 font-bold text-white">
+                          <span>Upfront Downpayment</span>
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center font-bold ${
+                            selectedPlan === 'planA' ? 'bg-white/10 text-white' : 'text-neutral-200'
+                          }`}
+                        >
+                          €1,599 EUR (One-Time)
+                        </td>
+                        <td
+                          className={`py-1.5 px-2 text-center font-bold ${
+                            selectedPlan === 'planB' ? 'bg-white/10 text-[#F79223]' : 'text-[#F79223]'
+                          }`}
+                        >
+                          €0 EUR (Zero Downpayment)
+                        </td>
+                      </tr>
+
+                      {/* Row 11: Total Year 1 Cost */}
+                      <tr className="border-t border-white/20 bg-white/10 font-bold text-[11px]">
+                        <td className="py-2 pr-2 text-white">
+                          <span>Total Year 1 Cost</span>
+                        </td>
+                        <td
+                          className={`py-2 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 text-[#F79223]' : 'text-white'
+                          }`}
+                        >
+                          €7,587 EUR
+                        </td>
+                        <td
+                          className={`py-2 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 text-[#F79223]' : 'text-white'
+                          }`}
+                        >
+                          €6,853 (Yearly) / €7,788 (Monthly)
+                        </td>
+                      </tr>
+
+                      {/* Row 12: Guaranteed Savings */}
+                      <tr className="bg-[#F79223]/15 font-bold text-[10.5px]">
+                        <td className="py-2 pr-2 text-[#F79223]">
+                          <span>Your Guaranteed Savings</span>
+                        </td>
+                        <td
+                          className={`py-2 px-2 text-center ${
+                            selectedPlan === 'planA' ? 'bg-white/10 text-[#F79223]' : 'text-amber-200'
+                          }`}
+                        >
+                          Saves €201 in Yr 1 (€1,800/yr after)
+                        </td>
+                        <td
+                          className={`py-2 px-2 text-center ${
+                            selectedPlan === 'planB' ? 'bg-white/10 text-[#F79223]' : 'text-amber-200'
+                          }`}
+                        >
+                          Save €935/yr with Yearly Billing
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  {/* Table Footer */}
+                  <div className="mt-2.5 pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[9px] text-neutral-400">
                     <div>
-                      <strong>Infrastructure Included at €0 Extra Cost to You:</strong> I cover the
-                      annual domain renewal (<strong>florencechoral.org</strong>), the{' '}
-                      <strong>$28/month cloud backend &amp; database</strong>, and professional
-                      creative/email software tools out of my monthly retainer.
+                      * <strong>100% Digital Production &amp; Delivery:</strong> Certified print-ready PDF masters &amp; 4K video renders. Zero physical shipping or print markup.
                     </div>
-                    <a
-                      href={getAcceptMailto()}
-                      className="no-print shrink-0 px-4 py-2 rounded-full bg-[#0B0C0E] text-[#F79223] font-bold text-xs hover:bg-neutral-800 transition-colors"
-                    >
-                      Approve {selectedPlan === 'planA' ? 'Option A' : 'Option B'} ✉
-                    </a>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[#F79223] font-semibold">
+                        ** Transparent savings vs. standard rates
+                      </span>
+                      <a
+                        href={getAcceptMailto()}
+                        className="no-print px-3 py-1 rounded-full bg-[#F79223] text-[#0B0C0E] font-extrabold text-[9.5px] hover:bg-[#ffa742] transition-colors"
+                      >
+                        Accept {selectedPlan === 'planA' ? 'Option A' : 'Option B'} ✉
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1568,7 +1833,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
               {renderPageFooter(
                 11,
                 12,
-                'Ongoing Monthly Fees & Flexible Payment Structure Selection'
+                'Subscription Plan Comparison Matrix & Digital Inclusions'
               )}
             </section>
           </>
@@ -1581,7 +1846,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
           <div>
             {renderTemplateHeader(
               'TERMS OF AGREEMENT',
-              selectedPlan === 'planA' ? '€1,600 + €500/MO' : '€650/MO PLAN',
+              selectedPlan === 'planA' ? '€1,599 + €499/MO' : '€0 DOWNPAYMENT',
               <svg
                 className="w-4 h-4 stroke-current"
                 fill="none"
@@ -1637,11 +1902,13 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                 <div className="col-span-9">
                   <strong>Florence Choral (Dr. Leonardo Sagliocca)</strong> engages{' '}
                   <strong>Jezreel Dave Leybag</strong> as an independent contractor for the{' '}
-                  <strong>florencechoral.org</strong> website rebuild, Admin &amp; Inquiry
-                  Dashboard, cloud hosting/domain administration, monthly email newsletters,
-                  international choir email outreach, and unlimited graphic design (posters, 31-page
-                  booklets, diplomas, banners) and video editing (5–7 min festival reportages &amp;
-                  promotional reels) across all five (5) annual festivals.
+                  <strong>florencechoral.org</strong> website rebuild, Client Dashboard &amp; Monthly
+                  Inclusion Tracker, cloud hosting/domain administration, monthly email newsletters,
+                  international choir email outreach, and unlimited <strong>100% digital graphic design</strong>{' '}
+                  (certified print-ready poster PDFs, 31-page booklets, diplomas, social suites) and
+                  video editing (5–7 min festival reportages &amp; promotional reels) across all five (5)
+                  annual festivals. All deliverables are digital master files; physical printing and venue
+                  installation are handled locally by the Client.
                 </div>
               </div>
 
@@ -1653,21 +1920,33 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                   {selectedPlan === 'planA' ? (
                     <>
                       <strong>Option A (Setup + Monthly Salary):</strong> A one-time setup fee of{' '}
-                      <strong>€1,600.00 EUR</strong> upon agreement to launch{' '}
-                      <strong>florencechoral.org</strong> and the Admin Dashboard, followed by a
-                      flat monthly retainer of <strong>€500.00 EUR / month</strong>.
+                      <strong>€1,599.00 EUR</strong> upon agreement to launch{' '}
+                      <strong>florencechoral.org</strong> and the Client Dashboard, followed by a
+                      flat monthly retainer of <strong>€499.00 EUR / month</strong>. Total Year 1
+                      investment is <strong>€7,587.00 EUR</strong> (saving €201.00 EUR in Year 1 vs. monthly plan,
+                      and €1,800.00 EUR / year in subsequent years).
                     </>
                   ) : (
                     <>
-                      <strong>Option B (Zero Upfront Plan):</strong> <strong>€0 upfront</strong> and
-                      a flat monthly fee of <strong>€650.00 EUR / month</strong> during Year 1,
-                      automatically reducing to <strong>€500.00 EUR / month</strong> from Month 13
-                      onward.
+                      <strong>Option B (Zero Downpayment Plan):</strong> <strong>€0 downpayment</strong>.
+                      Billed annually at <strong>€6,853.00 EUR / year</strong> (saving €935.00 EUR / year — over 12% off),
+                      or billed monthly at <strong>€649.00 EUR / month</strong> (€7,788.00 EUR / year).
                     </>
                   )}{' '}
                   All website hosting, backend database ($28/mo), and domain ($10/yr) costs are
-                  covered by the Service Provider. Billed monthly via international bank transfer /
-                  Wise.
+                  covered by the Service Provider. Billed via international bank transfer / Wise.
+                </div>
+              </div>
+
+              <div className="tpl-grid-12 items-start pb-3 border-b border-black/15">
+                <div className="col-span-3 tpl-font-heading text-[14.5px] font-semibold text-[#0B0C0E]">
+                  Client Dashboard &amp; Availment
+                </div>
+                <div className="col-span-9">
+                  The Client receives 24/7 direct access to the <strong>Florence Choral Client Dashboard</strong>{' '}
+                  to track live website choir inquiries and see <strong>what monthly inclusions are active and available</strong>{' '}
+                  (remaining video cuts, newsletter dispatches, and poster suites). Inclusions can be availed
+                  at any time with a 1-click request.
                 </div>
               </div>
 
@@ -1676,9 +1955,9 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                   Workflow &amp; Revisions
                 </div>
                 <div className="col-span-9">
-                  The Client may submit an unlimited number of web updates, graphic design tasks,
-                  newsletter dispatches, and video editing requests via Email or WhatsApp. Standard
-                  updates and graphics are delivered within 24–48 hours; 31-page booklets and 5–7
+                  The Client may submit an unlimited number of digital web updates, graphic design tasks,
+                  newsletter dispatches, and video editing requests via the Dashboard, Email, or WhatsApp.
+                  Standard updates and graphics are delivered within 24–48 hours; 31-page booklets and 5–7
                   min video reportages are delivered within 2–4 business days.{' '}
                   <strong>Unlimited revisions</strong> are included at zero extra charge.
                 </div>
@@ -1690,8 +1969,8 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                 </div>
                 <div className="col-span-9">
                   <strong>Jezreel Dave Leybag</strong> guarantees that full source code, domain
-                  names (<strong>florencechoral.org</strong>), choir contact databases, print design
-                  files, 31-page booklets, and edited video masters are the{' '}
+                  names (<strong>florencechoral.org</strong>), choir contact databases, digital print-ready
+                  design files, 31-page booklets, and edited video masters are the{' '}
                   <strong>
                     100% sole property of Dr. Leonardo Sagliocca / Florence Choral
                   </strong>
@@ -1707,7 +1986,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                 <div className="col-span-9">
                   This Agreement operates on a flexible <strong>month-to-month basis</strong>.
                   Either party may pause or terminate with 30 days’ written notice via email, with
-                  100% handover of all active code, domains, and media archives.
+                  100% handover of all active code, domains, and digital media archives.
                 </div>
               </div>
             </div>
