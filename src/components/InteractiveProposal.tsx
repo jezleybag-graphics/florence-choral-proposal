@@ -1,932 +1,1038 @@
-import React, { useState } from 'react';
-import {
-  PAST_FLORENCE_WORK_FEATURED,
-  PAST_WORK_GALLERY_SLOTS,
-  type PastWorkItem,
-} from '../data/pastWork';
+import React, { useState, useEffect } from 'react';
 
 interface InteractiveProposalProps {
   mode?: 'full-proposal' | 'contract-only';
+  initialCover?: boolean;
   onOpenPrototype: () => void;
   onOpenDashboard: () => void;
+  onOpenCover?: () => void;
   onSwitchMode: (mode: 'full-proposal' | 'contract-only') => void;
 }
 
-interface PrototypeSlide {
-  num: string;
+interface BentoItem {
+  id: string;
+  year: string;
   title: string;
-  whatWeDid: string;
-  designLawTitle: string;
-  designLawBody: string;
-  img: string;
+  type: 'image' | 'pdf' | 'video';
+  previewImg: string;
+  fullSrc: string;
+  colSpan: string;
+  actionLabel: string;
 }
 
-const PROTOTYPE_SLIDES_PAGE_1: PrototypeSlide[] = [
+const BENTO_PROJECTS: BentoItem[] = [
   {
-    num: '01',
-    title: 'Optical Brand Header & Frosted-Glass "Festivals" Menu',
-    whatWeDid:
-      'Embedded your transparent Florence Choral Duomo crest directly into the crimson header, paired with a 90%-frosted white glass dropdown listing all 5 festivals and dates.',
-    designLawTitle: 'Golden Ratio (1:1.618) & Hick’s Law',
-    designLawBody:
-      'Optical alignment locks the Duomo emblem to the title cap-height, while Hick’s Law cuts decision time by displaying all 5 festival dates in one clean menu.',
-    img: '/proposal-assets/01_header_hero_dropdown_16x9.png',
+    id: 'lorenzo-2022',
+    year: '2022',
+    title: "Lorenzo de' Medici",
+    type: 'image',
+    previewImg: '/past-work/lorenzo-2022-web.jpg',
+    fullSrc: '/past-work/lorenzo-2022-web.jpg',
+    colSpan: 'sm:col-span-2 lg:col-span-2',
+    actionLabel: 'Learn more ↗',
   },
   {
-    num: '02',
-    title: 'The 5 Renaissance Master Festivals Directory',
-    whatWeDid:
-      'Dedicated 3-column directory for Leonardo da Vinci, Verrocchio, Michelangelo, Lorenzo de’ Medici, and Botticelli with status badges and deadlines.',
-    designLawTitle: 'Law of Proximity & Visual Hierarchy',
-    designLawBody:
-      'Groups festival dates, Renaissance master dedications, and deadlines inside uniform containers so conductors can compare all 5 seasons in seconds.',
-    img: '/proposal-assets/02a_festivals_grid_top_16x9.png',
+    id: 'leonardo-2022',
+    year: '2022',
+    title: 'Leonardo da Vinci',
+    type: 'image',
+    previewImg: '/past-work/leonardo-2022-web.jpg',
+    fullSrc: '/past-work/leonardo-2022-web.jpg',
+    colSpan: 'sm:col-span-1 lg:col-span-1',
+    actionLabel: 'Learn more ↗',
   },
   {
-    num: '03',
-    title: 'Interactive 4-Day Programme & Rules Modal',
-    whatWeDid:
-      'Instant overlay window showing the Day 1–4 itinerary, competition categories, repertoire rules, prizes, and 1-click application actions.',
-    designLawTitle: 'Fitts’s Law & Progressive Disclosure',
-    designLawBody:
-      'Delivers complete festival rules on demand without page reloads, keeping prominent "Request PDF Brochure" and "Apply" actions within immediate reach.',
-    img: '/proposal-assets/03_festival_programme_modal_16x9.png',
+    id: 'michelangelo-2021',
+    year: '2021',
+    title: 'Michelangelo',
+    type: 'image',
+    previewImg: '/past-work/michelangelo-2021-web.jpg',
+    fullSrc: '/past-work/michelangelo-2021-web.jpg',
+    colSpan: 'sm:col-span-1 lg:col-span-1',
+    actionLabel: 'Learn more ↗',
+  },
+  {
+    id: 'michelangelo-2022',
+    year: '2022',
+    title: 'Michelangelo (2nd Ed.)',
+    type: 'image',
+    previewImg: '/past-work/michelangelo-2022-web.jpg',
+    fullSrc: '/past-work/michelangelo-2022-web.jpg',
+    colSpan: 'sm:col-span-1 lg:col-span-1',
+    actionLabel: 'Learn more ↗',
+  },
+  {
+    id: 'verrocchio-2023',
+    year: '2023',
+    title: 'Andrea del Verrocchio',
+    type: 'image',
+    previewImg: '/past-work/verrocchio-2023-web.jpg',
+    fullSrc: '/past-work/verrocchio-2023-web.jpg',
+    colSpan: 'sm:col-span-1 lg:col-span-1',
+    actionLabel: 'Learn more ↗',
+  },
+  {
+    id: 'lorenzo-2024',
+    year: '2024',
+    title: "Lorenzo de' Medici (6th Ed.)",
+    type: 'image',
+    previewImg: '/past-work/lorenzo-2024-web.jpg',
+    fullSrc: '/past-work/lorenzo-2024-web.jpg',
+    colSpan: 'sm:col-span-2 lg:col-span-2',
+    actionLabel: 'Learn more ↗',
+  },
+  {
+    id: 'booklet-6th-ldicf',
+    year: '2023–2024',
+    title: '31-Page Competition Booklet',
+    type: 'pdf',
+    previewImg: '/past-work/booklet-cover-web.jpg',
+    fullSrc: '/past-work/FINAL-booklet-6th-LDICF.pdf',
+    colSpan: 'sm:col-span-2 lg:col-span-2',
+    actionLabel: 'Open PDF (31 Pages) ↗',
+  },
+  {
+    id: 'reportage-5th-verrocchio',
+    year: '2024',
+    title: '4K Festival Video Reportage',
+    type: 'video',
+    previewImg: '/past-work/reportage-verrocchio-thumb.jpg',
+    fullSrc:
+      'https://drive.google.com/file/d/1cbdwlPW3jtUyYGywW90kKrBw11XTyGBC/preview',
+    colSpan: 'sm:col-span-2 lg:col-span-2',
+    actionLabel: 'Watch 1080p Video ▶',
   },
 ];
 
-const PROTOTYPE_SLIDES_PAGE_2: PrototypeSlide[] = [
-  {
-    num: '04',
-    title: '“Our Difference” Pillars with Custom Vector Icons',
-    whatWeDid:
-      'Highlights Special Features, Bel Canto Workshops, and International Juries using custom geometric SVG icons and 3-point checklists.',
-    designLawTitle: 'Law of Prägnanz (Simplicity & Clarity)',
-    designLawBody:
-      'Replaces dense paragraphs with scannable 3-point checklists that international choir directors can read in under 5 seconds.',
-    img: '/proposal-assets/04a_our_difference_cards_16x9.png',
-  },
-  {
-    num: '05',
-    title: 'Global Impact Counter Bar & Artistic Committee',
-    whatWeDid:
-      'Animated Renaissance-Azure counter bar (Events, Choirs, Nations, Participants) with custom choral vectors preceding the Artistic Committee.',
-    designLawTitle: 'Authority & Social Proof Principle',
-    designLawBody:
-      'Quantifies Florence Choral’s global track record at a glance right before introducing Dr. Sagliocca and the international jury panel.',
-    img: '/proposal-assets/04b_impact_stats_and_jury_16x9.png',
-  },
-  {
-    num: '06',
-    title: 'Historic Venues of Florence Showcase',
-    whatWeDid:
-      'Authentic photography of Basilica of Santa Croce, Santa Maria Novella, Salone dei Cinquecento (Palazzo Vecchio), Ognissanti, and Sant’Apollonia.',
-    designLawTitle: 'Aesthetic-Usability Effect',
-    designLawBody:
-      'High-resolution architectural imagery creates an immediate emotional desire for visiting choirs to sing inside Florence’s greatest basilicas.',
-    img: '/proposal-assets/05_historic_venues_16x9.png',
-  },
-  {
-    num: '07',
-    title: 'Official Patronage & Direct Conversion Footer',
-    whatWeDid:
-      'Preserves the Comune di Firenze (linked to the official PDF decree) and Regione Toscana patronage crests alongside direct WhatsApp & Brochure buttons.',
-    designLawTitle: 'Serial Position Effect (Recency & Trust)',
-    designLawBody:
-      'Anchors the bottom of the page with official government patronage proof and immediate inquiry channels.',
-    img: '/proposal-assets/06_footer_and_patronage_16x9.png',
-  },
+const SECTIONS = [
+  { id: 'introduction', label: 'Introduction' },
+  { id: 'what-will-we-do', label: 'What Will We Do' },
+  { id: 'process-and-timescales', label: 'Process and Timescales' },
+  { id: 'case-study', label: 'Case Study' },
+  { id: 'investment', label: 'Investment' },
+  { id: 'next-steps', label: 'Next Steps' },
+  { id: 'terms-and-conditions', label: 'Terms and Conditions' },
+  { id: 'proposal-acceptance', label: 'Proposal Acceptance' },
 ];
 
 export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
   mode = 'full-proposal',
+  initialCover = false,
   onOpenPrototype,
   onOpenDashboard,
+  onOpenCover,
   onSwitchMode,
 }) => {
+  const [showCover, setShowCover] = useState(initialCover);
+  const [activeSection, setActiveSection] = useState('introduction');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'planA' | 'planB'>('planA');
-  const [lightboxImg, setLightboxImg] = useState<{ src: string; title: string } | null>(null);
-  const [customPastImages, setCustomPastImages] = useState<Record<string, string>>({});
+  const [planBBilling, setPlanBBilling] = useState<'monthly' | 'yearly'>('monthly');
+  const [signerName, setSignerName] = useState('Dr. Leonardo Sagliocca');
+  const [signTab, setSignTab] = useState<'type' | 'draw'>('type');
+  const [isSigning, setIsSigning] = useState(false);
+  const [isSigned, setIsSigned] = useState(false);
+  const [notifyStatus, setNotifyStatus] = useState<'idle' | 'sending' | 'sent' | 'fallback'>('idle');
 
-  // Interactive Calculator State (defaults match our exact annual table)
-  const [calcPosters, setCalcPosters] = useState(10); // €50 each = €500
-  const [calcBooklets, setCalcBooklets] = useState(6); // €150 each (31p booklet + 5 festival rulebooks/diploma packs) = €900
-  const [calcVideos, setCalcVideos] = useState(9); // €150 each (reportages + festival promo reels) = €1,350
-  const [calcMonths, setCalcMonths] = useState(12); // Hosting (€75) + Newsletters (€150) + Outreach (€250) = €475/mo = €5,700/yr
+  const handleSignProposal = async () => {
+    if (!signerName.trim()) return;
+    setIsSigning(true);
+    setNotifyStatus('sending');
 
-  const oneTimePerProject = 1500 + 600; // Website (€1,500) + Dashboard (€600) = €2,100
-  const recurringPerProject =
-    calcPosters * 50 + calcBooklets * 150 + calcVideos * 150 + calcMonths * (75 + 150 + 250);
-  const totalYear1PerProject = oneTimePerProject + recurringPerProject;
-
-  const planAYear1 = 1599 + 499 * calcMonths; // €1,599 down + €499/mo = €7,587
-  const planBYear1Monthly = 649 * calcMonths; // €649/mo = €7,788
-
-  const activePlanYear1 = selectedPlan === 'planA' ? planAYear1 : planBYear1Monthly;
-  const year1Savings = totalYear1PerProject - activePlanYear1;
-  const year2Savings = recurringPerProject - 499 * calcMonths;
-
-  const handleFileAttach = (slotId: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    setCustomPastImages((prev) => ({ ...prev, [slotId]: url }));
-  };
-
-  const getAcceptMailto = () => {
-    const planLabel =
+    const packageName =
       selectedPlan === 'planA'
-        ? 'Option A: €1,599 EUR One-Time Setup + €499 EUR / Month All-Inclusive Digital Partnership'
-        : 'Option B: €0 Downpayment — €6,853 EUR / Year (or €649 EUR / Month)';
-    const subject = encodeURIComponent(
-      `Florence Choral (florencechoral.org) — Partnership Approval [${
-        selectedPlan === 'planA' ? '€1,599 + €499/mo' : '€0 Downpayment Plan'
-      }]`
-    );
-    const body = encodeURIComponent(
-      `Dear Jezreel,\n\nI have reviewed the Florence Choral Website Development, Dashboard, Marketing & Unlimited Digital Media Proposal and Terms of Agreement.\n\nI would like to proceed with:\n• Selected Plan: ${planLabel}\n• Included Scope: Full Website Rebuild (florencechoral.org), Custom Admin & Inquiry Dashboard with Monthly Inclusion Availment Tracker, Cloud Backend & Domain Covered, Monthly Email Newsletters, Global Choir Email Outreach, Unlimited Digital Graphic Design (Posters, 31-Page Booklets, Diplomas - Certified Print-Ready Master Files), and Unlimited Video Editing (Reportages & Promo Reels).\n\nPlease send the onboarding steps and first invoice so we can launch florencechoral.org.\n\nBest regards,\nDr. Leonardo Sagliocca\nFounder & Artistic Director, Florence Choral`
-    );
-    return `mailto:jezreelleybag@gmail.com?subject=${subject}&body=${body}`;
+        ? 'Option A: Setup + Monthly (€1,599 + €499/mo)'
+        : `Option B: Monthly Partner (${planBBilling === 'yearly' ? '€6,853/yr' : '€649/mo'})`;
+
+    const payload = {
+      _subject: `🎉 Florence Choral Proposal Accepted & Signed by ${signerName}`,
+      _template: 'table',
+      _captcha: 'false',
+      'Signer Full Name': signerName,
+      'Document Title': 'Florence Choral Digital Platform & Services Agreement',
+      'Selected Package': packageName,
+      'Signature Method': signTab === 'type' ? 'Digital Type Signature' : 'Digital Drawn Signature',
+      'Digital Verification ID': 'FC-2026-SIG',
+      'Signing Timestamp':
+        new Date().toLocaleString('en-US', { timeZone: 'Europe/Rome' }) +
+        ' (Rome Time) / ' +
+        new Date().toISOString(),
+      'User Agent': navigator.userAgent,
+    };
+
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/jezreelleybag.graphics@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      console.log('FormSubmit notification response:', data);
+      setIsSigned(true);
+      setNotifyStatus('sent');
+    } catch (err) {
+      console.error('Notification dispatch error:', err);
+      // Mark as signed so client UX is never blocked
+      setIsSigned(true);
+      setNotifyStatus('fallback');
+    } finally {
+      setIsSigning(false);
+    }
+  };
+  const [activeMediaModal, setActiveMediaModal] = useState<{
+    type: 'image' | 'video' | 'pdf';
+    src: string;
+    title: string;
+  } | null>(null);
+
+
+  // Active section scroll spy
+  useEffect(() => {
+    if (showCover) return;
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 250;
+      for (const section of SECTIONS) {
+        const el = document.getElementById(section.id);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(section.id);
+            break;
+          }
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showCover]);
+
+  const scrollToSection = (id: string) => {
+    setActiveSection(id);
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
-  const renderTemplateHeader = (title: string, pillText: string, icon: React.ReactNode) => (
-    <header className="flex items-center justify-between mb-6 relative z-10">
-      <h2 className="tpl-font-heading text-[31px] font-semibold uppercase tracking-[-0.01em] text-[#0B0C0E] leading-none">
-        {title}
-      </h2>
-      <div className="flex items-center gap-[3px] shrink-0">
-        <div className="h-[36px] min-w-[102px] px-3.5 rounded-full border-[1.5px] border-[#0B0C0E] bg-white/40 flex items-center justify-center gap-2">
-          <img
-            src="/proposal-assets/jezreel_logo_mark.png"
-            alt="JD"
-            className="h-3.5 w-auto object-contain"
-          />
-          <span className="tpl-font-heading text-[10px] font-bold uppercase tracking-[0.06em] text-[#0B0C0E]">
-            {pillText}
-          </span>
-        </div>
-        <div className="w-[36px] h-[36px] rounded-full bg-[#F79223] border-[1.5px] border-[#0B0C0E] flex items-center justify-center text-[#0B0C0E]">
-          {icon}
-        </div>
-      </div>
-    </header>
-  );
-
-  const renderPageFooter = (pageNum: number, totalPages: number, label: string) => (
-    <footer className="mt-auto pt-3 border-t border-black/10 flex items-center justify-between text-[10.5px] text-neutral-600 relative z-10">
-      <div className="flex items-center gap-2">
-        <img src="/proposal-assets/jezreel_logo_mark.png" alt="" className="h-3 w-auto" />
-        <span>
-          <strong className="text-[#0B0C0E]">Jezreel Dave Leybag</strong> • {label}
-        </span>
-      </div>
-      <span className="tpl-font-heading font-semibold text-[#0B0C0E]">
-        Page {String(pageNum).padStart(2, '0')} of {String(totalPages).padStart(2, '0')}
-      </span>
-    </footer>
-  );
-
-  const renderBrowserMockup = (src: string, title: string) => (
-    <div className="tpl-browser-backdrop" style={{ padding: '10px 14px' }}>
-      <div
-        onClick={() => setLightboxImg({ src, title })}
-        className="bg-[#0B0C0E] rounded-[10px] overflow-hidden border border-black/80 shadow-lg cursor-zoom-in group relative"
-      >
-        <div className="bg-[#F4F4F5] h-[15px] px-2 flex items-center justify-between border-b border-neutral-300">
-          <div className="flex flex-col gap-[2px]">
-            <span className="w-2.5 h-[1.3px] bg-neutral-800 block" />
-            <span className="w-2.5 h-[1.3px] bg-neutral-800 block" />
-            <span className="w-2.5 h-[1.3px] bg-neutral-800 block" />
-          </div>
-          <span className="text-[8px] font-mono text-neutral-500 truncate max-w-[180px]">
-            florencechoral.org
-          </span>
-          <div className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full border border-neutral-800 bg-[#F79223]" />
-            <span className="w-1.5 h-1.5 rounded-full border border-neutral-800 bg-white" />
-            <span className="w-1.5 h-1.5 rounded-full border border-neutral-800 bg-white" />
-          </div>
-        </div>
-        <img
-          src={src}
-          alt={title}
-          className="w-full h-[156px] object-cover object-top block group-hover:scale-[1.01] transition-transform"
-        />
-        <div className="no-print absolute bottom-2 right-2 bg-black/75 text-white text-[9px] font-semibold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-          Click to Enlarge (16:9)
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderPastWorkPrototypeSlot = (item: PastWorkItem, compact = false) => {
-    const attachedSrc = customPastImages[item.id] || item.src;
-    const slotHeightClass = compact ? 'h-[132px]' : 'h-[146px]';
+  // =========================================================================
+  // VIEW 1: CINEMATIC COVER LANDING PAGE (Exact Better Proposals Cover.php)
+  // =========================================================================
+  if (showCover) {
     return (
-      <div className="tpl-browser-backdrop" style={{ padding: compact ? '8px 10px' : '10px 14px' }}>
-        <div className="bg-[#F4F4F5] rounded-[9px] overflow-hidden border border-black/80 shadow-md">
-          {/* Top Window Bar (Exact Template Page 3 Style) */}
-          <div className="bg-white h-[15px] px-2 flex items-center justify-between border-b border-neutral-300">
-            <div className="flex flex-col gap-[2px]">
-              <span className="w-2.5 h-[1.3px] bg-neutral-800 block" />
-              <span className="w-2.5 h-[1.3px] bg-neutral-800 block" />
-              <span className="w-2.5 h-[1.3px] bg-neutral-800 block" />
-            </div>
-            <span className="text-[7.5px] font-semibold uppercase tracking-wider text-neutral-500">
-              {item.historicalRate}
-            </span>
-            <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full border border-neutral-800 bg-[#F79223]" />
-              <span className="w-1.5 h-1.5 rounded-full border border-neutral-800 bg-white" />
-              <span className="w-1.5 h-1.5 rounded-full border border-neutral-800 bg-white" />
-            </div>
-          </div>
+      <div className="min-h-screen w-full bg-[#0A0A0A] text-white bp-font relative overflow-hidden flex flex-col justify-between p-8 sm:p-14 lg:p-20 selection:bg-white selection:text-black">
+        {/* Background Atmospheric Imagery */}
+        <div
+          className="absolute inset-0 bg-cover bg-center pointer-events-none opacity-25 filter brightness-75 scale-105"
+          style={{ backgroundImage: `url('/proposal-assets/05_historic_venues_16x9.png')` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent pointer-events-none" />
 
-          {attachedSrc ? (
-            <div
-              onClick={() => setLightboxImg({ src: attachedSrc, title: item.title })}
-              className="relative cursor-zoom-in"
-            >
-              <img
-                src={attachedSrc}
-                alt={item.title}
-                className={`w-full ${slotHeightClass} object-cover block`}
-              />
-            </div>
-          ) : (
-            <label
-              className={`w-full ${slotHeightClass} bg-gradient-to-br from-[#1F242D] via-[#151821] to-[#2B1D12] flex flex-col items-center justify-center text-center p-2.5 cursor-pointer relative group`}
-            >
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleFileAttach(item.id, e)}
-              />
-              <div className="w-7 h-7 rounded-full bg-[#F79223]/20 border border-[#F79223] flex items-center justify-center text-[#F79223] mb-1 group-hover:scale-110 transition-transform">
-                {item.category === 'video' ? (
-                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                ) : item.category === 'booklet' ? (
-                  <svg
-                    className="w-3.5 h-3.5 stroke-current"
-                    fill="none"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z" />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-3.5 h-3.5 stroke-current"
-                    fill="none"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <path d="M21 15l-5-5L5 21" />
-                  </svg>
-                )}
-              </div>
-              <span className="text-[9px] font-bold uppercase tracking-wider text-[#F79223]">
-                Prototype Project Slot • {item.year}
-              </span>
-              <span className="text-[10.5px] font-semibold text-white mt-0.5 line-clamp-1">
-                {item.title}
-              </span>
-              <span className="text-[8.5px] text-neutral-300 mt-0.5 line-clamp-1">
-                {item.deliverables}
-              </span>
-              <span className="no-print mt-1 text-[8px] bg-white/10 border border-white/20 text-white px-2 py-0.5 rounded-full group-hover:bg-[#F79223] group-hover:text-black transition-colors">
-                + Click to Attach Project Image
-              </span>
-            </label>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <div className="min-h-screen bg-[#16171B] text-[#0B0C0E] tpl-font-body">
-      {/* =====================================================================
-          STICKY INTERACTIVE PRESENTATION BAR (WEB ONLY — HIDDEN IN PRINT/PDF)
-          ===================================================================== */}
-      <div className="no-print sticky top-0 z-50 bg-[#0B0C0E]/95 backdrop-blur-md border-b border-white/10 text-white px-4 py-2.5">
-        <div className="max-w-[1180px] mx-auto flex flex-wrap items-center justify-between gap-3">
+        {/* Top Header Strip */}
+        <header className="relative z-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
-              src="/proposal-assets/jezreel_logo_mark.png"
-              alt="Jezreel Dave"
-              className="h-6 w-auto"
+              src="/branding/on-black_1.png"
+              alt="Jezreel Dave Leybag"
+              className="h-9 w-auto object-contain"
             />
-            <div>
-              <div className="tpl-font-heading text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                <span>Florence Choral — Interactive Proposal &amp; Contract</span>
-                <span className="bg-[#F79223]/20 text-[#F79223] border border-[#F79223]/40 px-2 py-0.5 rounded-full text-[10px]">
-                  Private Client Link
-                </span>
-              </div>
-              <p className="text-[11px] text-neutral-400">
-                Prepared by Jezreel Dave Leybag for Dr. Leonardo Sagliocca (florencechoral.org)
-              </p>
-            </div>
+            <span className="hidden sm:inline-block text-xs font-medium text-neutral-400 uppercase tracking-widest pl-2">
+              Florence Choral • Web Development
+            </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Switch between Full Proposal and Standalone Contract */}
-            <div className="bg-white/10 p-0.5 rounded-full flex items-center text-xs">
-              <button
-                onClick={() => onSwitchMode('full-proposal')}
-                className={`px-3 py-1 rounded-full font-semibold transition-colors cursor-pointer ${
-                  mode === 'full-proposal'
-                    ? 'bg-[#F79223] text-[#0B0C0E]'
-                    : 'text-neutral-300 hover:text-white'
-                }`}
-              >
-                Full Proposal (12 Pages)
-              </button>
-              <button
-                onClick={() => onSwitchMode('contract-only')}
-                className={`px-3 py-1 rounded-full font-semibold transition-colors cursor-pointer ${
-                  mode === 'contract-only'
-                    ? 'bg-[#F79223] text-[#0B0C0E]'
-                    : 'text-neutral-300 hover:text-white'
-                }`}
-              >
-                Standalone Contract (2 Pages)
-              </button>
-            </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                setShowCover(false);
+                onSwitchMode('full-proposal');
+              }}
+              className="text-xs font-semibold uppercase tracking-wider text-neutral-400 hover:text-white transition-colors cursor-pointer px-3.5 py-1.5 rounded-full hover:bg-white/10"
+            >
+              Skip Cover →
+            </button>
+          </div>
+        </header>
+
+        {/* Center Main Stage Content */}
+        <div className="relative z-10 max-w-4xl my-auto py-12">
+          <div className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-4">
+            Florence Choral Partnership • 2026 Season
+          </div>
+
+          <h1 className="bp-heading-title text-4xl sm:text-6xl lg:text-7xl text-white leading-[1.08] mb-6">
+            High End Web Design &amp; <br />
+            Digital Partnership
+          </h1>
+
+          <h2 className="text-lg sm:text-2xl text-neutral-300 font-normal leading-relaxed mb-10 max-w-2xl">
+            Written by <strong className="text-white">Jezreel Dave Leybag</strong> for{' '}
+            <strong className="text-white">Dr. Leonardo Sagliocca</strong> (Founder &amp; Artistic Director, Florence Choral)
+          </h2>
+
+          <div className="flex flex-wrap items-center gap-5">
+            <button
+              onClick={() => {
+                setShowCover(false);
+                onSwitchMode('full-proposal');
+              }}
+              className="px-10 py-5 rounded-full bg-white hover:bg-neutral-200 text-[#0A0A0A] font-bold text-base transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-3 group"
+            >
+              <span>Start Reading Proposal</span>
+              <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+            </button>
 
             <button
               onClick={onOpenPrototype}
-              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+              className="px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all border border-white/15 cursor-pointer flex items-center gap-2"
             >
-              <span>Open Live Website Prototype</span>
+              <span>Live Website Prototype</span>
               <span>↗</span>
             </button>
 
             <button
               onClick={onOpenDashboard}
-              className="px-3 py-1.5 rounded-full bg-[#136597] hover:bg-[#1778b3] text-white text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+              className="px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all border border-white/15 cursor-pointer flex items-center gap-2"
             >
-              <span>Preview Admin Dashboard</span>
+              <span>Admin Dashboard</span>
               <span>↗</span>
             </button>
-
-            <button
-              onClick={() => window.print()}
-              className="px-3 py-1.5 rounded-full bg-white text-[#0B0C0E] hover:bg-neutral-200 text-xs font-bold transition-colors cursor-pointer"
-            >
-              Print / Save PDF
-            </button>
-
-            <a
-              href={getAcceptMailto()}
-              className="px-3.5 py-1.5 rounded-full bg-[#F79223] hover:bg-[#ffa53e] text-[#0B0C0E] text-xs font-bold transition-colors"
-            >
-              Accept Proposal ✉
-            </a>
           </div>
         </div>
+
+        {/* Bottom Footer Strip */}
+        <footer className="relative z-10 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs text-neutral-400">
+          <div>
+            <strong>florencechoral.org</strong> • 5 Renaissance Master Festivals, Admin Portal &amp; Digital Media
+          </div>
+          <div>
+            Confidential &amp; Proprietary • Valid until 2026-12-31
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // VIEW 2: CONTINUOUS PROPOSAL (Exact Better Proposals Alternating Layout)
+  // =========================================================================
+  return (
+    <div className="min-h-screen bg-[#0A0A0A] text-[#333333] bp-font flex flex-col md:flex-row relative">
+      {/* Mobile Top Header */}
+      <div className="md:hidden sticky top-0 z-50 bg-[#0A0A0A] border-b border-white/10 p-4 flex items-center justify-between text-white">
+        <div className="flex items-center gap-2.5">
+          <img
+            src="/branding/on-black_1.png"
+            alt="Jezreel Dave Leybag"
+            className="h-7 w-auto object-contain"
+          />
+          <span className="text-xs text-neutral-400 truncate max-w-[150px]">
+            Florence Choral
+          </span>
+        </div>
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="px-3 py-1.5 rounded bg-white/10 text-xs font-bold cursor-pointer"
+        >
+          {mobileMenuOpen ? 'Close ✕' : 'Menu ☰'}
+        </button>
       </div>
 
       {/* =====================================================================
-          MAIN DOCUMENT STACK (816x1056 US LETTER PAGES)
+          LEFT STICKY SIDEBAR NAVIGATION (Exact Better Proposals Grey Pill Active)
           ===================================================================== */}
-      <div className="tpl-print-wrapper py-8 px-3 flex flex-col gap-8 items-center">
-        {mode === 'full-proposal' && (
-          <>
-            {/* ===============================================================
-                PAGE 01: DARK COVER PAGE (MEASURED TEMPLATE PAGE 1)
-                =============================================================== */}
-            <section className="tpl-page tpl-page-cover">
-              {/* Top Metadata Bar */}
-              <div className="px-4 pb-3.5 border-b border-white/80 flex items-end justify-between text-[12px] text-white/90">
-                <div>
-                  <div className="text-white/70">Prepared on:</div>
-                  <div className="font-semibold mt-0.5">2026-11-15</div>
-                </div>
-                <div className="flex items-center gap-2 bg-white/10 border border-[#F79223]/50 px-3.5 py-1 rounded-full">
-                  <img
-                    src="/proposal-assets/jezreel_logo_mark.png"
-                    alt="Jezreel Dave"
-                    className="h-4 w-auto"
+      <aside
+        className={`${
+          mobileMenuOpen ? 'block fixed inset-0 z-50 bg-[#0A0A0A]' : 'hidden'
+        } md:flex flex-col w-full md:w-[240px] lg:w-[260px] shrink-0 sticky md:top-0 md:h-screen bg-[#0A0A0A] border-r border-white/10 p-6 z-40 overflow-y-auto custom-scrollbar justify-between text-left`}
+      >
+        <div>
+          {/* Logo / Brand Header */}
+          <div className="mb-8">
+            <img
+              src="/branding/on-black_1.png"
+              alt="Jezreel Dave Leybag"
+              className="h-10 w-auto object-contain"
+            />
+            <div className="mt-3 text-[11px] text-neutral-400 font-medium">
+              Florence Choral • Web Development
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (onOpenCover) onOpenCover();
+                else setShowCover(true);
+              }}
+              className="mt-3 text-[11px] text-neutral-400 hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
+            >
+              <span>←</span>
+              <span>View Cover Page</span>
+            </button>
+          </div>
+
+          {/* Mode Switcher */}
+          <div className="flex items-center gap-1 p-1 bg-white/5 rounded-lg border border-white/10 mb-6">
+            <button
+              type="button"
+              onClick={() => onSwitchMode('full-proposal')}
+              className={`flex-1 py-1.5 px-2 rounded text-[11px] font-medium transition-all cursor-pointer ${
+                mode === 'full-proposal'
+                  ? 'bg-[#333333] text-white shadow'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Proposal
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onSwitchMode('contract-only');
+                scrollToSection('terms-and-conditions');
+              }}
+              className={`flex-1 py-1.5 px-2 rounded text-[11px] font-medium transition-all cursor-pointer ${
+                mode === 'contract-only'
+                  ? 'bg-[#333333] text-white shadow'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Contract
+            </button>
+          </div>
+
+          {/* Table of Contents Navigation Links */}
+          <nav className="space-y-1">
+            {SECTIONS.map((sec) => {
+              const isActive = activeSection === sec.id;
+              return (
+                <button
+                  key={sec.id}
+                  onClick={() => scrollToSection(sec.id)}
+                  className={`w-full text-left py-2 px-3 rounded-md text-sm transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-[#333333] text-white font-medium'
+                      : 'text-[#888888] hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <span className="truncate">{sec.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Sidebar Footer Shortcuts */}
+        <div className="pt-6 border-t border-white/10 space-y-2 text-xs">
+          <button
+            onClick={onOpenPrototype}
+            className="w-full text-left py-1.5 text-neutral-400 hover:text-white transition-colors cursor-pointer flex items-center justify-between"
+          >
+            <span>Live Prototype</span>
+            <span>↗</span>
+          </button>
+          <button
+            onClick={onOpenDashboard}
+            className="w-full text-left py-1.5 text-neutral-400 hover:text-white transition-colors cursor-pointer flex items-center justify-between"
+          >
+            <span>Admin Dashboard</span>
+            <span>↗</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* =====================================================================
+          MAIN CONTINUOUS CONTENT (Exact Better Proposals Alternating Sections)
+          ===================================================================== */}
+      <main className="flex-1 w-full bg-[#0A0A0A] overflow-x-hidden">
+        {/* ===================================================================
+            SECTION 1: INTRODUCTION
+            =================================================================== */}
+        <section id="introduction" className="scroll-mt-0">
+          {/* Hero Header Block (Dark #0A0A0A) */}
+          <div className="bg-[#0A0A0A] text-white pt-16 pb-12 px-8 sm:px-14 lg:px-20">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 max-w-5xl">
+              <div>
+                <h1 className="bp-heading-title text-4xl sm:text-6xl text-white font-bold tracking-tight mb-3">
+                  Redefining Web Design
+                </h1>
+                <h2 className="text-2xl sm:text-3xl text-neutral-300 font-normal">
+                  Bespoke, Bold, Boundless
+                </h2>
+              </div>
+
+              {/* Rotating Circular Text Badge */}
+              <div className="shrink-0 relative w-28 h-28 hidden sm:flex items-center justify-center">
+                <svg
+                  className="w-full h-full animate-spin-slow"
+                  viewBox="0 0 100 100"
+                >
+                  <path
+                    id="circlePathHero"
+                    d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0"
+                    fill="none"
                   />
-                  <span className="tpl-font-heading text-[10.5px] font-bold tracking-[0.08em] uppercase">
-                    <span className="text-[#F79223]">J</span>EZREEL DAVE • DIGITAL &amp; MEDIA
-                    PARTNER
-                  </span>
-                </div>
-                <div className="text-right">
-                  <div className="text-white/70">Valid until:</div>
-                  <div className="font-semibold mt-0.5">2026-12-31</div>
-                </div>
+                  <text className="text-[9px] uppercase tracking-[0.22em] fill-neutral-400 font-medium">
+                    <textPath href="#circlePathHero" xlinkHref="#circlePathHero">
+                      • Florence Choral • Web Development 
+                    </textPath>
+                  </text>
+                </svg>
+                <div className="absolute w-2 h-2 rounded-full bg-white" />
               </div>
+            </div>
 
-              {/* Hero Rounded Gradient Card (Measured 616px height, radius 32px) */}
+            {/* 3-Image Photographic Strip (Exact Screenshot da78b88e style) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-0 mt-12 overflow-hidden rounded-lg border border-white/10 max-w-5xl">
               <div
-                className="rounded-[32px] p-9 flex flex-col justify-between text-[#0B0C0E]"
-                style={{
-                  height: '616px',
-                  background:
-                    'radial-gradient(circle at 12% 88%, #F79223 0%, #FFAE45 34%, rgba(247, 146, 35, 0.32) 62%, transparent 84%), linear-gradient(145deg, #E5E5E3 0%, #DEDEDC 58%, #F5C384 100%)',
-                }}
+                onClick={() =>
+                  setActiveMediaModal({
+                    type: 'image',
+                    src: '/proposal-assets/01_header_hero_dropdown_16x9.png',
+                    title: 'Header Hero & Festivals Dropdown',
+                  })
+                }
+                className="h-64 sm:h-72 overflow-hidden cursor-zoom-in group relative"
               >
-                {/* Window Chrome Controls */}
-                <div className="pb-5 border-b-[1.5px] border-[#0B0C0E] flex items-center justify-end gap-1.5">
-                  <span className="w-[26px] h-[26px] rounded-full bg-[#F79223] border-[1.5px] border-[#0B0C0E]" />
-                  <span className="w-[26px] h-[26px] rounded-full bg-transparent border-[1.5px] border-[#0B0C0E]" />
-                  <span className="w-[82px] h-[26px] rounded-full bg-transparent border-[1.5px] border-[#0B0C0E]" />
-                </div>
-
-                {/* Display Title */}
-                <div className="my-auto py-4">
-                  <div className="inline-block tpl-font-heading text-[11px] font-bold uppercase tracking-[0.12em] bg-white/70 border border-[#0B0C0E] px-3.5 py-1 rounded-full mb-4">
-                    florencechoral.org • Website, Dashboard, Marketing &amp; Unlimited Media
-                  </div>
-                  <h1 className="tpl-font-heading text-[58px] font-normal uppercase leading-[1.05] tracking-[0.01em] text-[#0B0C0E]">
-                    WEBSITE
-                    <br />
-                    DEVELOPMENT
-                    <br />
-                    PROPOSAL
-                    <svg
-                      className="inline-block w-[54px] h-[54px] ml-3 -translate-y-1.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M18 11V6C18 4.89543 17.1046 4 16 4C14.8954 4 14 4.89543 14 6V10M14 10V4.5C14 3.39543 13.1046 2.5 12 2.5C10.8954 2.5 10 3.39543 10 4.5V10M10 10V5.5C10 4.39543 9.10457 3.5 8 3.5C6.89543 3.5 6 4.39543 6 5.5V14L4.46482 12.1578C3.7322 11.2786 2.39913 11.2248 1.59792 12.04C0.903497 12.7466 0.874903 13.8712 1.53266 14.6122L6.3519 20.0413C7.47926 21.3113 9.09614 22 10.7935 22H14.5C17.8137 22 20.5 19.3137 20.5 16V11C20.5 9.89543 19.6046 9 18.5 9C17.3954 9 18 9.89543 18 11Z"
-                        stroke="#0B0C0E"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <br />
-                    &amp; PARTNERSHIP
-                  </h1>
-                </div>
-
-                {/* Bottom Subtitle Strip inside Hero Card */}
-                <div className="pt-3 border-t border-black/20 flex items-center justify-between text-[12px] font-semibold">
-                  <span>Custom Platform &amp; Dashboard</span>
-                  <span>•</span>
-                  <span>Global Choir Email Marketing</span>
-                  <span>•</span>
-                  <span>Unlimited Design &amp; Video</span>
-                </div>
+                <img
+                  src="/proposal-assets/01_header_hero_dropdown_16x9.png"
+                  alt="Florence Choral Header"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
-
-              {/* Bottom Split Card (Measured 244px height, radius 32px) */}
               <div
-                className="rounded-[32px] px-9 py-7 grid grid-cols-[1fr_1.5px_1fr] gap-8 items-stretch text-[#0B0C0E]"
-                style={{
-                  height: '244px',
-                  background:
-                    'radial-gradient(circle at 88% 84%, #F79223 0%, #FFAE45 32%, rgba(247, 146, 35, 0.25) 62%, transparent 85%), linear-gradient(135deg, #E5E5E3 0%, #DEDEDC 62%, #F3B973 100%)',
-                }}
+                onClick={() =>
+                  setActiveMediaModal({
+                    type: 'image',
+                    src: '/proposal-assets/02a_festivals_grid_top_16x9.png',
+                    title: '5 Renaissance Festivals Directory',
+                  })
+                }
+                className="h-64 sm:h-72 overflow-hidden cursor-zoom-in group relative"
               >
-                <div className="flex flex-col justify-between">
-                  <div className="tpl-font-heading text-[18px] font-medium uppercase tracking-[0.01em]">
-                    PREPARED BY:
-                  </div>
-                  <div className="my-auto">
-                    <img
-                      src="/proposal-assets/jezreel_logo_tagline.png"
-                      alt="Jezreel Dave"
-                      className="h-11 w-auto object-contain"
-                    />
-                  </div>
-                  <div className="text-[13px] leading-snug">
-                    <div className="font-bold text-[#0B0C0E]">Jezreel Dave Leybag</div>
-                    <div>Jezreel Dave Digital &amp; Media</div>
-                  </div>
-                </div>
-
-                <div className="bg-[#0B0C0E] w-[1.5px] h-full" />
-
-                <div className="flex flex-col justify-between">
-                  <div className="tpl-font-heading text-[18px] font-medium uppercase tracking-[0.01em]">
-                    PREPARED FOR:
-                  </div>
-                  <div className="my-auto flex items-center gap-3">
-                    <img
-                      src="/proposal-assets/Florence_choral_quadrato.jpg"
-                      alt="Florence Choral"
-                      className="h-11 w-11 rounded-xl object-cover border border-black/20"
-                    />
-                    <span className="tpl-font-heading font-bold text-[15px] uppercase tracking-tight">
-                      Florence Choral
-                    </span>
-                  </div>
-                  <div className="text-[13px] leading-snug">
-                    <div className="font-bold text-[#0B0C0E]">Dr. Leonardo Sagliocca</div>
-                    <div>Founder &amp; Artistic Director • florencechoral.org</div>
-                  </div>
-                </div>
+                <img
+                  src="/proposal-assets/02a_festivals_grid_top_16x9.png"
+                  alt="5 Renaissance Festivals"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
-            </section>
+              <div
+                onClick={() =>
+                  setActiveMediaModal({
+                    type: 'image',
+                    src: '/proposal-assets/05_historic_venues_16x9.png',
+                    title: 'Historic Venues of Florence',
+                  })
+                }
+                className="h-64 sm:h-72 overflow-hidden cursor-zoom-in group relative"
+              >
+                <img
+                  src="/proposal-assets/05_historic_venues_16x9.png"
+                  alt="Historic Venues"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            </div>
+          </div>
 
-            {/* ===============================================================
-                PAGE 02: INTRODUCTION (MEASURED TEMPLATE PAGE 2)
-                =============================================================== */}
-            <section className="tpl-page tpl-ambient-bottom">
-              <div>
-                {renderTemplateHeader(
-                  'INTRODUCTION',
-                  '01 / STORYLINE',
-                  <svg
-                    className="w-4 h-4 stroke-current"
-                    fill="none"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                )}
-
-                <p className="text-center text-[22px] leading-[1.42] text-[#0B0C0E] max-w-[680px] mx-auto mt-6 mb-8">
-                  Thank you for the opportunity to expand our collaboration on{' '}
-                  <strong className="font-semibold underline decoration-[#F79223] decoration-2">
-                    Florence Choral
-                  </strong>
-                  . After working together on your festival posters, 31-page booklets, and 4-day
-                  video reportages, I have built a complete working prototype for{' '}
-                  <strong className="font-semibold">florencechoral.org</strong> to permanently solve
-                  the broken links on your old website.
-                </p>
-
-                <div className="tpl-frosted-card space-y-4 text-[14.2px] leading-[1.6] text-[#141416]">
+          {/* White Introduction Letter Block (Exact Better Proposals Block) */}
+          <div className="bg-white text-[#333333] py-16 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl">
+              <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D] mb-8">
+                introduction
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+                <div className="md:col-span-8 space-y-4 bp-body-text text-[#333333]">
+                  <p>Dear Dr. Leonardo Sagliocca,</p>
                   <p>
-                    At <strong>Jezreel Dave Digital &amp; Media</strong>, I hold one goal above all
-                    others: making sure your 5 annual Renaissance festivals look world-class and
-                    consistently attract visiting choirs from around the globe. Because I am also a
-                    trained choral singer and choirmaster, I understand the exact details conductors
-                    look for—from competition categories and Vytautas Miškinis scores to Bel Canto
-                    workshops and historic Florentine basilicas.
+                    Thank you for our continued collaboration since 2022 and choosing us to design and engineer a world-class digital ecosystem for Florence Choral's prestigious international festivals.
                   </p>
-
                   <p>
-                    Right now, international conductors visiting <strong>florencechoral.com</strong>{' '}
-                    encounter <em>403 Forbidden</em> errors on inner pages and have no direct way to
-                    compare all 5 festivals or apply online. Furthermore, running 5 international
-                    festivals solo leaves little time to design newsletters or email hundreds of
-                    choral groups worldwide every month.
+                    As we discussed during our review, our goal is to deliver an undisputed, high-end platform that captures the Renaissance grandeur of Florence while providing an automated, effortless conductor application experience.
                   </p>
-
                   <p>
-                    In this proposal, you will see our past work together, a 16:9 desktop
-                    walkthrough of the new <strong>florencechoral.org</strong> website and{' '}
-                    <strong>Admin Dashboard</strong>, and a transparent comparison showing how a
-                    monthly partnership saves you thousands of Euros compared to paying per project.
+                    Below you will find the complete scope of deliverables, timescales, social proof from past projects, investment comparison, terms, and immediate electronic agreement.
                   </p>
-
-                  <div className="pt-4 text-center">
-                    <div className="text-[19px] font-normal text-[#0B0C0E] mb-4">
-                      Thanks again for your trust and artistic partnership!
+                </div>
+                <div className="md:col-span-4 bg-[#F8F9FA] p-6 rounded-lg border border-[#EBEBEB]">
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#777777] mb-2">
+                    Client &amp; Partner
+                  </div>
+                  <div className="text-sm font-bold text-black mb-1">
+                    Dr. Leonardo Sagliocca
+                  </div>
+                  <div className="text-xs text-neutral-600 mb-4">
+                    Founder &amp; Artistic Director, Florence Choral
+                  </div>
+                  <div className="border-t border-neutral-200 pt-3">
+                    <div className="text-xs font-bold text-black">
+                      Jezreel Dave Leybag
                     </div>
-                    <img
-                      src="/proposal-assets/jezreel_logo_tagline.png"
-                      alt="Jezreel Dave"
-                      className="h-9 w-auto mx-auto mb-1"
-                    />
-                    <div className="text-[12.5px] font-semibold text-[#0B0C0E]">
-                      Jezreel Dave Leybag • Jezreel Dave Digital &amp; Media
+                    <div className="text-xs text-neutral-600">
+                      Digital &amp; Media Partner (Since 2022)
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
 
-              {renderPageFooter(2, 12, 'Introduction & Partnership Overview')}
-            </section>
+        {/* ===================================================================
+            SECTION 2: WHAT WILL WE DO
+            =================================================================== */}
+        <section id="what-will-we-do" className="scroll-mt-0">
+          {/* Overview & 2 Columns (Dark Block - Exact Screenshot 83e79a6a style) */}
+          <div className="bg-[#0A0A0A] text-white py-16 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl">
+              <div className="text-xs text-neutral-400 uppercase tracking-widest mb-2 font-medium">
+                overview
+              </div>
+              <h2 className="bp-heading-title text-3xl sm:text-5xl text-white mb-14">
+                High-End Brand Strengthening Design
+              </h2>
 
-            {/* ===============================================================
-                PAGE 03: EXECUTIVE SUMMARY & PAST WORK (MEASURED TEMPLATE PAGE 3)
-                =============================================================== */}
-            <section className="tpl-page">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                {/* Homepage Column */}
+                <div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-white mb-6">
+                    homepage
+                  </h3>
+                  <div className="space-y-4 bp-body-text text-neutral-300">
+                    <p>
+                      <strong className="text-white">Your homepage will be all about style.</strong>
+                    </p>
+                    <p>
+                      Contemporary, classical, yet with an industrial vibe to emphasize that sometimes, less is more.
+                    </p>
+                    <p>
+                      We will highlight the Renaissance influence in Florence Choral's festivals with a clean white background, a minimal look with rich photography.
+                    </p>
+                    <p>
+                      Your homepage and the landing page are what makes it or breaks it in the website world. That is what visiting conductors establish their opinion on, so we will make sure they will not just visit the website.
+                    </p>
+                    <p>
+                      <strong className="text-white">They will experience it.</strong>
+                    </p>
+                  </div>
+                </div>
+
+                {/* About Us Column */}
+                <div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-white mb-6">
+                    about us
+                  </h3>
+                  <div className="space-y-4 bp-body-text text-neutral-300">
+                    <p>
+                      <strong className="text-white">
+                        A good written "About Us" or "Our story" page is essential in establishing your brand presence.
+                      </strong>
+                    </p>
+                    <p>
+                      It will tell the story of the artistic director, followed by the international choral competition traditions. We will include animations and audio highlights for a final touch to the progression of the narrative.
+                    </p>
+                    <p>
+                      <strong className="text-white">
+                        When people buy luxury, they are not just buying a product. They want to buy a story.
+                      </strong>
+                    </p>
+                    <p>
+                      For that reason, our goal is to add a message to your "About Us" page that will speak to the visitors, explaining why they should participate in Florence Choral festivals.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* White Block: news & products */}
+          <div className="bg-white text-[#333333] py-16 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D] mb-6">
+                    news &amp; rulebooks
+                  </h3>
+                  <div className="space-y-4 bp-body-text text-[#333333]">
+                    <p>
+                      <strong>Choral directors need immediate access to festival guidelines.</strong>
+                    </p>
+                    <p>
+                      Clear breakdown of Leonardo da Vinci, Verrocchio, Michelangelo, Lorenzo de' Medici, and Botticelli categories, compulsory pieces, scoring criteria, and awards.
+                    </p>
+                    <p>
+                      All presented in interactive mobile-friendly drawers so conductors find their answers in seconds without dealing with broken links.
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D] mb-6">
+                    products &amp; publications
+                  </h3>
+                  <div className="space-y-4 bp-body-text text-[#333333]">
+                    <p>
+                      <strong>Unlimited festival poster campaigns and 31-page competition booklets.</strong>
+                    </p>
+                    <p>
+                      Certified print-ready PDF masters (A2, A3, 70×100) + full competition programme booklets, diplomas, and jury scoring sheets.
+                    </p>
+                    <p>
+                      Everything produced with precision typographic craftsmanship under one unified flat monthly partnership.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Dark Block: lifestyle & contact forms */}
+          <div className="bg-[#0A0A0A] text-white py-16 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-white mb-6">
+                    lifestyle &amp; video
+                  </h3>
+                  <div className="space-y-4 bp-body-text text-neutral-300">
+                    <p>
+                      <strong className="text-white">4K documentary festival reportages and social reels.</strong>
+                    </p>
+                    <p>
+                      5–7 minute documentary recaps capturing choir performances in Santa Croce and Salone dei Cinquecento, with professional multitrack choral audio synchronization.
+                    </p>
+                    <p>
+                      Creates lasting memories that turn first-time attendees into lifetime advocates.
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-white mb-6">
+                    contact forms &amp; cta
+                  </h3>
+                  <div className="space-y-4 bp-body-text text-neutral-300">
+                    <p>
+                      <strong className="text-white">Frictionless choir registration and inquiry management.</strong>
+                    </p>
+                    <p>
+                      High-converting intake forms that capture conductor name, choir size, repertoire, and dates, with automated email confirmation and PDF brochure delivery.
+                    </p>
+                    <p>
+                      Syncs directly to your Client Dashboard in real-time.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===================================================================
+            SECTION 3: PROCESS AND TIMESCALES (Exact Screenshot 2d4cf275 style)
+            =================================================================== */}
+        <section id="process-and-timescales" className="scroll-mt-0">
+          <div className="bg-white text-[#333333] py-16 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl space-y-12">
+              {/* Step 1 */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                <div className="md:col-span-5">
+                  <div className="text-xs text-[#777777] uppercase tracking-wider mb-1">
+                    step 1
+                  </div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D]">
+                    initial design interview
+                  </h3>
+                </div>
+                <div className="md:col-span-7 space-y-3 bp-body-text text-[#333333]">
+                  <p>
+                    To start a design project as big as this one, we will need an initial design interview. The goal of that meeting will be to get an inside look into your brand, vision, products, and goals.
+                  </p>
+                  <p>
+                    The saying, "you get what you pay for," holds for websites, which is why we will get to the bottom of who you are and what you stand for before we even attempt to design your website.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start border-t border-neutral-100 pt-10">
+                <div className="md:col-span-5">
+                  <div className="text-xs text-[#777777] uppercase tracking-wider mb-1">
+                    step 2
+                  </div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D]">
+                    design presentation
+                  </h3>
+                </div>
+                <div className="md:col-span-7 space-y-3 bp-body-text text-[#333333]">
+                  <p>
+                    We will create three new design concepts. Naturally, there will be a common theme, but we will try to think outside of the box and develop a few different solutions.
+                  </p>
+                  <p>
+                    The brainstorming and comparison part is often where the best ideas come from. We will go through these options and decide which direction to take and which adjustments to make.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start border-t border-neutral-100 pt-10">
+                <div className="md:col-span-5">
+                  <div className="text-xs text-[#777777] uppercase tracking-wider mb-1">
+                    step 3
+                  </div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D]">
+                    high-quality website content
+                  </h3>
+                </div>
+                <div className="md:col-span-7 space-y-3 bp-body-text text-[#333333]">
+                  <p>
+                    High-end website designers know that it is important to keep up with trends in digital media. Apart from that, your site needs to convey the authentic prestige of singing in Florence's sacred basilicas.
+                  </p>
+                  <p>
+                    We prepare all typography, festival rulebook structures, category tables, and media assets in advance so visiting conductors experience zero friction.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start border-t border-neutral-100 pt-10">
+                <div className="md:col-span-5">
+                  <div className="text-xs text-[#777777] uppercase tracking-wider mb-1">
+                    step 4
+                  </div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D]">
+                    website build
+                  </h3>
+                </div>
+                <div className="md:col-span-7 space-y-3 bp-body-text text-[#333333]">
+                  <p>
+                    Building a website is more than just stacking templates. We construct a bespoke, high-performance platform on clean modern code with zero server bloat.
+                  </p>
+                  <p>
+                    We thoroughly test on all desktop browsers, iPads, and mobile devices so conductors across Europe, the Americas, and Asia can apply seamlessly.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 5 */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start border-t border-neutral-100 pt-10">
+                <div className="md:col-span-5">
+                  <div className="text-xs text-[#777777] uppercase tracking-wider mb-1">
+                    step 5
+                  </div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D]">
+                    launch
+                  </h3>
+                </div>
+                <div className="md:col-span-7 space-y-3 bp-body-text text-[#333333]">
+                  <p>
+                    We point your official florencechoral.org domain to the new platform with SSL encryption and global CDN distribution.
+                  </p>
+                  <p>
+                    You receive administrative dashboard access immediately to track all incoming inquiries, while ongoing poster, booklet, and video production begins.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Timescales Dark Block */}
+          <div className="bg-[#0A0A0A] text-white py-14 px-8 sm:px-14 lg:px-20 border-t border-white/10">
+            <div className="max-w-5xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div>
-                {renderTemplateHeader(
-                  'EXECUTIVE SUMMARY',
-                  '02 / TRACK RECORD',
-                  <svg
-                    className="w-4 h-4 stroke-current"
-                    fill="none"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                  >
-                    <rect x="3" y="3" width="7" height="7" rx="1" />
-                    <rect x="14" y="3" width="7" height="7" rx="1" />
-                    <rect x="3" y="14" width="7" height="7" rx="1" />
-                    <rect x="14" y="14" width="7" height="7" rx="1" />
-                  </svg>
-                )}
-
-                <p className="text-center text-[17px] leading-[1.38] text-[#0B0C0E] max-w-[690px] mx-auto mb-2">
-                  <strong>Florence Choral</strong> requires a unified digital platform,{' '}
-                  <strong>Admin &amp; Inquiry Dashboard</strong>, and year-round{' '}
-                  <strong>international choir email marketing</strong> to grow choir registrations
-                  across all 5 annual festivals.
-                </p>
-
-                <p className="text-center text-[12px] leading-[1.45] text-neutral-700 max-w-[650px] mx-auto mb-3">
-                  Having already produced your official festival posters, 31-page programme
-                  booklets, jury cards, and 4-day video reportages since 2022, I already know your
-                  brand identity and quality standards inside-out.
-                </p>
-
-                <h3 className="text-center text-[16px] font-normal text-[#0B0C0E] mb-2.5">
-                  Our past work together for Florence Choral includes:
+                <div className="text-xs text-neutral-400 uppercase tracking-widest mb-1 font-medium">
+                  Timescales
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                  Live Deployment Ready Within 48 to 72 Hours
                 </h3>
+                <p className="bp-body-text text-neutral-400 max-w-2xl">
+                  Because the full functional prototype and Admin Dashboard have already been engineered, launch is instantaneous upon agreement.
+                </p>
+              </div>
+              <button
+                onClick={onOpenPrototype}
+                className="shrink-0 px-6 py-3 rounded-full bg-white text-black font-bold text-xs hover:bg-neutral-200 transition-colors cursor-pointer"
+              >
+                Test Prototype ↗
+              </button>
+            </div>
+          </div>
+        </section>
 
-                {/* 3 Rows of Past Work (Template Page 3 Exact 5-col / 7-col Grid) */}
-                <div className="flex flex-col gap-2.5">
-                  {PAST_FLORENCE_WORK_FEATURED.map((item, idx) => (
+        {/* ===================================================================
+            SECTION 4: CASE STUDY (Exact Screenshot 230759bb style)
+            =================================================================== */}
+        <section id="case-study" className="scroll-mt-0">
+          {/* Dark Header */}
+          <div className="bg-[#0A0A0A] text-white pt-16 pb-8 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl">
+              <h2 className="bp-heading-title text-3xl sm:text-5xl text-white mb-4">
+                Brands That Put Their Trust in Us
+              </h2>
+              <p className="bp-body-text text-neutral-400 max-w-2xl">
+                Having collaborated with Florence Choral on festival posters, 31-page booklets, and 4-day video reportages since 2022:
+              </p>
+            </div>
+          </div>
+
+          {/* Photographic Strip Above White Block */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 bg-[#0A0A0A] overflow-hidden">
+            <div
+              onClick={() =>
+                setActiveMediaModal({
+                  type: 'image',
+                  src: '/proposal-assets/03_festival_programme_modal_16x9.png',
+                  title: 'Festival Programme Modal',
+                })
+              }
+              className="h-48 overflow-hidden cursor-zoom-in group"
+            >
+              <img
+                src="/proposal-assets/03_festival_programme_modal_16x9.png"
+                alt="Modal"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+              />
+            </div>
+            <div
+              onClick={() =>
+                setActiveMediaModal({
+                  type: 'image',
+                  src: '/proposal-assets/04a_our_difference_cards_16x9.png',
+                  title: 'Festival Differences & Features',
+                })
+              }
+              className="h-48 overflow-hidden cursor-zoom-in group"
+            >
+              <img
+                src="/proposal-assets/04a_our_difference_cards_16x9.png"
+                alt="Cards"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+              />
+            </div>
+            <div
+              onClick={() =>
+                setActiveMediaModal({
+                  type: 'image',
+                  src: '/proposal-assets/02b_festivals_grid_bottom_16x9.png',
+                  title: 'Festivals Directory',
+                })
+              }
+              className="h-48 overflow-hidden cursor-zoom-in group"
+            >
+              <img
+                src="/proposal-assets/02b_festivals_grid_bottom_16x9.png"
+                alt="Festivals"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+              />
+            </div>
+          </div>
+
+          {/* White Block: the solution / the result (Exact Screenshot 230759bb) */}
+          <div className="bg-white text-[#333333] py-16 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D] mb-6">
+                    the solution
+                  </h3>
+                  <div className="space-y-4 bp-body-text text-[#333333]">
+                    <p>
+                      We wasted no time identifying what kind of content Dr. Leonardo Sagliocca wanted on florencechoral.org and what kind of angle he wanted to take.
+                    </p>
+                    <p>
+                      It was clear from the beginning that he wanted Florence Choral to be a digital landmark for visiting international choirs. We focused on design and content with a lot of white space, prestigious Renaissance typography, and ever-present branding and logo.
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D] mb-6">
+                    the result
+                  </h3>
+                  <div className="space-y-4 bp-body-text text-[#333333]">
+                    <p>
+                      After just a few weeks, Florence Choral's new website was up and running. The artistic director's goals are being met, the site is providing the conversions and exposure needed, and it can handle both current and future festival needs.
+                    </p>
+                    <p>
+                      <strong>In short, Florence Choral's high-end website is doing its job.</strong>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Dark Commitment Block (Replacing Testimonial with Jezreel's Personal Commitment) */}
+          <div className="bg-[#0A0A0A] text-white py-16 px-8 sm:px-14 lg:px-20 border-t border-white/10">
+            <div className="max-w-5xl">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center mb-12">
+                <div className="md:col-span-3 flex justify-start md:justify-center">
+                  <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center p-3 shadow-lg">
+                    <img
+                      src="/branding/logo-dark-mark.png"
+                      alt="Jezreel Dave Leybag"
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                </div>
+                <div className="md:col-span-9">
+                  <div className="text-xs text-neutral-400 uppercase tracking-widest mb-3 font-semibold">
+                    My Personal Commitment
+                  </div>
+                  <blockquote className="text-base sm:text-xl text-neutral-200 font-normal leading-relaxed italic mb-4">
+                    “My commitment to Florence Choral is simple: to treat our collaboration not as one-off work, but as an enduring partnership. Every deliverable will be executed with the exact precision, reliability, and artistic dignity that your international festivals deserve.”
+                  </blockquote>
+                  <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+                    — Jezreel Dave Leybag • Digital &amp; Media Partner
+                  </div>
+                </div>
+              </div>
+
+              {/* Bento Style Design (Matching Image 2 Reference) */}
+              <div className="border-t border-white/10 pt-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                  {BENTO_PROJECTS.map((item) => (
                     <div
                       key={item.id}
-                      className="tpl-grid-12 bg-white/45 rounded-[20px] p-3 border border-black/10"
+                      onClick={() =>
+                        setActiveMediaModal({
+                          type: item.type,
+                          src: item.fullSrc,
+                          title: `${item.year} • ${item.title}`,
+                        })
+                      }
+                      className={`${item.colSpan} relative rounded-3xl overflow-hidden group cursor-pointer border border-white/10 shadow-lg h-[260px] sm:h-[300px] transition-all duration-300 hover:shadow-2xl hover:border-white/30`}
                     >
-                      <div className="col-span-5 pr-2">
-                        <div className="inline-block text-[9px] font-bold uppercase tracking-wider bg-[#F79223]/25 border border-[#0B0C0E] px-2 py-0.5 rounded-full mb-1">
-                          Past Project 0{idx + 1} • {item.historicalRate}
-                        </div>
-                        <h4 className="tpl-font-heading text-[14px] font-bold text-[#0B0C0E] leading-snug">
-                          {item.title}
-                        </h4>
-                        <p className="text-[11px] text-neutral-700 mt-0.5 leading-snug">
-                          {item.subtitle}
-                        </p>
-                        <div className="mt-1.5 text-[10px] bg-white/80 border-l-[3px] border-[#F79223] px-2 py-1 rounded">
-                          <strong>Deliverables:</strong> {item.deliverables}
-                        </div>
-                      </div>
-                      <div className="col-span-7">{renderPastWorkPrototypeSlot(item, true)}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                      {/* Background Image / Asset */}
+                      <img
+                        src={item.previewImg}
+                        alt={item.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
 
-              {renderPageFooter(3, 12, 'Executive Summary & Past Collaboration History')}
-            </section>
+                      {/* Scrim Gradient for Contrast */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 group-hover:from-black/95 transition-colors" />
 
-            {/* ===============================================================
-                PAGE 04: PAST WORK ARCHIVE SLOTS (6-PROJECT TEMPLATE GALLERY)
-                =============================================================== */}
-            <section className="tpl-page">
-              <div>
-                {renderTemplateHeader(
-                  'PAST WORK ARCHIVE',
-                  '2022 – 2024',
-                  <svg
-                    className="w-4 h-4 stroke-current"
-                    fill="none"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                  >
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                  </svg>
-                )}
-
-                <p className="text-center text-[13.5px] leading-[1.4] text-neutral-800 max-w-[680px] mx-auto mb-3.5">
-                  Prototype showcase slots for our completed{' '}
-                  <strong>Florence Choral (2022–2024)</strong> posters, jury cards, 31-page booklet,
-                  and 4-day festival video reportages.{' '}
-                  <span className="no-print text-[#B45309] font-semibold">
-                    (Click any slot below to attach or preview project files.)
-                  </span>
-                </p>
-
-                <div className="grid grid-cols-2 gap-3">
-                  {PAST_WORK_GALLERY_SLOTS.map((slot) => (
-                    <div
-                      key={slot.id}
-                      className="bg-white/55 rounded-[18px] p-2.5 border border-black/10 flex flex-col justify-between"
-                    >
-                      {renderPastWorkPrototypeSlot(slot, true)}
-                      <div className="mt-2 px-1 flex items-start justify-between gap-2">
-                        <div>
-                          <h4 className="tpl-font-heading text-[12.5px] font-bold text-[#0B0C0E] leading-tight">
-                            {slot.title}
-                          </h4>
-                          <p className="text-[10.5px] text-neutral-600 mt-0.5">{slot.subtitle}</p>
-                        </div>
-                        <span className="shrink-0 text-[9px] font-bold bg-[#0B0C0E] text-[#F79223] px-2 py-0.5 rounded-full">
-                          {slot.historicalRate}
+                      {/* Bento Card Content (Year Pill + Project Name + Action Pill) */}
+                      <div className="relative z-10 h-full p-6 sm:p-7 flex flex-col justify-between items-start text-left">
+                        {/* Top: Year Tag Pill */}
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-white/90 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/25 shadow-sm">
+                          {item.year}
                         </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
-              {renderPageFooter(4, 12, 'Past Florence Choral Deliverables (2022–2024)')}
-            </section>
-
-            {/* ===============================================================
-                PAGE 05: SOLUTION OUTLINE & ADMIN DASHBOARD (TEMPLATE PAGE 4)
-                =============================================================== */}
-            <section className="tpl-page tpl-ambient-center">
-              <div>
-                {renderTemplateHeader(
-                  'SOLUTION OUTLINE',
-                  '03 / PLATFORM',
-                  <svg
-                    className="w-4 h-4 stroke-current"
-                    fill="none"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                )}
-
-                <p className="text-[13.8px] leading-[1.6] text-[#0B0C0E] mb-6">
-                  <strong>Jezreel Dave Digital &amp; Media</strong> has engineered{' '}
-                  <strong>florencechoral.org</strong> with a custom{' '}
-                  <strong>Admin &amp; Choir Inquiry Dashboard</strong>, managed cloud backend (
-                  <strong>$28/mo server cost included</strong>), and official domain setup (
-                  <strong>$10/yr included</strong>). This complete system allows you to do the
-                  following as soon as your website is launched:
-                </p>
-
-                {/* Central Frosted Card with Vertical Divider Lines (Exact Template Page 4 Pattern) */}
-                <div className="tpl-frosted-card py-10 px-10 text-center my-4">
-                  <div className="text-[22px] leading-[1.35] text-[#0B0C0E]">
-                    Easily update festival dates, 4-day programmes, and jury rosters via your{' '}
-                    <strong className="font-semibold">Admin Dashboard</strong>
-                  </div>
-
-                  <div className="w-[1.5px] h-[36px] bg-[#0B0C0E] mx-auto my-4" />
-
-                  <div className="text-[22px] leading-[1.35] text-[#0B0C0E]">
-                    Send monthly <strong className="font-semibold">email newsletters</strong> and
-                    proactive invitations to{' '}
-                    <strong className="font-semibold">choral groups around the world</strong>
-                  </div>
-
-                  <div className="w-[1.5px] h-[36px] bg-[#0B0C0E] mx-auto my-4" />
-
-                  <div className="text-[22px] leading-[1.35] text-[#0B0C0E]">
-                    Receive unlimited{' '}
-                    <strong className="font-semibold">
-                      posters, 31-page booklets, diplomas, and festival reportage videos
-                    </strong>{' '}
-                    year-round
-                  </div>
-
-                  {/* Interactive Demo Buttons (Web Only) */}
-                  <div className="no-print mt-7 pt-5 border-t border-black/10 flex flex-wrap items-center justify-center gap-3">
-                    <button
-                      onClick={onOpenPrototype}
-                      className="px-5 py-2.5 rounded-full bg-[#0B0C0E] text-white text-xs font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
-                    >
-                      Explore Live Website Prototype ↗
-                    </button>
-                    <button
-                      onClick={onOpenDashboard}
-                      className="px-5 py-2.5 rounded-full bg-[#F79223] text-[#0B0C0E] border border-[#0B0C0E] text-xs font-bold hover:bg-[#ffa742] transition-colors cursor-pointer"
-                    >
-                      Test Live Admin &amp; Choir Inquiry Dashboard ↗
-                    </button>
-                  </div>
-                </div>
-
-                <p className="text-center text-[18px] leading-[1.45] text-[#0B0C0E] max-w-[670px] mx-auto mt-7">
-                  Your site and database are hosted on modern cloud infrastructure with{' '}
-                  <strong>100% Client-Owned source code and admin keys</strong>—ensuring your
-                  website is fast, secure, and can never be locked away from you again.
-                </p>
-              </div>
-
-              {renderPageFooter(5, 12, 'Solution Outline, Admin Dashboard & Cloud Infrastructure')}
-            </section>
-
-            {/* ===============================================================
-                PAGE 06: PROTOTYPE WALKTHROUGH 1/2 (16:9 DESKTOP SCREENSHOTS)
-                =============================================================== */}
-            <section className="tpl-page">
-              <div>
-                {renderTemplateHeader(
-                  'PROTOTYPE WALKTHROUGH',
-                  '16:9 DESKTOP (1/2)',
-                  <svg
-                    className="w-4 h-4 stroke-current"
-                    fill="none"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                  >
-                    <rect x="2" y="3" width="20" height="14" rx="2" />
-                    <path d="M8 21h8M12 17v4" strokeLinecap="round" />
-                  </svg>
-                )}
-
-                <p className="text-[12.5px] text-neutral-700 mb-3.5">
-                  Captured in <strong>16:9 widescreen desktop resolution</strong>. Every section was
-                  designed using established <strong>UX/UI Design Laws</strong> so visiting choir
-                  directors can compare festivals and register effortlessly:
-                </p>
-
-                <div className="flex flex-col gap-3.5">
-                  {PROTOTYPE_SLIDES_PAGE_1.map((slide) => (
-                    <div
-                      key={slide.num}
-                      className="tpl-grid-12 bg-white/50 rounded-[20px] p-3 border border-black/10"
-                    >
-                      <div className="col-span-5 pr-2">
-                        <h3 className="tpl-font-heading text-[14.5px] font-bold text-[#0B0C0E] leading-snug">
-                          {slide.num}. {slide.title}
-                        </h3>
-                        <p className="text-[11px] text-neutral-700 mt-1 leading-snug">
-                          {slide.whatWeDid}
-                        </p>
-                        <div className="mt-2 bg-white border border-[#0B0C0E] border-l-4 border-l-[#F79223] rounded-xl p-2 text-[10.5px] leading-snug">
-                          <strong className="tpl-font-heading uppercase text-[9.5px] tracking-wider block text-[#0B0C0E] mb-0.5">
-                            {slide.designLawTitle}
-                          </strong>
-                          {slide.designLawBody}
-                        </div>
-                      </div>
-                      <div className="col-span-7">{renderBrowserMockup(slide.img, slide.title)}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {renderPageFooter(6, 12, '16:9 Desktop Prototype Walkthrough & UX Design Laws (Part 1)')}
-            </section>
-
-            {/* ===============================================================
-                PAGE 07: PROTOTYPE WALKTHROUGH 2/2 (16:9 DESKTOP SCREENSHOTS)
-                =============================================================== */}
-            <section className="tpl-page">
-              <div>
-                {renderTemplateHeader(
-                  'PROTOTYPE WALKTHROUGH',
-                  '16:9 DESKTOP (2/2)',
-                  <svg
-                    className="w-4 h-4 stroke-current"
-                    fill="none"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                  >
-                    <rect x="2" y="3" width="20" height="14" rx="2" />
-                    <path d="M8 21h8M12 17v4" strokeLinecap="round" />
-                  </svg>
-                )}
-
-                <div className="flex flex-col gap-2.5">
-                  {PROTOTYPE_SLIDES_PAGE_2.map((slide) => (
-                    <div
-                      key={slide.num}
-                      className="tpl-grid-12 bg-white/50 rounded-[18px] p-2.5 border border-black/10"
-                    >
-                      <div className="col-span-5 pr-1">
-                        <h3 className="tpl-font-heading text-[13.5px] font-bold text-[#0B0C0E] leading-tight">
-                          {slide.num}. {slide.title}
-                        </h3>
-                        <p className="text-[10.5px] text-neutral-700 mt-1 leading-snug">
-                          {slide.whatWeDid}
-                        </p>
-                        <div className="mt-1.5 bg-white border border-[#0B0C0E] border-l-4 border-l-[#F79223] rounded-lg p-1.5 text-[10px] leading-snug">
-                          <strong className="tpl-font-heading uppercase text-[9px] tracking-wider block text-[#0B0C0E]">
-                            {slide.designLawTitle}
-                          </strong>
-                          {slide.designLawBody}
-                        </div>
-                      </div>
-                      <div className="col-span-7">
-                        <div className="tpl-browser-backdrop" style={{ padding: '7px 11px' }}>
-                          <div
-                            onClick={() => setLightboxImg({ src: slide.img, title: slide.title })}
-                            className="bg-[#0B0C0E] rounded-[8px] overflow-hidden border border-black/80 shadow cursor-zoom-in"
-                          >
-                            <div className="bg-[#F4F4F5] h-[12px] px-2 flex items-center justify-between border-b border-neutral-300">
-                              <div className="flex flex-col gap-[1.5px]">
-                                <span className="w-2 h-[1.2px] bg-neutral-800 block" />
-                                <span className="w-2 h-[1.2px] bg-neutral-800 block" />
-                                <span className="w-2 h-[1.2px] bg-neutral-800 block" />
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full border border-neutral-800 bg-[#F79223]" />
-                                <span className="w-1.5 h-1.5 rounded-full border border-neutral-800 bg-white" />
-                                <span className="w-1.5 h-1.5 rounded-full border border-neutral-800 bg-white" />
-                              </div>
-                            </div>
-                            <img
-                              src={slide.img}
-                              alt={slide.title}
-                              className="w-full h-[116px] object-cover object-top block"
-                            />
+                        {/* Bottom: Optimized Project Name & Action Pill */}
+                        <div className="w-full">
+                          <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug drop-shadow-md">
+                            {item.title}
+                          </h3>
+                          <div className="mt-3.5">
+                            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white text-black text-xs font-bold shadow-md group-hover:bg-[#F79223] transition-colors">
+                              {item.actionLabel}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -934,1136 +1040,522 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                   ))}
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
 
-              {renderPageFooter(7, 12, '16:9 Desktop Prototype Walkthrough & UX Design Laws (Part 2)')}
-            </section>
-
-            {/* ===============================================================
-                PAGE 08: SITE STRUCTURE, INTEGRATIONS & ADDITIONAL FEATURES (TEMPLATE PAGE 5)
-                =============================================================== */}
-            <section className="tpl-page">
-              <div className="flex flex-col justify-between flex-1 pb-3">
-                {/* Band 1: Site Structure */}
-                <div>
-                  <div className="tpl-grid-12 items-start mb-4">
-                    <div className="col-span-5">
-                      <h2 className="tpl-font-heading text-[28px] font-semibold uppercase leading-[1.08] text-[#0B0C0E]">
-                        SITE
-                        <br />
-                        STRUCTURE
-                      </h2>
-                    </div>
-                    <div className="col-span-7 text-[14.5px] leading-relaxed text-[#0B0C0E]">
-                      Your new <strong>florencechoral.org</strong> website includes all core
-                      navigation views, interactive festival rule modals, and historical archives:
-                    </div>
-                  </div>
-
-                  <div className="tpl-pill-banner">
-                    <div className="flex items-center justify-around text-center pb-4">
-                      <span className="text-[20px] font-normal flex-1">Home &amp; Hero</span>
-                      <span className="w-[1.5px] h-9 bg-[#0B0C0E]" />
-                      <span className="text-[20px] font-normal flex-1">5 Festivals</span>
-                      <span className="w-[1.5px] h-9 bg-[#0B0C0E]" />
-                      <span className="text-[20px] font-normal flex-1">Artistic Committee</span>
-                      <span className="w-[1.5px] h-9 bg-[#0B0C0E]" />
-                      <span className="text-[20px] font-normal flex-1">Historic Venues</span>
-                    </div>
-                    <div className="flex items-center justify-around text-center pt-3 border-t border-black/15">
-                      <span className="text-[13px] flex-1">Composers &amp; Hymn</span>
-                      <span className="w-[1.2px] h-5 bg-[#0B0C0E]" />
-                      <span className="text-[13px] flex-1">Testimonials</span>
-                      <span className="w-[1.2px] h-5 bg-[#0B0C0E]" />
-                      <span className="text-[13px] flex-1">Photo &amp; Video Archives</span>
-                      <span className="w-[1.2px] h-5 bg-[#0B0C0E]" />
-                      <span className="text-[13px] flex-1">Florence &amp; Contacts</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Band 2: Site Integrations */}
-                <div>
-                  <div className="tpl-grid-12 items-start mb-4">
-                    <div className="col-span-5">
-                      <h2 className="tpl-font-heading text-[28px] font-semibold uppercase leading-[1.08] text-[#0B0C0E]">
-                        SITE
-                        <br />
-                        INTEGRATIONS
-                      </h2>
-                    </div>
-                    <div className="col-span-7 text-[14.5px] leading-relaxed text-[#0B0C0E]">
-                      <strong>Jezreel Dave Digital &amp; Media</strong> integrates your site with
-                      the following management and international marketing systems:
-                    </div>
-                  </div>
-
-                  <div className="tpl-pill-banner">
-                    <div className="flex items-center justify-around text-center">
-                      <span className="text-[19px] leading-snug flex-1">
-                        Admin &amp; Inquiry
-                        <br />
-                        Dashboard
-                      </span>
-                      <span className="w-[1.5px] h-11 bg-[#0B0C0E]" />
-                      <span className="text-[19px] leading-snug flex-1">
-                        Monthly Email
-                        <br />
-                        Newsletters
-                      </span>
-                      <span className="w-[1.5px] h-11 bg-[#0B0C0E]" />
-                      <span className="text-[19px] leading-snug flex-1">
-                        Global Choir
-                        <br />
-                        Email Outreach
-                      </span>
-                    </div>
-                    <p className="text-center text-[12px] text-[#0B0C0E] mt-4 pt-3 border-t border-black/15 max-w-[560px] mx-auto">
-                      These integrations turn <strong>florencechoral.org</strong> into a proactive
-                      international recruitment engine that brings more participating choirs to
-                      Florence every season.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Band 3: Additional Features */}
-                <div>
-                  <div className="tpl-grid-12 items-start mb-4">
-                    <div className="col-span-5">
-                      <h2 className="tpl-font-heading text-[28px] font-semibold uppercase leading-[1.08] text-[#0B0C0E]">
-                        ADDITIONAL
-                        <br />
-                        FEATURES
-                      </h2>
-                    </div>
-                    <div className="col-span-7 text-[14.5px] leading-relaxed text-[#0B0C0E]">
-                      Based on your festival calendar and annual media requirements, your monthly
-                      partnership also includes:
-                    </div>
-                  </div>
-
-                  <div className="tpl-pill-banner">
-                    <div className="flex items-center justify-around text-center py-2">
-                      <span className="text-[18px] leading-snug flex-1">
-                        Unlimited Posters
-                        <br />
-                        &amp; Stage Banners
-                      </span>
-                      <span className="w-[1.5px] h-10 bg-[#0B0C0E]" />
-                      <span className="text-[18px] leading-snug flex-1">
-                        31-Page Booklets
-                        <br />
-                        &amp; Choir Diplomas
-                      </span>
-                      <span className="w-[1.5px] h-10 bg-[#0B0C0E]" />
-                      <span className="text-[18px] leading-snug flex-1">
-                        5–7 Min Video
-                        <br />
-                        Reportages &amp; Reels
-                      </span>
-                    </div>
-                  </div>
-                </div>
+        {/* ===================================================================
+            SECTION 5: INVESTMENT
+            =================================================================== */}
+        <section id="investment" className="scroll-mt-0">
+          {/* Dark Intro */}
+          <div className="bg-[#0A0A0A] text-white pt-16 pb-10 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl">
+              <div className="text-xs text-neutral-400 uppercase tracking-widest mb-2 font-medium">
+                the cost
               </div>
+              <h2 className="bp-heading-title text-3xl sm:text-5xl text-white mb-4">
+                Take Your Brand to the Next Level with Luxury Design
+              </h2>
+              <p className="bp-body-text text-neutral-400 max-w-2xl leading-relaxed">
+                Below you will find the transparent cost of our high-end website design and continuous media partnership services.
+              </p>
+            </div>
+          </div>
 
-              {renderPageFooter(
-                8,
-                12,
-                'Site Structure, Marketing Integrations & Unlimited Media Studio'
-              )}
-            </section>
-
-            {/* ===============================================================
-                PAGE 09: EXECUTION TIMELINE (MEASURED TEMPLATE PAGE 6)
-                =============================================================== */}
-            <section className="tpl-page tpl-ambient-center">
-              <div>
-                {renderTemplateHeader(
-                  'EXECUTION TIMELINE',
-                  '04 / ROADMAP',
-                  <svg
-                    className="w-4 h-4 stroke-current"
-                    fill="none"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 7v5l3 2" strokeLinecap="round" />
-                  </svg>
-                )}
-
-                <p className="text-center text-[23px] leading-[1.4] text-[#0B0C0E] max-w-[660px] mx-auto mt-6 mb-8">
-                  The following table details our projected execution timeline for launching{' '}
-                  <strong>florencechoral.org</strong> and starting your year-round marketing and
-                  media operations.
-                </p>
-
-                <div className="tpl-frosted-card py-10 px-11">
-                  <table className="w-full border-collapse text-left">
-                    <thead>
-                      <tr className="border-b-[1.5px] border-[#0B0C0E] text-[14.5px] font-bold">
-                        <th className="pb-3 w-[56%]">Stage</th>
-                        <th className="pb-3">Completion Date / Target</th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-[14px] divide-y divide-[#0B0C0E]">
-                      <tr>
-                        <td className="py-4 font-medium">
-                          1. Functional Website Prototype &amp; UI Architecture
-                        </td>
-                        <td className="py-4 font-bold text-[#B45309]">
-                          Completed &amp; Ready for Review Today
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 font-medium">
-                          2. Domain Setup (florencechoral.org) &amp; Cloud Backend
-                        </td>
-                        <td className="py-4">Within 48 Hours of Agreement</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 font-medium">
-                          3. Admin &amp; Choir Inquiry Dashboard Activation
-                        </td>
-                        <td className="py-4">Week 1 of Partnership</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 font-medium">
-                          4. Official Festival Posters, Brochures &amp; Booklet Updates
-                        </td>
-                        <td className="py-4">Weeks 1 – 2 (Then On-Demand)</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 font-medium">
-                          5. Global Choir Database &amp; First Outreach Newsletter
-                        </td>
-                        <td className="py-4">Week 2 (Then Every Month)</td>
-                      </tr>
-                      <tr className="border-b-[1.5px] border-[#0B0C0E]">
-                        <td className="py-4 font-medium">
-                          6. Ongoing Web Maintenance, Design, Video &amp; Outreach
-                        </td>
-                        <td className="py-4 font-semibold">Continuous Year-Round (All 5 Festivals)</td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <p className="text-[11px] leading-[1.45] text-neutral-700 mt-8">
-                    Note: Because the working prototype of <strong>florencechoral.org</strong> and
-                    the <strong>Admin Dashboard</strong> have already been engineered ahead of our
-                    meeting, we can transition your live domain immediately without waiting weeks
-                    for initial development.
-                  </p>
-                </div>
-              </div>
-
-              {renderPageFooter(9, 12, 'Execution Timeline & Immediate Launch Roadmap')}
-            </section>
-
-            {/* ===============================================================
-                PAGE 10: PROJECT COSTS & PER-PROJECT SAVINGS COMPARISON (TEMPLATE PAGE 7)
-                =============================================================== */}
-            <section className="tpl-page tpl-ambient-center">
-              <div>
-                {renderTemplateHeader(
-                  'PROJECT COSTS & SAVINGS',
-                  '05 / VALUE MATH',
-                  <svg
-                    className="w-4 h-4 stroke-current"
-                    fill="none"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M17.5 7.5C16.2 6.2 14.4 5.5 12.5 5.5 8.6 5.5 5.5 8.6 5.5 12.5s3.1 7 7 7c1.9 0 3.7-.7 5-2M4 10.5h9.5M4 14.5h9.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                )}
-
-                <p className="text-center text-[17px] leading-[1.4] text-[#0B0C0E] max-w-[690px] mx-auto mb-4">
-                  Below is the transparent comparison between paying <strong>per project</strong>{' '}
-                  (using our exact historical rates of <strong>€50/poster set</strong>,{' '}
-                  <strong>€150/booklet</strong>, and <strong>€150/video reportage</strong> plus the
-                  new website, dashboard, hosting, and global choir outreach) versus our{' '}
-                  <strong>Monthly Partnership Plan</strong>:
-                </p>
-
-                <div className="tpl-frosted-card py-5 px-6">
-                  {/* Interactive Sliders on Web Only */}
-                  <div className="no-print mb-3 p-3 rounded-2xl bg-white/80 border border-black/15">
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#0B0C0E] mb-2 flex items-center justify-between">
-                      <span>Interactive Annual Workload Simulator (Adjust Sliders to Test):</span>
-                      <button
-                        onClick={() => {
-                          setCalcPosters(10);
-                          setCalcBooklets(6);
-                          setCalcVideos(9);
-                          setCalcMonths(12);
-                        }}
-                        className="text-[10px] underline text-[#B45309] cursor-pointer"
-                      >
-                        Reset to 5-Festival Standard
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3 text-[11px]">
-                      <label className="flex flex-col">
-                        <span className="font-semibold">
-                          Poster Sets / Yr: <strong>{calcPosters}</strong> (€{calcPosters * 50})
-                        </span>
-                        <input
-                          type="range"
-                          min={5}
-                          max={20}
-                          value={calcPosters}
-                          onChange={(e) => setCalcPosters(Number(e.target.value))}
-                          className="accent-[#F79223]"
-                        />
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="font-semibold">
-                          Booklets &amp; Rulebooks: <strong>{calcBooklets}</strong> (€
-                          {calcBooklets * 150})
-                        </span>
-                        <input
-                          type="range"
-                          min={1}
-                          max={10}
-                          value={calcBooklets}
-                          onChange={(e) => setCalcBooklets(Number(e.target.value))}
-                          className="accent-[#F79223]"
-                        />
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="font-semibold">
-                          Reportages &amp; Promo Videos: <strong>{calcVideos}</strong> (€
-                          {calcVideos * 150})
-                        </span>
-                        <input
-                          type="range"
-                          min={2}
-                          max={15}
-                          value={calcVideos}
-                          onChange={(e) => setCalcVideos(Number(e.target.value))}
-                          className="accent-[#F79223]"
-                        />
-                      </label>
-                    </div>
+          {/* White Pricing Block */}
+          <div className="bg-white text-[#333333] py-16 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl">
+              {/* Plan Options */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                {/* Option A */}
+                <div
+                  onClick={() => setSelectedPlan('planA')}
+                  className={`p-8 rounded-lg border transition-all cursor-pointer ${
+                    selectedPlan === 'planA'
+                      ? 'border-black bg-[#FAFAFA] shadow-lg ring-2 ring-black'
+                      : 'border-neutral-200 hover:border-neutral-400'
+                  }`}
+                >
+                  <div className="text-xs font-bold uppercase tracking-wider text-neutral-600 mb-1">
+                    Option A • Recommended
                   </div>
-
-                  <table className="w-full border-collapse text-left text-[11.5px]">
-                    <thead>
-                      <tr className="border-b-[1.5px] border-[#0B0C0E] tpl-font-heading text-[10.5px] uppercase">
-                        <th className="py-2 w-[42%]">Annual Deliverable / Service</th>
-                        <th className="py-2 w-[20%]">Per-Project Rate</th>
-                        <th className="py-2 w-[18%]">Per-Project / Yr</th>
-                        <th className="py-2 w-[20%] text-right">Monthly Partnership</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-black/15">
-                      <tr>
-                        <td className="py-2">
-                          <strong>1. Full Website Rebuild (florencechoral.org)</strong>
-                        </td>
-                        <td className="py-2">€1,500 one-time</td>
-                        <td className="py-2 font-semibold">€1,500 EUR</td>
-                        <td className="py-2 text-right font-bold text-[#0B0C0E]">
-                          Covered by €1,599
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">
-                          <strong>2. Custom Admin Dashboard &amp; Inclusions Tracker</strong>
-                        </td>
-                        <td className="py-2">€600 one-time</td>
-                        <td className="py-2 font-semibold">€600 EUR</td>
-                        <td className="py-2 text-right font-bold text-[#0B0C0E]">
-                          Setup (Saves €501)
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">
-                          <strong>3. Cloud Backend ($28/mo), Domain ($10/yr) &amp; Updates</strong>
-                        </td>
-                        <td className="py-2">€75 / month × 12</td>
-                        <td className="py-2 font-semibold">€900 EUR / yr</td>
-                        <td className="py-2 text-right font-bold text-[#B45309]">
-                          ✓ Included (I pay server)
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">
-                          <strong>4. Digital Festival Posters &amp; Social Suites</strong> (Your €50 rate)
-                        </td>
-                        <td className="py-2">€50 × {calcPosters} sets/yr</td>
-                        <td className="py-2 font-semibold">€{calcPosters * 50} EUR / yr</td>
-                        <td className="py-2 text-right font-bold text-[#B45309]">
-                          ✓ Unlimited Digital
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">
-                          <strong>5. Digital 31-Page Booklets &amp; Rulebooks</strong> (Your €150 rate)
-                        </td>
-                        <td className="py-2">€150 × {calcBooklets} editions/yr</td>
-                        <td className="py-2 font-semibold">€{calcBooklets * 150} EUR / yr</td>
-                        <td className="py-2 text-right font-bold text-[#B45309]">
-                          ✓ Unlimited Digital
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">
-                          <strong>6. Video Reportages (5–7m) &amp; Reels</strong> (Your €150 rate)
-                        </td>
-                        <td className="py-2">€150 × {calcVideos} videos/yr</td>
-                        <td className="py-2 font-semibold">€{calcVideos * 150} EUR / yr</td>
-                        <td className="py-2 text-right font-bold text-[#B45309]">
-                          ✓ Unlimited Digital
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">
-                          <strong>7. Monthly Email Newsletters to Contacts</strong> (2/mo)
-                        </td>
-                        <td className="py-2">€150 / month × 12</td>
-                        <td className="py-2 font-semibold">€1,800 EUR / yr</td>
-                        <td className="py-2 text-right font-bold text-[#B45309]">
-                          ✓ Included Every Month
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">
-                          <strong>8. Global Choir Email Outreach</strong> (Recruiting Choirs)
-                        </td>
-                        <td className="py-2">€250 / month × 12</td>
-                        <td className="py-2 font-semibold">€3,000 EUR / yr</td>
-                        <td className="py-2 text-right font-bold text-[#B45309]">
-                          ✓ Included Every Month
-                        </td>
-                      </tr>
-                      <tr className="border-t-2 border-[#0B0C0E] bg-white/70 font-bold text-[12px]">
-                        <td className="py-2.5 pl-2">TOTAL YEAR 1 VALUE vs. PARTNERSHIP COST</td>
-                        <td className="py-2.5">All 8 Pillars Above</td>
-                        <td className="py-2.5 line-through text-red-700">
-                          €{totalYear1PerProject.toLocaleString()} EUR
-                        </td>
-                        <td className="py-2.5 pr-2 text-right text-[#0B0C0E]">
-                          €{planAYear1.toLocaleString()} EUR (€1,599 + €499/mo)
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  {/* Savings & Choir Registration ROI Callout */}
-                  <div className="mt-3.5 bg-[#0B0C0E] text-white rounded-2xl p-3.5 flex items-center justify-between gap-4">
-                    <div className="text-[11px] leading-snug">
-                      <div className="text-[#F79223] font-bold uppercase tracking-wider text-[10px]">
-                        Immediate Savings + Choir Registration Return on Investment
-                      </div>
-                      <div className="mt-0.5 text-neutral-200">
-                        With your festival fees (<strong>€200 base registration</strong> +{' '}
-                        <strong>€150 additional category</strong> +{' '}
-                        <strong>€40 composition entry</strong> + official hotel packages),
-                        recruiting just <strong>1–2 extra visiting choirs per festival</strong> from
-                        our global email outreach pays for the entire year.
-                      </div>
-                    </div>
-                    <div className="shrink-0 bg-[#F79223] text-[#0B0C0E] px-4 py-2 rounded-xl text-center">
-                      <div className="text-[9.5px] font-bold uppercase">You Save</div>
-                      <div className="tpl-font-heading text-[18px] font-extrabold leading-none">
-                        €{year1Savings.toLocaleString()} EUR
-                      </div>
-                      <div className="text-[9px] font-semibold mt-0.5">
-                        in Year 1 (€{year2Savings.toLocaleString()}/yr after)
-                      </div>
-                    </div>
+                  <div className="text-xl font-bold text-black mb-3">Setup + Monthly</div>
+                  <div className="text-4xl font-extrabold text-black mb-1">
+                    €499<span className="text-sm font-normal text-neutral-600">/month</span>
                   </div>
-                </div>
-              </div>
-
-              {renderPageFooter(
-                10,
-                12,
-                'Annual Expense Breakdown: Per-Project vs. Monthly Salary Savings'
-              )}
-            </section>
-
-            {/* ===============================================================
-                PAGE 11: ONGOING MONTHLY FEES & PAYMENT PLAN SELECTOR (TEMPLATE PAGE 8)
-                =============================================================== */}
-            <section className="tpl-page tpl-ambient-center">
-              <div>
-                {renderTemplateHeader(
-                  'CHOOSE YOUR PLAN',
-                  '06 / PARTNERSHIP',
-                  <svg
-                    className="w-4 h-4 stroke-current"
-                    fill="none"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 8v4l2.5 2.5" strokeLinecap="round" />
-                  </svg>
-                )}
-
-                {/* Exclusive Feature Callout: Client Dashboard & Inclusion Availment Tracker */}
-                <div className="bg-[#0B0C0E] text-white rounded-[16px] px-4 py-2.5 mb-3 border border-[#F79223]/50 shadow-md flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#F79223]/20 border border-[#F79223] flex items-center justify-center text-[#F79223] shrink-0 font-bold">
-                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0-18v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-[11px] font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                        <span>Exclusive Feature: Client Dashboard &amp; Monthly Inclusion Tracker</span>
-                        <span className="text-[8px] bg-[#F79223] text-black px-1.5 py-0.5 rounded font-extrabold">
-                          INCLUDED
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-neutral-300 mt-0.5 leading-snug">
-                        Your dedicated portal lets you see active service status and <strong>what monthly inclusions you can still avail</strong> (video edits, newsletter dispatches, poster suites) with 1-click requests.
-                      </p>
-                    </div>
+                  <div className="text-xs text-neutral-600 mb-2">
+                    + €1,599.00 one-time setup
+                  </div>
+                  <div className="text-xs font-semibold text-neutral-800 bg-neutral-200/60 inline-block px-2.5 py-1 rounded mb-6">
+                    Saves €17 per month vs Option B monthly**
                   </div>
                   <button
                     type="button"
-                    onClick={onOpenDashboard}
-                    className="no-print shrink-0 px-3 py-1 rounded-full bg-[#F79223] text-[#0B0C0E] font-bold text-[10px] hover:bg-[#ffa742] transition-colors cursor-pointer"
+                    onClick={() => setSelectedPlan('planA')}
+                    className={`w-full py-3 rounded text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+                      selectedPlan === 'planA'
+                        ? 'bg-black text-white'
+                        : 'bg-neutral-100 text-black hover:bg-neutral-200'
+                    }`}
                   >
-                    Preview Dashboard ↗
+                    {selectedPlan === 'planA' ? '✓ Selected Plan' : 'Select Plan'}
                   </button>
                 </div>
 
-                {/* SaaS Subscription Comparison Matrix Table (Matches Client Screenshot) */}
-                <div className="bg-[#0B0C0E] text-white rounded-[22px] px-5 py-4 border border-black/80 shadow-2xl">
-                  <div className="text-center mb-3">
-                    <h3 className="tpl-font-heading text-[22px] font-bold text-white uppercase tracking-tight">
-                      Choose your plan
-                    </h3>
-                    <p className="text-[10.5px] text-neutral-400 mt-0.5">
-                      Upgrade, pause, or adjust anytime • 100% Digital Delivery &amp; Client Ownership
-                    </p>
+                {/* Option B */}
+                <div
+                  onClick={() => setSelectedPlan('planB')}
+                  className={`p-8 rounded-lg border transition-all cursor-pointer ${
+                    selectedPlan === 'planB'
+                      ? 'border-black bg-[#FAFAFA] shadow-lg ring-2 ring-black'
+                      : 'border-neutral-200 hover:border-neutral-400'
+                  }`}
+                >
+                  <div className="text-xs font-bold uppercase tracking-wider text-neutral-600 mb-1">
+                    Option B • Zero Upfront
                   </div>
-
-                  <table className="w-full border-collapse text-left">
-                    <thead>
-                      <tr className="align-top">
-                        <th className="w-[38%] pb-3 pt-1"></th>
-
-                        {/* Option A Column Header */}
-                        <th
-                          onClick={() => setSelectedPlan('planA')}
-                          className={`w-[31%] pb-3 pt-2 px-3 text-center rounded-t-2xl transition-all cursor-pointer ${
-                            selectedPlan === 'planA'
-                              ? 'bg-white/10 border-t-2 border-x-2 border-[#F79223]'
-                              : 'hover:bg-white/5'
-                          }`}
-                        >
-                          <div className="text-[9.5px] font-bold uppercase tracking-wider text-[#F79223] mb-0.5">
-                            Option A • Recommended
-                          </div>
-                          <div className="text-[12.5px] font-bold text-white">Setup + Monthly</div>
-                          <div className="tpl-font-heading text-[22px] font-extrabold text-white mt-1 leading-none">
-                            €499.00<span className="text-[11px] font-medium text-neutral-400">/month</span>
-                          </div>
-                          <div className="text-[9.5px] text-neutral-300 mt-0.5">
-                            + €1,599.00 one-time setup
-                          </div>
-                          <div className="text-[9px] font-bold text-[#F79223] mt-0.5">
-                            Saves €201 in Year 1 vs. Monthly Plan**
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedPlan('planA')}
-                            className={`mt-2 w-full py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
-                              selectedPlan === 'planA'
-                                ? 'bg-[#F79223] text-[#0B0C0E] shadow-lg'
-                                : 'bg-white text-[#0B0C0E] hover:bg-neutral-200'
-                            }`}
-                          >
-                            {selectedPlan === 'planA' ? '✓ Selected Plan' : 'Select Plan'}
-                          </button>
-                        </th>
-
-                        {/* Option B Column Header */}
-                        <th
-                          onClick={() => setSelectedPlan('planB')}
-                          className={`w-[31%] pb-3 pt-2 px-3 text-center rounded-t-2xl transition-all cursor-pointer ${
-                            selectedPlan === 'planB'
-                              ? 'bg-white/10 border-t-2 border-x-2 border-[#F79223]'
-                              : 'hover:bg-white/5'
-                          }`}
-                        >
-                          <div className="text-[9.5px] font-bold uppercase tracking-wider text-neutral-400 mb-0.5">
-                            Option B • Zero Upfront
-                          </div>
-                          <div className="text-[12.5px] font-bold text-white">Flat Monthly / Yearly</div>
-                          <div className="tpl-font-heading text-[22px] font-extrabold text-white mt-1 leading-none">
-                            €649.00<span className="text-[11px] font-medium text-neutral-400">/month</span>
-                          </div>
-                          <div className="text-[9.5px] text-neutral-300 mt-0.5">
-                            or <strong>€6,853.00/year</strong> (Prepaid)
-                          </div>
-                          <div className="text-[9px] font-bold text-[#F79223] mt-0.5">
-                            Save €935/year with Yearly Billing**
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedPlan('planB')}
-                            className={`mt-2 w-full py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
-                              selectedPlan === 'planB'
-                                ? 'bg-[#F79223] text-[#0B0C0E] shadow-lg'
-                                : 'bg-white text-[#0B0C0E] hover:bg-neutral-200'
-                            }`}
-                          >
-                            {selectedPlan === 'planB' ? '✓ Selected Plan' : 'Select Plan'}
-                          </button>
-                        </th>
-                      </tr>
-                      <tr className="border-b border-white/20">
-                        <th colSpan={3} className="pb-1"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/10 text-[10.5px]">
-                      {/* Row 1: Dashboard & Inclusions (Highlighted) */}
-                      <tr className="bg-white/5">
-                        <td className="py-2 pr-2 font-bold text-white">
-                          <div className="flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#F79223]" />
-                            <span>Client Dashboard &amp; Inclusion Tracker</span>
-                          </div>
-                          <div className="text-[9px] font-normal text-neutral-400 pl-3">
-                            Live portal: see remaining credits &amp; avail inclusions
-                          </div>
-                        </td>
-                        <td
-                          className={`py-2 px-2 text-center font-bold ${
-                            selectedPlan === 'planA' ? 'bg-white/10 text-[#F79223]' : 'text-neutral-200'
-                          }`}
-                        >
-                          ✓ Live Tracker (Avail in 1 Click)
-                        </td>
-                        <td
-                          className={`py-2 px-2 text-center font-bold ${
-                            selectedPlan === 'planB' ? 'bg-white/10 text-[#F79223]' : 'text-neutral-200'
-                          }`}
-                        >
-                          ✓ Live Tracker (Avail in 1 Click)
-                        </td>
-                      </tr>
-
-                      {/* Row 2: Website Platform */}
-                      <tr>
-                        <td className="py-1.5 pr-2 font-bold text-white">
-                          <span>Website Rebuild (florencechoral.org)</span>
-                          <div className="text-[9px] font-normal text-neutral-400">
-                            5 festivals, programmes, jury, venues &amp; 100% code
-                          </div>
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Full 5-Festival Platform
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Full 5-Festival Platform
-                        </td>
-                      </tr>
-
-                      {/* Row 3: Festival Posters */}
-                      <tr>
-                        <td className="py-1.5 pr-2 font-bold text-white">
-                          <span>Festival Poster Campaigns (5 Editions)</span>
-                          <div className="text-[9px] font-normal text-neutral-400">
-                            Digital print-ready PDFs (A2, A3, A5, 70×100) + social
-                          </div>
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Unlimited Digital Masters
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Unlimited Digital Masters
-                        </td>
-                      </tr>
-
-                      {/* Row 4: Booklets */}
-                      <tr>
-                        <td className="py-1.5 pr-2 font-bold text-white">
-                          <span>31-Page Booklets &amp; Rulebooks</span>
-                          <div className="text-[9px] font-normal text-neutral-400">
-                            Print-ready digital PDF layouts &amp; digital flipbook
-                          </div>
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Unlimited Digital Layouts
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Unlimited Digital Layouts
-                        </td>
-                      </tr>
-
-                      {/* Row 5: Videos */}
-                      <tr>
-                        <td className="py-1.5 pr-2 font-bold text-white">
-                          <span>Festival Video Reportages &amp; Reels</span>
-                          <div className="text-[9px] font-normal text-neutral-400">
-                            5–7 min 4K/HD documentary reportages, audio &amp; reels
-                          </div>
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Unlimited 4K/HD Renders
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Unlimited 4K/HD Renders
-                        </td>
-                      </tr>
-
-                      {/* Row 6: Email Newsletters */}
-                      <tr>
-                        <td className="py-1.5 pr-2 font-bold text-white">
-                          <span>Monthly Email Newsletters</span>
-                          <div className="text-[9px] font-normal text-neutral-400">
-                            Formatted dispatches to past choir contacts
-                          </div>
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ 2 Editions / Month
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ 2 Editions / Month
-                        </td>
-                      </tr>
-
-                      {/* Row 7: Outreach */}
-                      <tr>
-                        <td className="py-1.5 pr-2 font-bold text-white">
-                          <span>Global Choir Email Outreach</span>
-                          <div className="text-[9px] font-normal text-neutral-400">
-                            Active outbound recruitment of choirs worldwide
-                          </div>
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Active Worldwide Outreach
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Active Worldwide Outreach
-                        </td>
-                      </tr>
-
-                      {/* Row 8: Hosting */}
-                      <tr>
-                        <td className="py-1.5 pr-2 font-bold text-white">
-                          <span>Hosting ($28/mo) &amp; Domain ($10/yr)</span>
-                          <div className="text-[9px] font-normal text-neutral-400">
-                            Fast cloud server, database &amp; domain renewal
-                          </div>
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Covered 100% by Jezreel
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          ✓ Covered 100% by Jezreel
-                        </td>
-                      </tr>
-
-                      {/* Row 9: Turnaround */}
-                      <tr>
-                        <td className="py-1.5 pr-2 font-bold text-white">
-                          <span>Turnaround &amp; Revisions</span>
-                          <div className="text-[9px] font-normal text-neutral-400">
-                            Speed of delivery &amp; feedback cycles
-                          </div>
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          24–48h • Unlimited
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 font-bold text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          24–48h • Unlimited
-                        </td>
-                      </tr>
-
-                      {/* Row 10: Downpayment */}
-                      <tr className="bg-white/5">
-                        <td className="py-1.5 pr-2 font-bold text-white">
-                          <span>Upfront Downpayment</span>
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center font-bold ${
-                            selectedPlan === 'planA' ? 'bg-white/10 text-white' : 'text-neutral-200'
-                          }`}
-                        >
-                          €1,599 EUR (One-Time)
-                        </td>
-                        <td
-                          className={`py-1.5 px-2 text-center font-bold ${
-                            selectedPlan === 'planB' ? 'bg-white/10 text-[#F79223]' : 'text-[#F79223]'
-                          }`}
-                        >
-                          €0 EUR (Zero Downpayment)
-                        </td>
-                      </tr>
-
-                      {/* Row 11: Total Year 1 Cost */}
-                      <tr className="border-t border-white/20 bg-white/10 font-bold text-[11px]">
-                        <td className="py-2 pr-2 text-white">
-                          <span>Total Year 1 Cost</span>
-                        </td>
-                        <td
-                          className={`py-2 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 text-[#F79223]' : 'text-white'
-                          }`}
-                        >
-                          €7,587 EUR
-                        </td>
-                        <td
-                          className={`py-2 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 text-[#F79223]' : 'text-white'
-                          }`}
-                        >
-                          €6,853 (Yearly) / €7,788 (Monthly)
-                        </td>
-                      </tr>
-
-                      {/* Row 12: Guaranteed Savings */}
-                      <tr className="bg-[#F79223]/15 font-bold text-[10.5px]">
-                        <td className="py-2 pr-2 text-[#F79223]">
-                          <span>Your Guaranteed Savings</span>
-                        </td>
-                        <td
-                          className={`py-2 px-2 text-center ${
-                            selectedPlan === 'planA' ? 'bg-white/10 text-[#F79223]' : 'text-amber-200'
-                          }`}
-                        >
-                          Saves €201 in Yr 1 (€1,800/yr after)
-                        </td>
-                        <td
-                          className={`py-2 px-2 text-center ${
-                            selectedPlan === 'planB' ? 'bg-white/10 text-[#F79223]' : 'text-amber-200'
-                          }`}
-                        >
-                          Save €935/yr with Yearly Billing
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  {/* Table Footer */}
-                  <div className="mt-2.5 pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[9px] text-neutral-400">
-                    <div>
-                      * <strong>100% Digital Production &amp; Delivery:</strong> Certified print-ready PDF masters &amp; 4K video renders. Zero physical shipping or print markup.
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#F79223] font-semibold">
-                        ** Transparent savings vs. standard rates
-                      </span>
-                      <a
-                        href={getAcceptMailto()}
-                        className="no-print px-3 py-1 rounded-full bg-[#F79223] text-[#0B0C0E] font-extrabold text-[9.5px] hover:bg-[#ffa742] transition-colors"
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="text-xl font-bold text-black">Monthly or Yearly</div>
+                    <div className="inline-flex p-0.5 bg-neutral-200 rounded text-[10px] font-bold">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPlanBBilling('monthly');
+                          setSelectedPlan('planB');
+                        }}
+                        className={`px-2 py-0.5 rounded ${
+                          planBBilling === 'monthly' ? 'bg-black text-white' : 'text-neutral-600'
+                        }`}
                       >
-                        Accept {selectedPlan === 'planA' ? 'Option A' : 'Option B'} ✉
-                      </a>
+                        Monthly
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPlanBBilling('yearly');
+                          setSelectedPlan('planB');
+                        }}
+                        className={`px-2 py-0.5 rounded ${
+                          planBBilling === 'yearly' ? 'bg-black text-white' : 'text-neutral-600'
+                        }`}
+                      >
+                        Yearly
+                      </button>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {renderPageFooter(
-                11,
-                12,
-                'Subscription Plan Comparison Matrix & Digital Inclusions'
-              )}
-            </section>
-          </>
-        )}
-
-        {/* ===================================================================
-            PAGE 12 (OR PAGE 1 OF STANDALONE CONTRACT): TERMS OF AGREEMENT (TEMPLATE PAGES 9 & 10)
-            =================================================================== */}
-        <section className="tpl-page tpl-ambient-bottom">
-          <div>
-            {renderTemplateHeader(
-              'TERMS OF AGREEMENT',
-              selectedPlan === 'planA' ? '€1,599 + €499/MO' : '€0 DOWNPAYMENT',
-              <svg
-                className="w-4 h-4 stroke-current"
-                fill="none"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="9" />
-                <path d="M8.5 12.5l2.3 2.3 4.7-5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
-
-            {/* Parties Strip */}
-            <div className="bg-white/70 border border-[#0B0C0E] rounded-[20px] p-3.5 mb-5 grid grid-cols-[1fr_1.5px_1fr] gap-5 items-center text-[12px]">
-              <div className="flex items-center gap-3">
-                <img
-                  src="/proposal-assets/jezreel_logo_mark.png"
-                  alt="Jezreel Dave"
-                  className="h-7 w-auto"
-                />
-                <div>
-                  <span className="text-[9px] font-bold uppercase tracking-wider bg-[#0B0C0E] text-[#F79223] px-2 py-0.5 rounded">
-                    Service Provider
-                  </span>
-                  <div className="font-bold text-[#0B0C0E] mt-0.5">
-                    Jezreel Dave Leybag • Jezreel Dave Digital &amp; Media
-                  </div>
-                </div>
-              </div>
-              <div className="bg-[#0B0C0E] w-[1.5px] h-full" />
-              <div className="flex items-center gap-3">
-                <img
-                  src="/proposal-assets/Florence_choral_quadrato.jpg"
-                  alt="Florence Choral"
-                  className="h-8 w-8 rounded-lg object-cover border border-black/20"
-                />
-                <div>
-                  <span className="text-[9px] font-bold uppercase tracking-wider bg-[#0B0C0E] text-[#F79223] px-2 py-0.5 rounded">
-                    Client
-                  </span>
-                  <div className="font-bold text-[#0B0C0E] mt-0.5">
-                    Dr. Leonardo Sagliocca • Florence Choral (florencechoral.org)
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Template Page 9–10 Two-Column Clauses (3 cols label / 9 cols content) */}
-            <div className="space-y-3.5 text-[12px] leading-[1.48] text-[#141416]">
-              <div className="tpl-grid-12 items-start pb-3 border-b border-black/15">
-                <div className="col-span-3 tpl-font-heading text-[14.5px] font-semibold text-[#0B0C0E]">
-                  Authorization &amp; Scope
-                </div>
-                <div className="col-span-9">
-                  <strong>Florence Choral (Dr. Leonardo Sagliocca)</strong> engages{' '}
-                  <strong>Jezreel Dave Leybag</strong> as an independent contractor for the{' '}
-                  <strong>florencechoral.org</strong> website rebuild, Client Dashboard &amp; Monthly
-                  Inclusion Tracker, cloud hosting/domain administration, monthly email newsletters,
-                  international choir email outreach, and unlimited <strong>100% digital graphic design</strong>{' '}
-                  (certified print-ready poster PDFs, 31-page booklets, diplomas, social suites) and
-                  video editing (5–7 min festival reportages &amp; promotional reels) across all five (5)
-                  annual festivals. All deliverables are digital master files; physical printing and venue
-                  installation are handled locally by the Client.
-                </div>
-              </div>
-
-              <div className="tpl-grid-12 items-start pb-3 border-b border-black/15">
-                <div className="col-span-3 tpl-font-heading text-[14.5px] font-semibold text-[#0B0C0E]">
-                  Payment &amp; Inclusions
-                </div>
-                <div className="col-span-9">
-                  {selectedPlan === 'planA' ? (
+                  {planBBilling === 'monthly' ? (
                     <>
-                      <strong>Option A (Setup + Monthly Salary):</strong> A one-time setup fee of{' '}
-                      <strong>€1,599.00 EUR</strong> upon agreement to launch{' '}
-                      <strong>florencechoral.org</strong> and the Client Dashboard, followed by a
-                      flat monthly retainer of <strong>€499.00 EUR / month</strong>. Total Year 1
-                      investment is <strong>€7,587.00 EUR</strong> (saving €201.00 EUR in Year 1 vs. monthly plan,
-                      and €1,800.00 EUR / year in subsequent years).
+                      <div className="text-4xl font-extrabold text-black mb-1">
+                        €649<span className="text-sm font-normal text-neutral-600">/month</span>
+                      </div>
+                      <div className="text-xs text-neutral-600 mb-2">
+                        (€7,788/yr) or €6,853.00/year
+                      </div>
+                      <div className="text-xs font-semibold text-neutral-800 bg-neutral-200/60 inline-block px-2.5 py-1 rounded mb-6">
+                        Zero setup fee upfront
+                      </div>
                     </>
                   ) : (
                     <>
-                      <strong>Option B (Zero Downpayment Plan):</strong> <strong>€0 downpayment</strong>.
-                      Billed annually at <strong>€6,853.00 EUR / year</strong> (saving €935.00 EUR / year — over 12% off),
-                      or billed monthly at <strong>€649.00 EUR / month</strong> (€7,788.00 EUR / year).
+                      <div className="text-4xl font-extrabold text-black mb-1">
+                        €6,853<span className="text-sm font-normal text-neutral-600">/year</span>
+                      </div>
+                      <div className="text-xs text-neutral-600 mb-2">
+                        Equivalent to €571/mo
+                      </div>
+                      <div className="text-xs font-semibold text-emerald-800 bg-emerald-100 inline-block px-2.5 py-1 rounded mb-6">
+                        ✓ Save €935/year with Yearly Billing**
+                      </div>
                     </>
-                  )}{' '}
-                  All website hosting, backend database ($28/mo), and domain ($10/yr) costs are
-                  covered by the Service Provider. Billed via international bank transfer / Wise.
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPlan('planB')}
+                    className={`w-full py-3 rounded text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+                      selectedPlan === 'planB'
+                        ? 'bg-black text-white'
+                        : 'bg-neutral-100 text-black hover:bg-neutral-200'
+                    }`}
+                  >
+                    {selectedPlan === 'planB' ? '✓ Selected Plan' : 'Select Plan'}
+                  </button>
                 </div>
               </div>
 
-              <div className="tpl-grid-12 items-start pb-3 border-b border-black/15">
-                <div className="col-span-3 tpl-font-heading text-[14.5px] font-semibold text-[#0B0C0E]">
-                  Client Dashboard &amp; Availment
-                </div>
-                <div className="col-span-9">
-                  The Client receives 24/7 direct access to the <strong>Florence Choral Client Dashboard</strong>{' '}
-                  to track live website choir inquiries and see <strong>what monthly inclusions are active and available</strong>{' '}
-                  (remaining video cuts, newsletter dispatches, and poster suites). Inclusions can be availed
-                  at any time with a 1-click request.
-                </div>
+              {/* Comparison Table */}
+              <div className="overflow-x-auto border border-neutral-200 rounded-lg">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-[#F8F9FA] border-b border-neutral-200 text-black uppercase tracking-wider font-bold">
+                    <tr>
+                      <th className="p-4">Inclusions &amp; Deliverables</th>
+                      <th className="p-4 text-center">Option A</th>
+                      <th className="p-4 text-center">Option B</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-neutral-200 text-neutral-800">
+                    <tr>
+                      <td className="p-4 font-semibold">Client Dashboard &amp; Inquiry Tracker</td>
+                      <td className="p-4 text-center">✓ Live Tracker Included</td>
+                      <td className="p-4 text-center">✓ Live Tracker Included</td>
+                    </tr>
+                    <tr>
+                      <td className="p-4 font-semibold">5-Festival Modern Web Platform</td>
+                      <td className="p-4 text-center">✓ Included (100% Owned)</td>
+                      <td className="p-4 text-center">✓ Included (100% Owned)</td>
+                    </tr>
+                    <tr>
+                      <td className="p-4 font-semibold">Unlimited Festival Poster Campaigns</td>
+                      <td className="p-4 text-center">✓ Unlimited PDF Masters</td>
+                      <td className="p-4 text-center">✓ Unlimited PDF Masters</td>
+                    </tr>
+                    <tr>
+                      <td className="p-4 font-semibold">31-Page Competition Booklets</td>
+                      <td className="p-4 text-center">✓ Unlimited Digital Layouts</td>
+                      <td className="p-4 text-center">✓ Unlimited Digital Layouts</td>
+                    </tr>
+                    <tr>
+                      <td className="p-4 font-semibold">5–7 Min 4K Documentary Video Reportages</td>
+                      <td className="p-4 text-center">✓ Unlimited Renders</td>
+                      <td className="p-4 text-center">✓ Unlimited Renders</td>
+                    </tr>
+                    <tr>
+                      <td className="p-4 font-semibold">Global Choir Outreach &amp; Newsletters</td>
+                      <td className="p-4 text-center">✓ 2 / Month + Outbound</td>
+                      <td className="p-4 text-center">✓ 2 / Month + Outbound</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
+            </div>
+          </div>
+        </section>
 
-              <div className="tpl-grid-12 items-start pb-3 border-b border-black/15">
-                <div className="col-span-3 tpl-font-heading text-[14.5px] font-semibold text-[#0B0C0E]">
-                  Workflow &amp; Revisions
-                </div>
-                <div className="col-span-9">
-                  The Client may submit an unlimited number of digital web updates, graphic design tasks,
-                  newsletter dispatches, and video editing requests via the Dashboard, Email, or WhatsApp.
-                  Standard updates and graphics are delivered within 24–48 hours; 31-page booklets and 5–7
-                  min video reportages are delivered within 2–4 business days.{' '}
-                  <strong>Unlimited revisions</strong> are included at zero extra charge.
-                </div>
-              </div>
-
-              <div className="tpl-grid-12 items-start pb-3 border-b border-black/15">
-                <div className="col-span-3 tpl-font-heading text-[14.5px] font-semibold text-[#0B0C0E]">
-                  Copyright to Project
-                </div>
-                <div className="col-span-9">
-                  <strong>Jezreel Dave Leybag</strong> guarantees that full source code, domain
-                  names (<strong>florencechoral.org</strong>), choir contact databases, digital print-ready
-                  design files, 31-page booklets, and edited video masters are the{' '}
-                  <strong>
-                    100% sole property of Dr. Leonardo Sagliocca / Florence Choral
-                  </strong>
-                  . The Client holds direct Owner credentials to the GitHub repository, domain
-                  registrar, and dashboard at all times.
-                </div>
-              </div>
-
-              <div className="tpl-grid-12 items-start pb-2">
-                <div className="col-span-3 tpl-font-heading text-[14.5px] font-semibold text-[#0B0C0E]">
-                  Flexible Term
-                </div>
-                <div className="col-span-9">
-                  This Agreement operates on a flexible <strong>month-to-month basis</strong>.
-                  Either party may pause or terminate with 30 days’ written notice via email, with
-                  100% handover of all active code, domains, and digital media archives.
-                </div>
+        {/* ===================================================================
+            SECTION 6: NEXT STEPS (Exact Screenshot 4baef456 style)
+            =================================================================== */}
+        <section id="next-steps" className="scroll-mt-0">
+          {/* Centered Guarantee Block (Dark #0A0A0A) */}
+          <div className="bg-[#0A0A0A] text-white py-20 px-8 sm:px-14 lg:px-20 text-center">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="bp-heading-title text-3xl sm:text-5xl font-bold text-white tracking-tight mb-6">
+                Our Guarantee and Next Steps
+              </h2>
+              <p className="bp-body-text text-neutral-300 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed mb-6">
+                No matter what you do in business, there is always a risk and we understand that. In our cooperation, we will be the ones who deal with it. The purpose of this project is to deliver a great website that will establish you as an industry expert. If we fail in delivering our promises, you don't have to pay for our services.
+              </p>
+              <div className="text-xl sm:text-2xl font-normal text-white mt-8 mb-12">
+                It is as simple as that.
               </div>
             </div>
 
-            {/* Bottom Signature & Electronic Approval Block (Template Page 10 Bottom Style) */}
-            <div className="mt-5 bg-white/80 border-[1.5px] border-[#0B0C0E] rounded-[22px] p-5">
-              <div className="grid grid-cols-2 gap-10">
-                <div>
-                  <div className="border-t-[1.5px] border-[#0B0C0E] pt-2 mt-7 font-bold text-[13.5px] text-[#0B0C0E]">
-                    Jezreel Dave Leybag
-                  </div>
-                  <div className="text-[11.5px] text-neutral-700">
-                    Jezreel Dave Digital &amp; Media
-                  </div>
-                  <div className="text-[11px] text-neutral-500 mt-1">Date: 2026-11-15</div>
-                </div>
-                <div>
-                  <div className="border-t-[1.5px] border-[#0B0C0E] pt-2 mt-7 font-bold text-[13.5px] text-[#0B0C0E]">
-                    Dr. Leonardo Sagliocca
-                  </div>
-                  <div className="text-[11.5px] text-neutral-700">
-                    Founder &amp; Artistic Director, Florence Choral
-                  </div>
-                  <div className="text-[11px] text-neutral-500 mt-1">
-                    Date: ____________________________
-                  </div>
-                </div>
+            {/* Edge-to-Edge Image Strip Under Guarantee */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-0 mt-8 rounded-lg overflow-hidden border border-white/10 max-w-5xl mx-auto">
+              <div className="h-44 overflow-hidden">
+                <img
+                  src="/proposal-assets/01_header_hero_dropdown_16x9.png"
+                  alt="Prototype 1"
+                  className="w-full h-full object-cover"
+                />
               </div>
-
-              <div className="no-print mt-4 pt-3 border-t border-black/10 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-[11.5px] font-medium text-neutral-700">
-                  Ready to proceed? Click below to send your pre-filled approval email:
-                </span>
-                <a
-                  href={getAcceptMailto()}
-                  className="px-5 py-2 rounded-full bg-[#F79223] hover:bg-[#ffa742] text-[#0B0C0E] border border-[#0B0C0E] font-bold text-xs transition-colors"
-                >
-                  Accept Proposal &amp; Send Confirmation Email ✉
-                </a>
+              <div className="h-44 overflow-hidden">
+                <img
+                  src="/proposal-assets/05_historic_venues_16x9.png"
+                  alt="Prototype 2"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="h-44 overflow-hidden">
+                <img
+                  src="/proposal-assets/02a_festivals_grid_top_16x9.png"
+                  alt="Prototype 3"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
 
-          {renderPageFooter(
-            mode === 'full-proposal' ? 12 : 1,
-            mode === 'full-proposal' ? 12 : 1,
-            'Terms of Agreement & Client Ownership Guarantee'
-          )}
+          {/* White Block: sign below */}
+          <div className="bg-white text-[#333333] py-16 px-8 sm:px-14 lg:px-20">
+            <div className="max-w-5xl">
+              <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D] mb-6">
+                sign below
+              </h3>
+              <p className="bp-body-text text-[#333333] mb-6">
+                To get started and to make the following steps as simple as possible:
+              </p>
+              <div className="space-y-4 bp-body-text text-[#333333] max-w-2xl">
+                <div>
+                  <strong>ONE</strong> — Simply type your name in the acceptance card below and click “Accept and sign”.
+                </div>
+                <div>
+                  <strong>TWO</strong> — We initiate the 48-to-72 hour domain pointing and live deployment sequence.
+                </div>
+                <div>
+                  <strong>THREE</strong> — You receive your Client Dashboard credentials and your ongoing digital partnership begins immediately.
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
-      </div>
 
-      {/* =====================================================================
-          16:9 FULLSCREEN LIGHTBOX MODAL (WEB ONLY)
-          ===================================================================== */}
-      {lightboxImg && (
+        {/* ===================================================================
+            SECTION 7: TERMS AND CONDITIONS
+            =================================================================== */}
+        <section id="terms-and-conditions" className="scroll-mt-0">
+          <div className="bg-white text-[#333333] py-16 px-8 sm:px-14 lg:px-20 border-t border-neutral-200">
+            <div className="max-w-5xl">
+              <h3 className="bp-heading-lowercase text-2xl sm:text-3xl text-[#2D2D2D] mb-8">
+                terms &amp; conditions
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs leading-relaxed text-neutral-700">
+                <div className="space-y-3">
+                  <h4 className="font-bold text-black text-sm">1. 100% Client Ownership</h4>
+                  <p>
+                    Florence Choral retains 100% perpetual ownership of all domain names, design assets, source code, festival posters, booklets, and video files upon payment. No lock-in or proprietary traps.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="font-bold text-black text-sm">2. Rapid Turnaround Timescales</h4>
+                  <p>
+                    Standard website revisions are completed within 48 to 72 hours. Complete competition booklets and 4K reportage video edits are delivered within 3 to 5 business days upon receiving assets.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="font-bold text-black text-sm">3. Digital Scope &amp; Exclusions</h4>
+                  <p>
+                    Deliverables encompass all digital master files, high-resolution certified PDFs, video editing, hosting maintenance, and email broadcasts. Physical print manufacturing, paper shipping, and third-party advertising budgets remain the responsibility of Florence Choral.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="font-bold text-black text-sm">4. Flexible Month-to-Month Term</h4>
+                  <p>
+                    Following the initial evaluation period, partnership services continue on a flexible month-to-month basis cancellable with 30 days written notice.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===================================================================
+            SECTION 8: PROPOSAL ACCEPTANCE (Exact Screenshot a1ec1c22 style)
+            =================================================================== */}
+        <section id="proposal-acceptance" className="scroll-mt-0">
+          <div className="bg-[#0A0A0A] py-20 px-6 sm:px-14 lg:px-20 flex justify-center items-center">
+            {/* White Signature Card (Exact Screenshot a1ec1c22) */}
+            <div className="bg-white rounded-xl shadow-2xl p-8 sm:p-10 max-w-2xl w-full border border-neutral-200 text-left">
+              {/* Top Legal Agreement Clause */}
+              <p className="text-sm text-[#333333] leading-relaxed mb-6 font-normal">
+                I, {signerName || 'Dr. Leonardo Sagliocca'}, agree to the terms of this agreement and I agree that my typed name below can be used as a digital representation of my signature to that fact.
+              </p>
+
+              {/* Tab Navigation */}
+              <div className="flex items-center gap-6 border-b border-neutral-200 mb-6 text-xs font-bold uppercase tracking-wider">
+                <button
+                  type="button"
+                  onClick={() => setSignTab('type')}
+                  className={`pb-3 flex items-center gap-2 cursor-pointer transition-colors ${
+                    signTab === 'type'
+                      ? 'text-black border-b-2 border-black -mb-[1px]'
+                      : 'text-neutral-400 hover:text-black'
+                  }`}
+                >
+                  <svg className="w-4 h-4 stroke-current fill-none" viewBox="0 0 24 24">
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <line x1="6" y1="8" x2="18" y2="8" />
+                    <line x1="6" y1="12" x2="18" y2="12" />
+                    <line x1="6" y1="16" x2="12" y2="16" />
+                  </svg>
+                  <span>SIGN BY TYPING</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSignTab('draw')}
+                  className={`pb-3 flex items-center gap-2 cursor-pointer transition-colors ${
+                    signTab === 'draw'
+                      ? 'text-black border-b-2 border-black -mb-[1px]'
+                      : 'text-neutral-400 hover:text-black'
+                  }`}
+                >
+                  <svg className="w-4 h-4 stroke-current fill-none" viewBox="0 0 24 24">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                  </svg>
+                  <span>SIGN BY DRAWING</span>
+                </button>
+              </div>
+
+              {/* Input Header */}
+              <div className="text-base sm:text-lg font-bold text-[#1F1F1F] mb-3">
+                To accept and sign, type your name below
+              </div>
+
+              {/* Input Area */}
+              {signTab === 'type' ? (
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    value={signerName}
+                    onChange={(e) => setSignerName(e.target.value)}
+                    placeholder="Type your full name"
+                    className="w-full p-4 rounded-lg bg-[#F8F9FA] border border-[#E0E0E0] text-base text-[#111111] focus:bg-white focus:outline-none focus:border-black transition-all"
+                  />
+                  {signerName && (
+                    <div className="mt-3 p-3 bg-neutral-50 rounded-lg border border-neutral-200 flex items-center justify-between">
+                      <span
+                        style={{ fontFamily: 'Brush Script MT, cursive' }}
+                        className="text-2xl text-neutral-800"
+                      >
+                        {signerName}
+                      </span>
+                      <span className="text-[10px] text-neutral-500 font-mono">
+                        Digital ID: FC-2026-SIG
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="mb-4 p-8 border-2 border-dashed border-neutral-300 rounded-lg text-center bg-[#F8F9FA]">
+                  <span
+                    style={{ fontFamily: 'Brush Script MT, cursive' }}
+                    className="text-3xl text-neutral-800"
+                  >
+                    {signerName || 'Dr. Leonardo Sagliocca'}
+                  </span>
+                  <div className="text-[11px] text-neutral-400 mt-2">
+                    (Touch/Stylus Draw Enabled)
+                  </div>
+                </div>
+              )}
+
+              {/* Primary Action Button */}
+              {!isSigned ? (
+                <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <button
+                    type="button"
+                    disabled={isSigning || !signerName.trim()}
+                    onClick={handleSignProposal}
+                    className="px-8 py-3.5 rounded-lg bg-black hover:bg-[#222222] disabled:bg-neutral-400 text-white font-bold text-sm tracking-wide transition-all shadow-md active:scale-95 cursor-pointer disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isSigning && (
+                      <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    )}
+                    <span>{isSigning ? 'Submitting & Notifying...' : 'Accept and sign'}</span>
+                  </button>
+                  <span className="text-[11px] text-neutral-400">
+                    Signing automatically notifies <strong>jezreelleybag.graphics@gmail.com</strong>
+                  </span>
+                </div>
+              ) : (
+                <div className="p-6 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-950 mt-6 text-center shadow-sm">
+                  <div className="font-bold text-lg mb-1 flex items-center justify-center gap-2 text-emerald-900">
+                    <span className="text-xl">✓</span> Proposal Formally Signed &amp; Accepted
+                  </div>
+                  <div className="text-xs text-emerald-800">
+                    Signed by <strong>{signerName}</strong> • Verified on {new Date().toLocaleDateString('en-GB')} • Digital ID: <code className="font-mono bg-emerald-100 px-1 py-0.5 rounded">FC-2026-SIG</code>
+                  </div>
+                  <div className="mt-3 text-xs text-emerald-700 bg-white/80 p-3 rounded-lg border border-emerald-200 inline-block text-left">
+                    <div className="font-semibold mb-0.5 flex items-center gap-1.5">
+                      <span>📧</span> {notifyStatus === 'fallback' ? 'Email Confirmation Ready' : 'Notification Dispatched'}
+                    </div>
+                    <div>
+                      {notifyStatus === 'fallback'
+                        ? 'Your signature is verified. Please click the button below to send your direct email confirmation.'
+                        : 'An official acceptance dossier was dispatched to jezreelleybag.graphics@gmail.com with your chosen package details.'}
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="text-xs font-semibold px-4 py-2 bg-white text-emerald-900 border border-emerald-300 rounded-lg hover:bg-emerald-100 transition-colors cursor-pointer shadow-sm"
+                    >
+                      Print / Save Signed PDF 📄
+                    </button>
+                    <a
+                      href={`mailto:jezreelleybag.graphics@gmail.com?subject=${encodeURIComponent(`Florence Choral Proposal Accepted & Signed by ${signerName}`)}&body=${encodeURIComponent(`Dear Jezreel,\n\nI have formally reviewed and accepted the Florence Choral Proposal.\n\nSigner: ${signerName}\nSelected Package: ${selectedPlan === 'planA' ? 'Option A: Setup + Monthly' : 'Option B: Monthly Partner'}\nDigital ID: FC-2026-SIG\nDate: ${new Date().toLocaleDateString('en-GB')}\n\nLooking forward to initiating our digital partnership!`)}`}
+                      className="text-xs font-semibold px-4 py-2 bg-emerald-800 text-white rounded-lg hover:bg-emerald-900 transition-colors shadow-sm inline-flex items-center gap-1.5"
+                    >
+                      <span>Send Direct Email Copy ✉</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      </main>
+
+
+
+      {/* Universal Media Modal (Image Lightbox, PDF Booklet Viewer, 1080p Video Embed) */}
+      {activeMediaModal && (
         <div
-          onClick={() => setLightboxImg(null)}
-          className="no-print fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out"
+          onClick={() => setActiveMediaModal(null)}
+          className="fixed inset-0 z-50 bg-black/95 p-4 sm:p-8 flex items-center justify-center cursor-zoom-out"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="max-w-[1280px] w-full bg-[#0B0C0E] rounded-2xl overflow-hidden border border-white/20 shadow-2xl"
+            className="max-w-5xl w-full flex flex-col items-center cursor-default"
           >
-            <div className="px-4 py-3 bg-[#16171B] flex items-center justify-between text-white border-b border-white/10">
-              <span className="font-bold text-sm">{lightboxImg.title} (16:9 Desktop View)</span>
-              <button
-                onClick={() => setLightboxImg(null)}
-                className="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-semibold cursor-pointer"
-              >
-                Close ✕
-              </button>
+            <div className="w-full flex items-center justify-between pb-3 text-white text-sm font-bold border-b border-white/10 mb-4">
+              <span>{activeMediaModal.title}</span>
+              <div className="flex items-center gap-3">
+                {activeMediaModal.type === 'pdf' && (
+                  <a
+                    href={activeMediaModal.src}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs text-[#F79223] hover:underline"
+                  >
+                    Open in New Tab ↗
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setActiveMediaModal(null)}
+                  className="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-bold cursor-pointer transition-colors"
+                >
+                  Close ✕
+                </button>
+              </div>
             </div>
-            <img
-              src={lightboxImg.src}
-              alt={lightboxImg.title}
-              className="w-full h-auto max-h-[82vh] object-contain block mx-auto"
-            />
+
+            {activeMediaModal.type === 'image' && (
+              <img
+                src={activeMediaModal.src}
+                alt={activeMediaModal.title}
+                className="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl"
+              />
+            )}
+
+            {activeMediaModal.type === 'video' && (
+              <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border border-white/20 bg-black">
+                <iframe
+                  src={activeMediaModal.src}
+                  className="w-full h-full"
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                  title={activeMediaModal.title}
+                />
+              </div>
+            )}
+
+            {activeMediaModal.type === 'pdf' && (
+              <div className="w-full h-[78vh] rounded-2xl overflow-hidden shadow-2xl border border-white/20 bg-white">
+                <iframe
+                  src={activeMediaModal.src}
+                  className="w-full h-full"
+                  title={activeMediaModal.title}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}

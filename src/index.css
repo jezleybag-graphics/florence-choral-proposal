@@ -24,6 +24,65 @@
 
 html {
   font: 100%/1.5 var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+/* Better Proposals Template Styles */
+.bp-font {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.bp-dark-section {
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+}
+
+.bp-white-section {
+  background-color: #FFFFFF;
+  color: #333333;
+}
+
+.bp-heading-lowercase {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  text-transform: lowercase;
+  letter-spacing: -0.01em;
+}
+
+.bp-heading-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.bp-body-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.6;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 24s linear infinite;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
 }
 
 body {
@@ -217,7 +276,7 @@ dialog::backdrop {
 }
 
 /* ============================================================================
-   JEZREEL DAVE REBRANDED PROPOSAL TEMPLATE ENGINE (MEASURED US LETTER 816x1056)
+   JEZREEL DAVE CONTINUOUS SCROLL PRESENTATION ENGINE (DESKTOP UI/UX)
    ============================================================================ */
 .tpl-font-heading {
   font-family: 'Urbanist', 'Space Grotesk', sans-serif;
@@ -227,98 +286,86 @@ dialog::backdrop {
   font-family: 'Questrial', 'Plus Jakarta Sans', sans-serif;
 }
 
-.tpl-page {
-  width: 816px;
-  min-height: 1056px;
-  height: 1056px;
-  position: relative;
-  overflow: hidden;
-  background-color: #E5E5E3;
-  color: #0B0C0E;
-  padding: 58px 52px 44px 52px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.45);
-  border-radius: 12px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
-
-.tpl-page-cover {
-  background-color: #07080B;
+/* Full Continuous Presentation Canvas */
+.tpl-continuous-canvas {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0B0C0E;
   color: #FFFFFF;
-  padding: 34px 28px 28px 28px;
+  position: relative;
+  overflow-x: hidden;
 }
 
-.tpl-grid-12 {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 20px;
-  align-items: center;
+.tpl-section {
+  width: 100%;
+  position: relative;
+  padding: 80px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  scroll-margin-top: 80px;
 }
 
-.tpl-frosted-card {
-  background: rgba(230, 230, 228, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 32px;
-  padding: 36px 40px;
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.06);
+@media screen and (min-width: 1024px) {
+  .tpl-section {
+    padding: 110px 48px;
+  }
+}
+
+.tpl-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   position: relative;
   z-index: 2;
 }
 
-.tpl-pill-banner {
-  background: linear-gradient(135deg, #FFC98A 0%, #FFA94D 55%, #F79223 100%);
-  border-radius: 36px;
-  padding: 22px 28px;
-  color: #0B0C0E;
+.tpl-glass-card {
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 28px;
+  padding: 40px 44px;
+  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.6);
   position: relative;
   z-index: 2;
+  transition: border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.tpl-glass-card:hover {
+  border-color: rgba(247, 146, 35, 0.38);
 }
 
 .tpl-browser-backdrop {
   background: linear-gradient(135deg, #FFC98A 0%, #FFA63E 55%, #F79223 100%);
-  border-radius: 26px;
+  border-radius: 24px;
   padding: 16px 20px;
   position: relative;
 }
 
+/* Ambient Subtle Lighting */
 .tpl-ambient-bottom {
   background-image:
-    radial-gradient(circle at 8% 92%, rgba(247, 146, 35, 0.78) 0%, rgba(247, 146, 35, 0.28) 28%, transparent 56%),
-    radial-gradient(circle at 92% 88%, rgba(247, 146, 35, 0.78) 0%, rgba(247, 146, 35, 0.28) 28%, transparent 56%);
+    radial-gradient(circle at 10% 90%, rgba(247, 146, 35, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 90% 85%, rgba(247, 146, 35, 0.10) 0%, transparent 50%);
 }
 
 .tpl-ambient-center {
   background-image:
-    radial-gradient(circle at 50% 54%, rgba(247, 146, 35, 0.88) 0%, rgba(247, 146, 35, 0.36) 38%, transparent 66%);
+    radial-gradient(circle at 50% 50%, rgba(247, 146, 35, 0.14) 0%, transparent 60%);
 }
 
 .tpl-ambient-top {
   background-image:
-    radial-gradient(circle at 46% 6%, rgba(247, 146, 35, 0.82) 0%, rgba(247, 146, 35, 0.25) 32%, transparent 58%);
+    radial-gradient(circle at 50% 5%, rgba(247, 146, 35, 0.15) 0%, transparent 55%);
 }
 
-@media screen and (max-width: 860px) {
-  .tpl-page {
-    width: 100%;
-    min-height: auto;
-    height: auto;
-    padding: 28px 20px;
-    border-radius: 16px;
+@media screen and (max-width: 768px) {
+  .tpl-section {
+    padding: 60px 16px;
   }
-  .tpl-grid-12 {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  .tpl-frosted-card {
+  .tpl-glass-card {
     padding: 24px 20px;
-    border-radius: 22px;
+    border-radius: 20px;
   }
 }
 

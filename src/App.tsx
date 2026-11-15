@@ -26,14 +26,15 @@ const STORAGE_KEYS = {
   applications: 'florence_choral_applications_v1',
 };
 
-type AppView = 'proposal' | 'contract' | 'public' | 'admin';
+type AppView = 'cover' | 'proposal' | 'contract' | 'public' | 'admin';
 
 function getInitialView(): AppView {
-  if (typeof window === 'undefined') return 'proposal';
+  if (typeof window === 'undefined') return 'cover';
   const params = new URLSearchParams(window.location.search);
   const viewParam = params.get('view')?.toLowerCase();
   const path = window.location.pathname.toLowerCase();
 
+  if (viewParam === 'cover' || path.includes('/cover')) return 'cover';
   if (viewParam === 'contract' || path.includes('/contract')) return 'contract';
   if (viewParam === 'public' || viewParam === 'prototype' || path.includes('/prototype') || path.includes('/website')) {
     return 'public';
@@ -42,7 +43,7 @@ function getInitialView(): AppView {
     return 'admin';
   }
   if (viewParam === 'proposal' || path.includes('/proposal')) return 'proposal';
-  return 'proposal';
+  return 'cover';
 }
 
 export function App() {
@@ -177,12 +178,14 @@ export function App() {
     localStorage.removeItem(STORAGE_KEYS.applications);
   };
 
-  if (activeView === 'proposal' || activeView === 'contract') {
+  if (activeView === 'cover' || activeView === 'proposal' || activeView === 'contract') {
     return (
       <InteractiveProposal
         mode={activeView === 'contract' ? 'contract-only' : 'full-proposal'}
+        initialCover={activeView === 'cover'}
         onOpenPrototype={() => handleSwitchView('public')}
         onOpenDashboard={() => handleSwitchView('admin')}
+        onOpenCover={() => handleSwitchView('cover')}
         onSwitchMode={(mode) =>
           handleSwitchView(mode === 'contract-only' ? 'contract' : 'proposal')
         }
