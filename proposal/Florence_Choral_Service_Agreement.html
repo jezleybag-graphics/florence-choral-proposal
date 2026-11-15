@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Florence Choral — Terms of Agreement (Jezreel Dave Branding)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 210mm;
+      height: 297mm;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #111111;
+      background: #E5E5E5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .page {
+      width: 210mm;
+      height: 297mm;
+      padding: 11mm 15mm 10mm 15mm;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        radial-gradient(circle at 18% 92%, rgba(247, 146, 35, 0.78) 0%, rgba(247, 146, 35, 0.25) 32%, transparent 60%),
+        radial-gradient(circle at 88% 12%, rgba(247, 146, 35, 0.28) 0%, transparent 42%),
+        #E5E5E5;
+    }
+
+    /* Template Header Row */
+    .tpl-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3.8mm;
+    }
+    .tpl-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24pt;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: #0B0C0E;
+    }
+    .tpl-badge-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .tpl-badge-pill {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1.4px solid #111111;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.55);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 7.8pt;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #111111;
+    }
+    .tpl-badge-pill img {
+      height: 14px;
+      width: auto;
+    }
+    .tpl-badge-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #F79223;
+      border: 1.4px solid #111111;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tpl-badge-circle svg {
+      width: 16px;
+      height: 16px;
+      stroke: #111111;
+      stroke-width: 1.8;
+      fill: none;
+    }
+
+    /* Parties Banner */
+    .parties-banner {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1.3px solid #111111;
+      border-radius: 16px;
+      padding: 3.2mm 5mm;
+      display: grid;
+      grid-template-columns: 1fr 1.2px 1fr;
+      gap: 5mm;
+      align-items: center;
+      margin-bottom: 4mm;
+    }
+    .parties-divider {
+      width: 1.2px;
+      height: 100%;
+      background: #111111;
+    }
+    .party-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 8.2pt;
+      line-height: 1.35;
+    }
+    .party-block img.logo-jd {
+      height: 28px;
+      width: auto;
+    }
+    .party-block img.logo-fc {
+      height: 32px;
+      width: 32px;
+      border-radius: 7px;
+      object-fit: cover;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+    .party-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 7pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #F79223;
+      background: #0B0C0E;
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-bottom: 1.5px;
+    }
+
+    /* Template Page 9–10 Two-Column Terms Layout */
+    .terms-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3mm;
+    }
+    .term-row {
+      display: grid;
+      grid-template-columns: 0.30fr 0.70fr;
+      gap: 5mm;
+      align-items: start;
+      padding-bottom: 2.8mm;
+      border-bottom: 1px solid rgba(17, 17, 17, 0.16);
+    }
+    .term-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .term-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10.2pt;
+      font-weight: 600;
+      line-height: 1.2;
+      color: #0B0C0E;
+    }
+    .term-content {
+      font-size: 8.2pt;
+      line-height: 1.4;
+      color: #18181B;
+    }
+    .term-content ul {
+      padding-left: 15px;
+      margin-top: 2px;
+    }
+    .term-content li {
+      margin-bottom: 1.5px;
+    }
+
+    /* Signature Section (Template Page 10 Bottom Style) */
+    .signature-card {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1.4px solid #111111;
+      border-radius: 18px;
+      padding: 4mm 6mm;
+      margin-top: 2mm;
+    }
+    .sig-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14mm;
+    }
+    .sig-col {
+      font-size: 8.2pt;
+      line-height: 1.35;
+    }
+    .sig-line {
+      margin-top: 7.5mm;
+      border-top: 1.3px solid #111111;
+      padding-top: 1.5mm;
+      font-weight: 700;
+      font-size: 9pt;
+      color: #0B0C0E;
+    }
+
+    .page-footer {
+      margin-top: 3mm;
+      padding-top: 2.5mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 7.5pt;
+      color: #3F3F46;
+      border-top: 1px solid rgba(17, 17, 17, 0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <section class="page">
+    <div>
+      <header class="tpl-header">
+        <h1 class="tpl-heading">TERMS OF AGREEMENT</h1>
+        <div class="tpl-badge-group">
+          <div class="tpl-badge-pill">
+            <img src="assets/jezreel_logo_mark.png" alt="" />
+            <span>€800 EUR / MONTH</span>
+          </div>
+          <div class="tpl-badge-circle">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5L10.8 14.8L15.5 9.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- Parties Banner -->
+      <div class="parties-banner">
+        <div class="party-block">
+          <img src="assets/jezreel_logo_mark.png" alt="Jezreel Dave" class="logo-jd" />
+          <div>
+            <span class="party-label">SERVICE PROVIDER</span>
+            <div><strong>Jezreel Dave Leybag</strong></div>
+            <div>Web Developer, Graphic Designer &amp; Video Producer</div>
+          </div>
+        </div>
+        <div class="parties-divider"></div>
+        <div class="party-block">
+          <img src="assets/Florence_choral_quadrato.jpg" alt="Florence Choral" class="logo-fc" />
+          <div>
+            <span class="party-label">CLIENT</span>
+            <div><strong>Dr. Leonardo Sagliocca &bull; Florence Choral</strong></div>
+            <div>Founder &amp; Artistic Director &bull; Florence (Firenze), Italy</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Template Page 9–10 Two-Column Terms -->
+      <div class="terms-list">
+        <div class="term-row">
+          <div class="term-title">Authorization &amp;<br>Scope of Work</div>
+          <div class="term-content">
+            <strong>Florence Choral (Dr. Leonardo Sagliocca)</strong> engages <strong>Jezreel Dave Leybag</strong> as an independent contractor for ongoing website development, hosting administration, and maintenance of <strong>florencechoral.org</strong>, together with <strong>unlimited graphic design and unlimited video editing</strong> across all five (5) annual Renaissance choral festivals:
+            <ul>
+              <li><strong>Website Development &amp; Maintenance:</strong> Full deployment and ongoing updates of festival dates, 4-day programmes, rules, jury profiles, venues, forms, and archives on <strong>florencechoral.org</strong>.</li>
+              <li><strong>Unlimited Graphic Design:</strong> Official Festival Brochures (PDF &amp; print-ready), rulebooks, posters, basilica banners, concert programmes, Gold/Silver/Bronze Choir Diplomas, and social graphics.</li>
+              <li><strong>Unlimited Video Editing:</strong> Promotional trailers, concert performance recordings, Vytautas Miškinis hymn features, conductor/jury interviews, and social media reels (Instagram, Facebook, YouTube).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="term-row">
+          <div class="term-title">Workflow &amp;<br>Revisions</div>
+          <div class="term-content">
+            The Client may submit an unlimited number of website, graphic design, and video editing requests via Email or WhatsApp. Requests are completed systematically in the Client’s priority order (24–48 hours for standard web updates and graphics; 2–4 business days for multi-page brochures and concert video edits). <strong>Unlimited revisions</strong> are included on every deliverable until the Client is 100% satisfied.
+          </div>
+        </div>
+
+        <div class="term-row">
+          <div class="term-title">Payment &amp;<br>Monthly Fee</div>
+          <div class="term-content">
+            In consideration for the full all-inclusive scope above, the Client agrees to pay a flat monthly retainer of <strong>€800.00 EUR (Eight Hundred Euros) per month</strong>. No additional hourly charges or per-revision fees apply. Invoices are issued monthly and are payable within seven (7) calendar days via international bank transfer / Wise / agreed payment method. (Direct third-party domain renewal remains in the Client’s name.)
+          </div>
+        </div>
+
+        <div class="term-row">
+          <div class="term-title">Copyright &amp; 100%<br>Client Ownership</div>
+          <div class="term-content">
+            <strong>Jezreel Dave Leybag</strong> guarantees that full source code, domain configurations (<strong>florencechoral.org</strong>), print design source files, PDF brochures, and edited video masters created under this Agreement are the <strong>100% sole and exclusive property of Dr. Leonardo Sagliocca / Florence Choral</strong>. The Client holds direct Owner credentials to the GitHub repository, domain registrar, and dashboard at all times (Zero Lockout Guarantee).
+          </div>
+        </div>
+
+        <div class="term-row">
+          <div class="term-title">Flexible Term &amp;<br>Cancellation</div>
+          <div class="term-content">
+            This Agreement operates on a flexible <strong>month-to-month basis</strong> commencing on the date signed below. Either party may pause or terminate this Agreement at any time by providing <strong>thirty (30) days’ written notice</strong> via email. Upon termination, the Client retains full ownership and uninterrupted access to all website code, domains, and media assets.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Signature Block -->
+    <div>
+      <div class="signature-card">
+        <div style="font-size:8pt; font-weight:600; color:#3F3F46; margin-bottom:2mm; text-transform:uppercase; letter-spacing:0.05em;">
+          By signing below, both parties agree to the terms of this Monthly Partnership Agreement:
+        </div>
+        <div class="sig-grid">
+          <div class="sig-col">
+            <div class="sig-line">Jezreel Dave Leybag</div>
+            <div>Jezreel Dave Digital &amp; Media</div>
+            <div style="color:#52525B; margin-top:2px;">Date: ____________________________</div>
+          </div>
+          <div class="sig-col">
+            <div class="sig-line">Dr. Leonardo Sagliocca</div>
+            <div>Founder &amp; Artistic Director, Florence Choral</div>
+            <div style="color:#52525B; margin-top:2px;">Date: ____________________________</div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="page-footer">
+        <span><strong>Jezreel Dave Leybag</strong> &bull; Formal Monthly Service Agreement (Ref: FC-RET-2026)</span>
+        <span>Page 01 of 01</span>
+      </footer>
+    </div>
+  </section>
+
+</body>
+</html>

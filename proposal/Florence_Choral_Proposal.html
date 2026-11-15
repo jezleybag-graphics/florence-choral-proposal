@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Florence Choral — Website Development & Media Proposal (Jezreel Dave)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 210mm;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #111111;
+      background: #E5E5E5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Fixed A4 Page Canvas */
+    .page {
+      width: 210mm;
+      height: 297mm;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
+      padding: 15mm 16mm 14mm 16mm;
+      display: flex;
+      flex-direction: column;
+      background: #E5E5E5;
+    }
+    .page:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    /* ================= PAGE 1: DARK COVER PAGE (TEMPLATE EXACT STYLE) ================= */
+    .page-cover {
+      background: #07080B;
+      color: #FFFFFF;
+      padding: 13mm 14mm 14mm 14mm;
+      justify-content: space-between;
+    }
+    .cover-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 4mm 4.5mm 4mm;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.75);
+      font-size: 9pt;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .cover-top-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(247, 146, 35, 0.45);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+    .cover-top-brand img {
+      height: 18px;
+      width: auto;
+    }
+    .cover-top-brand span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+    }
+    .cover-top-brand span em {
+      color: #F79223;
+      font-style: normal;
+    }
+
+    /* Hero Gradient Card */
+    .cover-hero-card {
+      height: 174mm;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 14% 92%, #F79223 0%, #FFAE42 32%, rgba(247, 146, 35, 0.28) 60%, transparent 82%),
+        linear-gradient(145deg, #E6E6E6 0%, #DEDEDE 55%, #F5C384 100%);
+      color: #0D0E11;
+      padding: 10mm 13mm 12mm 13mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .cover-window-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 5px;
+      padding-bottom: 6mm;
+      border-bottom: 1.3px solid #111111;
+    }
+    .win-dot-filled {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #F79223;
+      border: 1.4px solid #111111;
+    }
+    .win-dot-outline {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1.4px solid #111111;
+    }
+    .win-pill-outline {
+      width: 68px;
+      height: 22px;
+      border-radius: 999px;
+      background: transparent;
+      border: 1.4px solid #111111;
+    }
+
+    .cover-title-wrap {
+      margin: auto 0;
+    }
+    .cover-eyebrow {
+      display: inline-block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 9.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #111111;
+      background: rgba(255, 255, 255, 0.65);
+      border: 1.2px solid #111111;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+    .cover-display-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 44pt;
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #0B0C0E;
+    }
+    .cover-hand-icon {
+      display: inline-block;
+      vertical-align: middle;
+      width: 44px;
+      height: 44px;
+      margin-left: 8px;
+      transform: translateY(-4px);
+    }
+    .cover-subtitle-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid rgba(17, 17, 17, 0.25);
+      font-size: 8.6pt;
+      font-weight: 600;
+      color: #111111;
+      white-space: nowrap;
+    }
+
+    /* Bottom Prepared By / For Card */
+    .cover-bottom-card {
+      height: 68mm;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 86% 85%, #F79223 0%, #FFAE42 30%, rgba(247, 146, 35, 0.2) 62%, transparent 85%),
+        linear-gradient(135deg, #E4E4E4 0%, #DFDFDF 65%, #F3B973 100%);
+      color: #0D0E11;
+      padding: 8mm 13mm;
+      display: grid;
+      grid-template-columns: 1fr 1.3px 1fr;
+      gap: 10mm;
+      align-items: stretch;
+    }
+    .cover-divider-v {
+      background: #111111;
+      width: 1.3px;
+      height: 100%;
+    }
+    .cover-party-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .cover-party-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13pt;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #0B0C0E;
+    }
+    .cover-party-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 4px 0;
+    }
+    .cover-party-brand img.jd-logo {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+    .cover-party-brand img.fc-logo {
+      height: 38px;
+      width: 38px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+    .cover-party-details {
+      font-size: 9.5pt;
+      line-height: 1.42;
+      color: #111111;
+    }
+    .cover-party-details strong {
+      font-size: 10.5pt;
+      font-weight: 700;
+      display: block;
+      color: #000000;
+    }
+
+    /* ================= INTERIOR PAGES SHARED TEMPLATE STYLING ================= */
+    .ambient-glow-bottom {
+      background:
+        radial-gradient(circle at 8% 92%, rgba(247, 146, 35, 0.72) 0%, rgba(247, 146, 35, 0.22) 28%, transparent 55%),
+        radial-gradient(circle at 92% 88%, rgba(247, 146, 35, 0.72) 0%, rgba(247, 146, 35, 0.22) 28%, transparent 55%),
+        #E5E5E5;
+    }
+    .ambient-glow-center {
+      background:
+        radial-gradient(circle at 50% 56%, rgba(247, 146, 35, 0.85) 0%, rgba(247, 146, 35, 0.35) 38%, transparent 66%),
+        #E5E5E5;
+    }
+
+    /* Top Header Row with Template Pill + Orange Icon Circle */
+    .tpl-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7mm;
+      position: relative;
+      z-index: 2;
+    }
+    .tpl-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 23pt;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: #0B0C0E;
+    }
+    .tpl-badge-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .tpl-badge-pill {
+      height: 32px;
+      padding: 0 14px;
+      min-width: 78px;
+      border-radius: 999px;
+      border: 1.4px solid #111111;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.45);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #111111;
+    }
+    .tpl-badge-pill img {
+      height: 14px;
+      width: auto;
+    }
+    .tpl-badge-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #F79223;
+      border: 1.4px solid #111111;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tpl-badge-circle svg {
+      width: 16px;
+      height: 16px;
+      stroke: #111111;
+      stroke-width: 1.7;
+      fill: none;
+    }
+
+    /* Template Centered Hero Statement */
+    .tpl-lead-center {
+      text-align: center;
+      font-size: 13pt;
+      font-weight: 400;
+      line-height: 1.42;
+      color: #111111;
+      max-width: 164mm;
+      margin: 0 auto 7mm auto;
+      position: relative;
+      z-index: 2;
+    }
+    .tpl-lead-center strong {
+      font-weight: 700;
+      background: rgba(247, 146, 35, 0.22);
+      padding: 0 5px;
+      border-radius: 4px;
+    }
+
+    /* Template Frosted Rounded Card */
+    .tpl-frosted-card {
+      background: rgba(232, 232, 232, 0.93);
+      border-radius: 26px;
+      padding: 9mm 11mm;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    /* Page 2 Comparison + Solution Stack */
+    .intro-body-text {
+      font-size: 9.8pt;
+      line-height: 1.55;
+      color: #18181B;
+      margin-bottom: 5mm;
+    }
+    .intro-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+      margin: 5mm 0;
+    }
+    .intro-box {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1.2px solid #111111;
+      border-radius: 16px;
+      padding: 4.5mm 5mm;
+    }
+    .intro-box.highlight {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(247, 146, 35, 0.16));
+      border: 1.5px solid #111111;
+    }
+    .intro-box h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 3mm;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .intro-box ul {
+      padding-left: 15px;
+      font-size: 8.8pt;
+      line-height: 1.48;
+      color: #1F2937;
+    }
+    .intro-box li {
+      margin-bottom: 2mm;
+    }
+
+    /* Template Page 4 Stacked Feature Divider Box */
+    .stacked-pillars {
+      margin-top: 4mm;
+      padding: 4.5mm 6mm;
+      background: rgba(255, 255, 255, 0.65);
+      border-radius: 18px;
+      border: 1px solid rgba(17, 17, 17, 0.15);
+      text-align: center;
+    }
+    .stacked-pillars .pillar-item {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #111111;
+    }
+    .stacked-pillars .pillar-sep {
+      width: 1.5px;
+      height: 14px;
+      background: #111111;
+      margin: 2.2mm auto;
+    }
+
+    /* ================= PAGES 3 & 4: BROWSER MOCKUP SHOWCASE (TEMPLATE PAGE 3 EXACT STYLE) ================= */
+    .work-section-sub {
+      font-size: 9.6pt;
+      color: #27272A;
+      margin-top: -3.5mm;
+      margin-bottom: 5mm;
+      line-height: 1.4;
+    }
+    .project-showcase-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5.5mm;
+      flex: 1;
+      justify-content: space-between;
+    }
+    .project-row {
+      display: grid;
+      grid-template-columns: 0.92fr 1.28fr;
+      gap: 6mm;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid rgba(17, 17, 17, 0.12);
+      border-radius: 20px;
+      padding: 3.5mm 4.5mm;
+    }
+    .project-info h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #0B0C0E;
+      line-height: 1.22;
+      margin-bottom: 1.8mm;
+    }
+    .project-info p.desc {
+      font-size: 8.1pt;
+      line-height: 1.38;
+      color: #27272A;
+      margin-bottom: 2.2mm;
+    }
+    .law-tag-box {
+      background: #FFFFFF;
+      border: 1.2px solid #111111;
+      border-left: 4px solid #F79223;
+      border-radius: 10px;
+      padding: 2.2mm 3mm;
+      font-size: 7.7pt;
+      line-height: 1.34;
+      color: #111111;
+    }
+    .law-tag-box strong {
+      color: #000000;
+      text-transform: uppercase;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 7.4pt;
+      letter-spacing: 0.03em;
+      display: block;
+      margin-bottom: 1px;
+    }
+
+    /* Template Orange Pill Backdrop + Browser Window Frame */
+    .browser-backdrop {
+      background: linear-gradient(135deg, #FFB357 0%, #F79223 100%);
+      border-radius: 18px;
+      padding: 3.2mm 4mm;
+      border: 1.2px solid #111111;
+      box-shadow: 0 6px 16px rgba(247, 146, 35, 0.18);
+    }
+    .browser-window {
+      background: #111111;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1.2px solid #111111;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+    }
+    .browser-chrome {
+      background: #F4F4F5;
+      height: 13px;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #D4D4D8;
+    }
+    .browser-Result-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8px;
+    }
+    .browser-Result-lines span {
+      display: block;
+      width: 8px;
+      height: 1.2px;
+      background: #111111;
+    }
+    .browser-dots {
+      display: flex;
+      gap: 3px;
+    }
+    .browser-dots span {
+      width: 4.5px;
+      height: 4.5px;
+      border-radius: 50%;
+      border: 1px solid #111111;
+      background: #F79223;
+    }
+    .browser-window img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    /* Compact 4-Row Layout for Page 4 */
+    .project-showcase-list.compact-4 {
+      gap: 3.5mm;
+    }
+    .project-showcase-list.compact-4 .project-row {
+      padding: 2.5mm 3.8mm;
+      grid-template-columns: 1fr 1.12fr;
+    }
+    .project-showcase-list.compact-4 .browser-backdrop {
+      padding: 2.2mm 3mm;
+      border-radius: 14px;
+    }
+    .project-showcase-list.compact-4 .project-info h3 {
+      font-size: 9.6pt;
+      margin-bottom: 1.2mm;
+    }
+    .project-showcase-list.compact-4 .project-info p.desc {
+      font-size: 7.7pt;
+      margin-bottom: 1.5mm;
+    }
+    .project-showcase-list.compact-4 .law-tag-box {
+      font-size: 7.3pt;
+      padding: 1.8mm 2.5mm;
+    }
+
+    /* ================= PAGE 5: SITE STRUCTURE, CREATIVE PIPELINE & TIMELINE (TEMPLATE PAGES 5 & 6) ================= */
+    .band-section {
+      margin-bottom: 5.5mm;
+    }
+    .band-header-grid {
+      display: grid;
+      grid-template-columns: 0.78fr 1.22fr;
+      gap: 6mm;
+      align-items: start;
+      margin-bottom: 3mm;
+    }
+    .band-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17pt;
+      font-weight: 600;
+      line-height: 1.08;
+      text-transform: uppercase;
+      color: #0B0C0E;
+    }
+    .band-desc {
+      font-size: 9pt;
+      line-height: 1.42;
+      color: #18181B;
+    }
+    .orange-pill-banner {
+      background: linear-gradient(135deg, #FFB357 0%, #F79223 100%);
+      border: 1.4px solid #111111;
+      border-radius: 22px;
+      padding: 4.5mm 6mm;
+      color: #0B0C0E;
+    }
+    .pill-row-items {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      text-align: center;
+    }
+    .pill-row-items .item-lg {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11.5pt;
+      font-weight: 600;
+      color: #0B0C0E;
+      flex: 1;
+    }
+    .pill-row-items .item-sm {
+      font-size: 8.6pt;
+      font-weight: 600;
+      color: #0B0C0E;
+      flex: 1;
+    }
+    .pill-v-line {
+      width: 1.3px;
+      height: 24px;
+      background: #111111;
+    }
+    .pill-v-line.sm {
+      height: 16px;
+    }
+    .pill-caption {
+      text-align: center;
+      font-size: 8.2pt;
+      line-height: 1.38;
+      color: #111111;
+      margin-top: 3mm;
+      padding-top: 2.5mm;
+      border-top: 1px solid rgba(17, 17, 17, 0.22);
+    }
+
+    /* Template Page 6 Clean Lined Table */
+    .tpl-lined-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2mm;
+    }
+    .tpl-lined-table th {
+      text-align: left;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 9.2pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #0B0C0E;
+      padding: 2.5mm 2mm;
+      border-bottom: 1.5px solid #111111;
+    }
+    .tpl-lined-table td {
+      padding: 2.5mm 2mm;
+      border-bottom: 1.2px solid #111111;
+      font-size: 8.3pt;
+      line-height: 1.38;
+      color: #18181B;
+      vertical-align: top;
+    }
+
+    /* ================= PAGE 6: ONGOING FEES & TERMS SUMMARY (TEMPLATE PAGES 8 & 9) ================= */
+    .retainer-hero-banner {
+      background: #0B0C0E;
+      color: #FFFFFF;
+      border-radius: 18px;
+      padding: 3.8mm 5.5mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 3mm;
+      border: 1.5px solid #111111;
+    }
+    .retainer-hero-banner h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12pt;
+      font-weight: 700;
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+    .retainer-hero-banner p {
+      font-size: 8pt;
+      color: #D4D4D8;
+      margin-top: 2px;
+    }
+    .retainer-price-pill {
+      background: #F79223;
+      color: #0B0C0E;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15pt;
+      font-weight: 700;
+      padding: 2.5mm 5.5mm;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .terms-mini-grid {
+      display: grid;
+      grid-template-columns: 0.32fr 0.68fr;
+      gap: 2.2mm 5mm;
+      margin-top: 3mm;
+      padding-top: 2.8mm;
+      border-top: 1.2px solid rgba(17, 17, 17, 0.2);
+      font-size: 7.9pt;
+      line-height: 1.36;
+    }
+    .terms-mini-grid .term-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 8.4pt;
+      color: #0B0C0E;
+    }
+    .terms-mini-grid .term-body {
+      color: #27272A;
+    }
+
+    /* Footer Page Number & Brand Strip */
+    .page-footer {
+      margin-top: auto;
+      padding-top: 3mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 7.5pt;
+      color: #52525B;
+      border-top: 1px solid rgba(17, 17, 17, 0.12);
+    }
+    .page-footer strong {
+      color: #111111;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================================================
+       PAGE 1: COVER PAGE (REBRANDED TEMPLATE COVER IN JEZREEL DAVE ORANGE & OBSIDIAN BLACK)
+       ========================================================================================= -->
+  <section class="page page-cover">
+    <div class="cover-top-bar">
+      <div>
+        <div style="opacity:0.75;">Prepared on:</div>
+        <div style="font-weight:600;">2026-11-15</div>
+      </div>
+      <div class="cover-top-brand">
+        <img src="assets/jezreel_logo_mark.png" alt="Jezreel Dave" />
+        <span><em>J</em>EZREEL DAVE &bull; DIGITAL &amp; MEDIA PARTNER</span>
+      </div>
+      <div style="text-align:right;">
+        <div style="opacity:0.75;">Proposal Reference:</div>
+        <div style="font-weight:600;">florencechoral.org</div>
+      </div>
+    </div>
+
+    <div class="cover-hero-card">
+      <div class="cover-window-bar">
+        <div class="win-dot-filled"></div>
+        <div class="win-dot-outline"></div>
+        <div class="win-pill-outline"></div>
+      </div>
+
+      <div class="cover-title-wrap">
+        <div class="cover-eyebrow">All-In-One Digital &amp; Creative Partnership</div>
+        <h1 class="cover-display-title">
+          WEBSITE<br>
+          DEVELOPMENT<br>
+          &amp; MEDIA<br>
+          PROPOSAL
+          <svg class="cover-hand-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 11V6C18 4.89543 17.1046 4 16 4C14.8954 4 14 4.89543 14 6V10M14 10V4.5C14 3.39543 13.1046 2.5 12 2.5C10.8954 2.5 10 3.39543 10 4.5V10M10 10V5.5C10 4.39543 9.10457 3.5 8 3.5C6.89543 3.5 6 4.39543 6 5.5V14L4.46482 12.1578C3.7322 11.2786 2.39913 11.2248 1.59792 12.04C0.903497 12.7466 0.874903 13.8712 1.53266 14.6122L6.3519 20.0413C7.47926 21.3113 9.09614 22 10.7935 22H14.5C17.8137 22 20.5 19.3137 20.5 16V11C20.5 9.89543 19.6046 9 18.5 9C17.3954 9 18 9.89543 18 11Z" stroke="#0B0C0E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </h1>
+      </div>
+
+      <div class="cover-subtitle-bar">
+        <span>Website Rebuild &amp; Maintenance (florencechoral.org)</span>
+        <span>&bull;</span>
+        <span>Unlimited Graphic Design</span>
+        <span>&bull;</span>
+        <span>Unlimited Video Editing</span>
+      </div>
+    </div>
+
+    <div class="cover-bottom-card">
+      <div class="cover-party-col">
+        <div class="cover-party-label">PREPARED BY:</div>
+        <div class="cover-party-brand">
+          <img src="assets/jezreel_logo_tagline.png" alt="Jezreel Dave Brand" class="jd-logo" />
+        </div>
+        <div class="cover-party-details">
+          <strong>Jezreel Dave Leybag</strong>
+          Web Development, Graphic Design &amp; Video Production
+        </div>
+      </div>
+
+      <div class="cover-divider-v"></div>
+
+      <div class="cover-party-col">
+        <div class="cover-party-label">PREPARED FOR:</div>
+        <div class="cover-party-brand">
+          <img src="assets/Florence_choral_quadrato.jpg" alt="Florence Choral" class="fc-logo" />
+          <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:10.5pt; color:#0B0C0E;">FLORENCE CHORAL</span>
+        </div>
+        <div class="cover-party-details">
+          <strong>Dr. Leonardo Sagliocca</strong>
+          Founder &amp; Artistic Director &bull; Florence, Italy
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================================
+       PAGE 2: INTRODUCTION & SOLUTION OUTLINE (TEMPLATE PAGES 2 & 4 COMBINED)
+       ========================================================================================= -->
+  <section class="page ambient-glow-bottom">
+    <header class="tpl-header">
+      <h2 class="tpl-heading">INTRODUCTION</h2>
+      <div class="tpl-badge-group">
+        <div class="tpl-badge-pill">
+          <img src="assets/jezreel_logo_mark.png" alt="" />
+          <span>01 / STORYLINE</span>
+        </div>
+        <div class="tpl-badge-circle">
+          <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3L21 10.5V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V10.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <p class="tpl-lead-center">
+      Following the loss of access to the legacy WordPress installation on <strong>florencechoral.com</strong>, international choir directors currently hit broken pages (<em>403 Forbidden</em>). Ahead of our transition to <strong>florencechoral.org</strong>, I have built a complete, working platform prototype.
+    </p>
+
+    <div class="tpl-frosted-card" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <p class="intro-body-text">
+          At <strong>Jezreel Dave Digital &amp; Media</strong>, my goal is simple: give <strong>Florence Choral</strong> a fast, prestigious, 100% functional website while handling all your year-round graphic design and video editing under one predictable monthly partnership.
+        </p>
+
+        <div class="intro-two-col">
+          <div class="intro-box">
+            <h3>
+              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#DC143C;"></span>
+              Previous Site Challenges (florencechoral.com)
+            </h3>
+            <ul>
+              <li><strong>Broken Inner Pages:</strong> Clicking Festivals, Venues, or Artistic Committee returns a <em>403 Forbidden</em> error.</li>
+              <li><strong>Locked Admin &amp; Code:</strong> No direct access to source files, backups, or easy schedule updates.</li>
+              <li><strong>High Decision Friction:</strong> Visiting conductors cannot easily compare all 5 annual festivals or apply in one click.</li>
+            </ul>
+          </div>
+
+          <div class="intro-box highlight">
+            <h3>
+              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#F79223;border:1px solid #111;"></span>
+              New Platform Solution (florencechoral.org)
+            </h3>
+            <ul>
+              <li><strong>100% Working Pages:</strong> All 5 Renaissance festivals, 4-day programmes, venues, and jury rosters load instantly.</li>
+              <li><strong>100% Client Ownership:</strong> You hold direct Owner keys to the source code, domain, and visual dashboard.</li>
+              <li><strong>Built for Choir Conversion:</strong> 1-click PDF brochure downloads, WhatsApp chat, and online application modals.</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="intro-body-text" style="margin-bottom: 2mm; font-weight: 600; text-align: center;">
+          Once launched on <strong>florencechoral.org</strong>, our partnership empowers you to:
+        </p>
+
+        <div class="stacked-pillars">
+          <div class="pillar-item">Keep all 5 annual festivals, dates, and jury rosters updated on-demand</div>
+          <div class="pillar-sep"></div>
+          <div class="pillar-item">Produce unlimited print brochures, concert posters, and choir diplomas</div>
+          <div class="pillar-sep"></div>
+          <div class="pillar-item">Publish unlimited festival trailers, concert recordings, and social media reels</div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 5mm; padding-top: 4mm; border-top: 1px solid rgba(17,17,17,0.15);">
+        <div style="font-size: 11.5pt; font-weight: 600; margin-bottom: 3mm;">
+          Below is a visual walkthrough of the prototype we built and why each upgrade improves usability.
+        </div>
+        <img src="assets/jezreel_logo_tagline.png" alt="Jezreel Dave" style="height: 32px; width: auto;" />
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      <span><strong>Jezreel Dave Leybag</strong> &bull; Web Development, Graphic Design &amp; Video Production</span>
+      <span>Page 02 of 06</span>
+    </footer>
+  </section>
+
+  <!-- =========================================================================================
+       PAGE 3: PROTOTYPE WALKTHROUGH PART 1 (TEMPLATE PAGE 3 BROWSER MOCKUP STYLE)
+       ========================================================================================= -->
+  <section class="page">
+    <header class="tpl-header" style="margin-bottom: 4mm;">
+      <h2 class="tpl-heading">PROTOTYPE WALKTHROUGH</h2>
+      <div class="tpl-badge-group">
+        <div class="tpl-badge-pill">
+          <img src="assets/jezreel_logo_mark.png" alt="" />
+          <span>16:9 DESKTOP (1/2)</span>
+        </div>
+        <div class="tpl-badge-circle">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <p class="work-section-sub">
+      Captured in <strong>16:9 widescreen desktop resolution</strong>. Every section is engineered using proven UX/UI Design Laws so international conductors can find festival details and register effortlessly:
+    </p>
+
+    <div class="project-showcase-list">
+      <!-- Feature 1 -->
+      <div class="project-row">
+        <div class="project-info">
+          <h3>01. Optical Brand Header &amp; Frosted-Glass "Festivals" Menu</h3>
+          <p class="desc">
+            Embedded your transparent Florence Choral emblem directly into the crimson header, paired with a 90%-frosted Apple-glass dropdown showing all 5 festivals and dates.
+          </p>
+          <div class="law-tag-box">
+            <strong>Golden Ratio (1:1.618) &amp; Hick’s Law</strong>
+            Optical alignment locks the Duomo crest to the title cap-height, while Hick’s Law cuts decision time by listing all 5 festival dates in one clean menu.
+          </div>
+        </div>
+        <div class="browser-backdrop">
+          <div class="browser-window">
+            <div class="browser-chrome">
+              <div class="browser-Result-lines"><span></span><span></span><span></span></div>
+              <div class="browser-dots"><span></span><span></span><span></span></div>
+            </div>
+            <img src="assets/01_header_hero_dropdown_16x9.png" alt="Header and Frosted Glass Dropdown" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="project-row">
+        <div class="project-info">
+          <h3>02. The 5 Renaissance Master Festivals Directory</h3>
+          <p class="desc">
+            Structured 3-column directory for Leonardo da Vinci, Verrocchio, Michelangelo, Lorenzo de’ Medici, and Botticelli with status badges and deadlines.
+          </p>
+          <div class="law-tag-box">
+            <strong>Law of Proximity &amp; Visual Hierarchy</strong>
+            Groups festival dates, Renaissance master dedications, and deadlines inside uniform cards so choir directors can compare all 5 seasons in seconds.
+          </div>
+        </div>
+        <div class="browser-backdrop">
+          <div class="browser-window">
+            <div class="browser-chrome">
+              <div class="browser-Result-lines"><span></span><span></span><span></span></div>
+              <div class="browser-dots"><span></span><span></span><span></span></div>
+            </div>
+            <img src="assets/02a_festivals_grid_top_16x9.png" alt="5 Renaissance Festivals Grid" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="project-row">
+        <div class="project-info">
+          <h3>03. Interactive 4-Day Programme &amp; Rules Modal</h3>
+          <p class="desc">
+            Instant overlay window displaying the Day 1–4 itinerary, competition categories, repertoire rules, prizes, and 1-click registration actions.
+          </p>
+          <div class="law-tag-box">
+            <strong>Fitts’s Law &amp; Progressive Disclosure</strong>
+            Delivers complete festival rules on demand without page reloads, keeping large "Request PDF Brochure" and "Apply" buttons within immediate reach.
+          </div>
+        </div>
+        <div class="browser-backdrop">
+          <div class="browser-window">
+            <div class="browser-chrome">
+              <div class="browser-Result-lines"><span></span><span></span><span></span></div>
+              <div class="browser-dots"><span></span><span></span><span></span></div>
+            </div>
+            <img src="assets/03_festival_programme_modal_16x9.png" alt="Festival Programme Modal" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      <span><strong>Jezreel Dave Leybag</strong> &bull; Florence Choral Prototype Walkthrough (16:9 Widescreen Views)</span>
+      <span>Page 03 of 06</span>
+    </footer>
+  </section>
+
+  <!-- =========================================================================================
+       PAGE 4: PROTOTYPE WALKTHROUGH PART 2 (TEMPLATE PAGE 3 BROWSER MOCKUP STYLE)
+       ========================================================================================= -->
+  <section class="page">
+    <header class="tpl-header" style="margin-bottom: 3.5mm;">
+      <h2 class="tpl-heading">PROTOTYPE WALKTHROUGH</h2>
+      <div class="tpl-badge-group">
+        <div class="tpl-badge-pill">
+          <img src="assets/jezreel_logo_mark.png" alt="" />
+          <span>16:9 DESKTOP (2/2)</span>
+        </div>
+        <div class="tpl-badge-circle">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <div class="project-showcase-list compact-4">
+      <!-- Feature 4 -->
+      <div class="project-row">
+        <div class="project-info">
+          <h3>04. "Our Difference" Pillars &amp; Custom SVGs</h3>
+          <p class="desc">
+            Showcases Special Features, Bel Canto Workshops, and International Juries using custom geometric SVG icons and 3-point checklists.
+          </p>
+          <div class="law-tag-box">
+            <strong>Law of Prägnanz (Simplicity &amp; Clarity)</strong>
+            Replaces dense paragraphs with scannable 3-point checklists that non-native English conductors can read in under 5 seconds.
+          </div>
+        </div>
+        <div class="browser-backdrop">
+          <div class="browser-window">
+            <div class="browser-chrome">
+              <div class="browser-Result-lines"><span></span><span></span><span></span></div>
+              <div class="browser-dots"><span></span><span></span><span></span></div>
+            </div>
+            <img src="assets/04a_our_difference_cards_16x9.png" alt="Our Difference Cards" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="project-row">
+        <div class="project-info">
+          <h3>05. Global Impact Counter &amp; Jury Roster</h3>
+          <p class="desc">
+            Animated Renaissance-Azure counter bar (Events, Choirs, Nations, Participants) with custom choral vectors preceding the Artistic Committee.
+          </p>
+          <div class="law-tag-box">
+            <strong>Authority &amp; Social Proof Principle</strong>
+            Quantifies Florence Choral’s global track record at a glance right before introducing Dr. Sagliocca and the international jury panel.
+          </div>
+        </div>
+        <div class="browser-backdrop">
+          <div class="browser-window">
+            <div class="browser-chrome">
+              <div class="browser-Result-lines"><span></span><span></span><span></span></div>
+              <div class="browser-dots"><span></span><span></span><span></span></div>
+            </div>
+            <img src="assets/04b_impact_stats_and_jury_16x9.png" alt="Impact Stats and Jury" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="project-row">
+        <div class="project-info">
+          <h3>06. Historic Venues of Florence Showcase</h3>
+          <p class="desc">
+            Verified photography of Basilica of Santa Croce, Santa Maria Novella, Salone dei Cinquecento (Palazzo Vecchio), Ognissanti, and Sant’Apollonia.
+          </p>
+          <div class="law-tag-box">
+            <strong>Aesthetic-Usability Effect</strong>
+            Authentic architectural imagery creates an immediate emotional desire for visiting choirs to perform inside Florence’s greatest basilicas.
+          </div>
+        </div>
+        <div class="browser-backdrop">
+          <div class="browser-window">
+            <div class="browser-chrome">
+              <div class="browser-Result-lines"><span></span><span></span><span></span></div>
+              <div class="browser-dots"><span></span><span></span><span></span></div>
+            </div>
+            <img src="assets/05_historic_venues_16x9.png" alt="Historic Venues of Florence" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 7 -->
+      <div class="project-row">
+        <div class="project-info">
+          <h3>07. Official Patronage &amp; Conversion Footer</h3>
+          <p class="desc">
+            Displays the Comune di Firenze (linked to the official PDF decree) and Regione Toscana crests alongside 1-click WhatsApp and Brochure actions.
+          </p>
+          <div class="law-tag-box">
+            <strong>Serial Position Effect (Recency &amp; Trust)</strong>
+            Anchors the end of the page with official government patronage proof and immediate inquiry channels.
+          </div>
+        </div>
+        <div class="browser-backdrop">
+          <div class="browser-window">
+            <div class="browser-chrome">
+              <div class="browser-Result-lines"><span></span><span></span><span></span></div>
+              <div class="browser-dots"><span></span><span></span><span></span></div>
+            </div>
+            <img src="assets/06_footer_and_patronage_16x9.png" alt="Footer and Patronage" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      <span><strong>Jezreel Dave Leybag</strong> &bull; Florence Choral Prototype Walkthrough (16:9 Widescreen Views)</span>
+      <span>Page 04 of 06</span>
+    </footer>
+  </section>
+
+  <!-- =========================================================================================
+       PAGE 5: SITE STRUCTURE, CREATIVE PIPELINE & LAUNCH TIMELINE (TEMPLATE PAGES 5 & 6)
+       ========================================================================================= -->
+  <section class="page ambient-glow-bottom">
+    <!-- Band 1: Site Structure -->
+    <div class="band-section">
+      <div class="band-header-grid">
+        <h2 class="band-title">SITE<br>STRUCTURE</h2>
+        <p class="band-desc">
+          Your new <strong>florencechoral.org</strong> platform includes all core navigation sections, interactive festival modals, and historical archives:
+        </p>
+      </div>
+      <div class="orange-pill-banner">
+        <div class="pill-row-items" style="margin-bottom: 3.5mm;">
+          <div class="item-lg">Home &amp; Hero</div>
+          <div class="pill-v-line"></div>
+          <div class="item-lg">5 Festivals</div>
+          <div class="pill-v-line"></div>
+          <div class="item-lg">Artistic Committee</div>
+          <div class="pill-v-line"></div>
+          <div class="item-lg">Historic Venues</div>
+        </div>
+        <div class="pill-row-items" style="padding-top: 2.5mm; border-top: 1px solid rgba(17,17,17,0.2);">
+          <div class="item-sm">Composers &amp; Hymn</div>
+          <div class="pill-v-line sm"></div>
+          <div class="item-sm">Testimonials</div>
+          <div class="pill-v-line sm"></div>
+          <div class="item-sm">Photo/Video Archives</div>
+          <div class="pill-v-line sm"></div>
+          <div class="item-sm">Florence &amp; Contacts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Band 2: Site Integrations -->
+    <div class="band-section">
+      <div class="band-header-grid">
+        <h2 class="band-title">SITE<br>INTEGRATIONS</h2>
+        <p class="band-desc">
+          <strong>Jezreel Dave</strong> integrates your website with direct choir conversion tools and full owner-controlled cloud infrastructure:
+        </p>
+      </div>
+      <div class="orange-pill-banner">
+        <div class="pill-row-items">
+          <div class="item-lg">1-Click Brochure &amp; Apply</div>
+          <div class="pill-v-line"></div>
+          <div class="item-lg">WhatsApp &amp; Email Routing</div>
+          <div class="pill-v-line"></div>
+          <div class="item-lg">100% Code &amp; Admin Keys</div>
+        </div>
+        <div class="pill-caption">
+          These integrations turn <strong>florencechoral.org</strong> into an active choir recruitment engine while guaranteeing you can never be locked out of your website again.
+        </div>
+      </div>
+    </div>
+
+    <!-- Band 3: Unlimited Creative & Media Production -->
+    <div class="band-section">
+      <div class="band-header-grid">
+        <h2 class="band-title">UNLIMITED<br>MEDIA STUDIO</h2>
+        <p class="band-desc">
+          Beyond the website, your monthly partnership includes <strong>unlimited graphic design and video editing</strong> for all 5 annual festivals:
+        </p>
+      </div>
+      <div class="orange-pill-banner">
+        <div class="pill-row-items">
+          <div class="item-lg">Brochures &amp; Posters</div>
+          <div class="pill-v-line"></div>
+          <div class="item-lg">Diplomas &amp; Stage Banners</div>
+          <div class="pill-v-line"></div>
+          <div class="item-lg">Concert &amp; Promo Videos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Execution Timeline Card (Template Page 6 Style) -->
+    <div class="tpl-frosted-card" style="padding: 5.5mm 8mm; margin-top: auto; margin-bottom: 2mm;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2mm;">
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:12.5pt; text-transform:uppercase;">EXECUTION &amp; LAUNCH TIMELINE</h3>
+        <span style="font-size:8pt; font-weight:600; color:#52525B;">Transition to florencechoral.org</span>
+      </div>
+      <table class="tpl-lined-table">
+        <thead>
+          <tr>
+            <th style="width:62%;">Stage</th>
+            <th>Completion Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Prototype Review &amp; Final Content Alignment</strong></td>
+            <td><strong>Completed / Ready Today</strong></td>
+          </tr>
+          <tr>
+            <td><strong>2. Domain Connection (florencechoral.org) &amp; Cloud Hosting Setup</strong></td>
+            <td>Within 24–48 Hours of Approval</td>
+          </tr>
+          <tr>
+            <td><strong>3. Official 2026/2027 PDF Brochures &amp; Application Form Routing</strong></td>
+            <td>Week 1 of Partnership</td>
+          </tr>
+          <tr>
+            <td><strong>4. Continuous Web Maintenance, Unlimited Graphic Design &amp; Video Editing</strong></td>
+            <td>Ongoing Year-Round (All 5 Festivals)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="page-footer">
+      <span><strong>Jezreel Dave Leybag</strong> &bull; Site Architecture, Creative Studio &amp; Execution Timeline</span>
+      <span>Page 05 of 06</span>
+    </footer>
+  </section>
+
+  <!-- =========================================================================================
+       PAGE 6: ONGOING MONTHLY FEES, SERVICE TABLE & AGREEMENT SUMMARY (TEMPLATE PAGES 7–9)
+       ========================================================================================= -->
+  <section class="page ambient-glow-center">
+    <header class="tpl-header" style="margin-bottom: 4mm;">
+      <h2 class="tpl-heading">MONTHLY SERVICE &amp; OFFER</h2>
+      <div class="tpl-badge-group">
+        <div class="tpl-badge-pill">
+          <img src="assets/jezreel_logo_mark.png" alt="" />
+          <span>ALL-INCLUSIVE</span>
+        </div>
+        <div class="tpl-badge-circle">
+          <svg viewBox="0 0 24 24"><path d="M17.5 7.5C16.2 6.2 14.4 5.5 12.5 5.5C8.6 5.5 5.5 8.6 5.5 12.5C5.5 16.4 8.6 19.5 12.5 19.5C14.4 19.5 16.2 18.8 17.5 17.5M4 10.5H13.5M4 14.5H13.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <p class="tpl-lead-center" style="font-size: 10.5pt; margin-bottom: 3.5mm;">
+      Instead of hiring and coordinating a separate web developer, graphic designer, and video editor, this all-in-one monthly partnership covers every digital, print, and video need for <strong>Florence Choral</strong>.
+    </p>
+
+    <div class="tpl-frosted-card" style="padding: 5mm 7.5mm; margin-bottom: 2mm;">
+      <div>
+        <table class="tpl-lined-table" style="margin-top: 0;">
+          <thead>
+            <tr>
+              <th style="width:28%;">Service Pillar</th>
+              <th style="width:54%;">What My Service Will Do for Florence Choral</th>
+              <th style="width:18%;">Access / Limit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>1. Website Development &amp; Maintenance</strong><br>
+                <span style="font-size:7.6pt; color:#52525B;">(florencechoral.org)</span>
+              </td>
+              <td>
+                &bull; Full launch, hosting setup, domain transition (<strong>florencechoral.org</strong>), and security monitoring.<br>
+                &bull; Continuous updates to festival dates, 4-day programmes, jury members, venues, and archives.<br>
+                &bull; Ongoing development of new features, multilingual pages, and choir registration tools.
+              </td>
+              <td><strong>Continuous &amp; On-Demand</strong></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>2. Unlimited Graphic Design</strong><br>
+                <span style="font-size:7.6pt; color:#52525B;">(Print &amp; Digital Media)</span>
+              </td>
+              <td>
+                &bull; Official Festival Brochures, Rulebooks, and Registration Packages (PDF &amp; print-ready CMYK).<br>
+                &bull; Concert posters, basilica stage banners, printed concert programmes, and score sheets.<br>
+                &bull; Official Gold / Silver / Bronze Choir Diplomas, certificates, and social media graphics.
+              </td>
+              <td><strong>Unlimited Requests</strong></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>3. Unlimited Video Editing</strong><br>
+                <span style="font-size:7.6pt; color:#52525B;">(Promotional &amp; Archival)</span>
+              </td>
+              <td>
+                &bull; Promotional trailers and invitations for all 5 annual Florence Choral festivals.<br>
+                &bull; Editing of concert recordings, choir performance highlights, and Vytautas Miškinis hymn features.<br>
+                &bull; Short-form vertical videos (Instagram Reels, YouTube Shorts, Facebook) &amp; jury interviews.
+              </td>
+              <td><strong>Unlimited Requests</strong></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>4. Full Source Code &amp; Admin Ownership</strong><br>
+                <span style="font-size:7.6pt; color:#52525B;">(Zero Lockout Guarantee)</span>
+              </td>
+              <td>
+                &bull; Direct Owner access to the GitHub source code repository, domain registrar, and visual dashboard.<br>
+                &bull; Automated backups of all choir applications, brochure requests, and media archives.
+              </td>
+              <td><strong>100% Client Owned</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Final Offer Banner -->
+        <div class="retainer-hero-banner">
+          <div>
+            <h3>FINAL ALL-INCLUSIVE MONTHLY OFFER</h3>
+            <p>Website Development &amp; Maintenance + Unlimited Graphic Design + Unlimited Video Editing</p>
+          </div>
+          <div class="retainer-price-pill">€800 EUR / Month</div>
+        </div>
+
+        <!-- Concise Terms of Agreement Summary (Matching Template Page 9 Layout) -->
+        <div class="terms-mini-grid">
+          <div class="term-label">Authorization &amp; Scope</div>
+          <div class="term-body">Florence Choral (Dr. Leonardo Sagliocca) engages Jezreel Dave Leybag as an independent contractor for ongoing website development/maintenance (<strong>florencechoral.org</strong>) and unlimited graphic design &amp; video editing.</div>
+
+          <div class="term-label">Payment &amp; Flat Rate</div>
+          <div class="term-body">Fixed monthly retainer of <strong>€800 EUR / month</strong> with zero hidden hourly or per-revision charges. Billed monthly via international bank transfer / Wise.</div>
+
+          <div class="term-label">Copyright &amp; Ownership</div>
+          <div class="term-body">Dr. Leonardo Sagliocca / Florence Choral owns <strong>100% of all source code, domains, print layouts, and edited videos</strong> from day one, with full owner credentials at all times.</div>
+
+          <div class="term-label">Flexible Term</div>
+          <div class="term-body">Simple month-to-month partnership with 30 days’ written notice to pause or cancel; full standalone Service Agreement is provided in the accompanying contract document.</div>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; padding-top:3.5mm; border-top:1.2px solid #111111; font-size:8.4pt;">
+        <div>
+          <strong>Jezreel Dave Leybag</strong> &bull; Web Development, Graphic Design &amp; Video Production
+        </div>
+        <div>
+          <strong>Dr. Leonardo Sagliocca</strong> &bull; Founder &amp; Artistic Director, Florence Choral
+        </div>
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      <span><strong>Jezreel Dave Leybag</strong> &bull; All-Inclusive Monthly Retainer Offer &amp; Agreement Summary</span>
+      <span>Page 06 of 06</span>
+    </footer>
+  </section>
+
+</body>
+</html>
