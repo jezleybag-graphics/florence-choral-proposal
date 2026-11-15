@@ -548,7 +548,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                 <div className="md:col-span-8 space-y-4 bp-body-text text-[#333333]">
                   <p>Dear Dr. Leonardo Sagliocca,</p>
                   <p>
-                    Thank you for our continued collaboration since 2022 and choosing us to design and engineer a world-class digital ecosystem for Florence Choral's prestigious international festivals.
+                    Thank you for our continued collaboration since 2020 and choosing us to design and engineer a world-class digital ecosystem for Florence Choral's prestigious international festivals.
                   </p>
                   <p>
                     As we discussed during our review, our goal is to deliver an undisputed, high-end platform that captures the Renaissance grandeur of Florence while providing an automated, effortless conductor application experience.
@@ -572,7 +572,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                       Jezreel Dave Leybag
                     </div>
                     <div className="text-xs text-neutral-600">
-                      Digital &amp; Media Partner (Since 2022)
+                      Digital &amp; Media Partner (Since December 2020)
                     </div>
                   </div>
                 </div>
@@ -874,7 +874,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                 Brands That Put Their Trust in Us
               </h2>
               <p className="bp-body-text text-neutral-400 max-w-2xl">
-                Having collaborated with Florence Choral on festival posters, 31-page booklets, and 4-day video reportages since 2022:
+                Having collaborated with Florence Choral on festival posters, 31-page booklets, and 4-day video reportages since December 2020:
               </p>
             </div>
           </div>
