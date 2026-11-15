@@ -193,6 +193,33 @@ export function App() {
     );
   }
 
+  if (activeView === 'admin') {
+    return (
+      <div id="top" className="min-h-screen bg-[#F8FAFC]">
+        <AdminDashboard
+          config={INITIAL_SITE_CONFIG}
+          festivals={festivals}
+          juryMembers={juryMembers}
+          applications={applications}
+          onUpdateFestival={handleUpdateFestival}
+          onAddJuryMember={handleAddJuryMember}
+          onUpdateApplicationStatus={handleUpdateApplicationStatus}
+          onResetDemoData={handleResetDemoData}
+          onSwitchToPublic={() => handleSwitchView('public')}
+          onSwitchToProposal={() => handleSwitchView('proposal')}
+        />
+        <ApplicationModal
+          isOpen={appModalOpen}
+          onClose={() => setAppModalOpen(false)}
+          festivals={festivals}
+          initialFestivalId={appModalFestivalId}
+          initialRequestType={appModalRequestType}
+          onSubmitApplication={handleSubmitApplication}
+        />
+      </div>
+    );
+  }
+
   return (
     <div id="top" className="min-h-screen flex flex-col">
       <Header
@@ -207,43 +234,27 @@ export function App() {
         onOpenApplication={handleOpenApplication}
       />
 
-      {activeView === 'admin' ? (
-        <main className="flex-1">
-          <AdminDashboard
-            config={INITIAL_SITE_CONFIG}
-            festivals={festivals}
-            juryMembers={juryMembers}
-            applications={applications}
-            onUpdateFestival={handleUpdateFestival}
-            onAddJuryMember={handleAddJuryMember}
-            onUpdateApplicationStatus={handleUpdateApplicationStatus}
-            onResetDemoData={handleResetDemoData}
-            onSwitchToPublic={() => handleSwitchView('public')}
-          />
-        </main>
-      ) : (
-        <main className="flex-1">
-          <HeroCarousel slides={INITIAL_HERO_SLIDES} onCtaClick={handleHeroCta} />
+      <main className="flex-1">
+        <HeroCarousel slides={INITIAL_HERO_SLIDES} onCtaClick={handleHeroCta} />
 
-          <FestivalsSection
-            festivals={festivals}
-            selectedFestival={selectedFestival}
-            onSelectFestival={setSelectedFestival}
-            onOpenApplication={handleOpenApplication}
-          />
+        <FestivalsSection
+          festivals={festivals}
+          selectedFestival={selectedFestival}
+          onSelectFestival={setSelectedFestival}
+          onOpenApplication={handleOpenApplication}
+        />
 
-          <DifferenceSection onOpenApplication={handleOpenApplication} />
+        <DifferenceSection onOpenApplication={handleOpenApplication} />
 
-          <ImpactStatsSection />
+        <ImpactStatsSection />
 
-          <VenuesAndCommittee
-            juryMembers={juryMembers}
-            venues={INITIAL_VENUES}
-            testimonials={INITIAL_TESTIMONIALS}
-            onOpenApplication={handleOpenApplication}
-          />
-        </main>
-      )}
+        <VenuesAndCommittee
+          juryMembers={juryMembers}
+          venues={INITIAL_VENUES}
+          testimonials={INITIAL_TESTIMONIALS}
+          onOpenApplication={handleOpenApplication}
+        />
+      </main>
 
       <Footer
         config={INITIAL_SITE_CONFIG}
