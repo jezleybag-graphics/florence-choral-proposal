@@ -152,6 +152,173 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     { id: 'infrastructure' as const, label: 'Infrastructure & Keys', icon: 'mage:folder-code' },
   ];
 
+  const renderNavContent = (isMobile: boolean) => (
+    <div className="flex flex-col h-full justify-between">
+      {/* Top Brand Bar */}
+      <div>
+        <div className="h-16 px-5 border-b border-slate-100 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#DC143C] text-white flex items-center justify-center font-bold text-sm shadow-xs">
+              ⚜
+            </div>
+            <div>
+              <h1 className="font-display font-extrabold text-sm text-slate-900 tracking-tight leading-tight">
+                Florence Choral
+              </h1>
+              <span className="text-[11px] text-slate-400 font-medium">Administration Console</span>
+            </div>
+          </div>
+          {isMobile && (
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen(false)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
+            >
+              <Icon icon="mage:multiply" width={18} height={18} />
+            </button>
+          )}
+        </div>
+
+        {/* Navigation Groups */}
+        <div className="p-3 space-y-6">
+          <div>
+            <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Console Overview
+            </div>
+            <nav className="space-y-0.5">
+              {navItems.slice(0, 2).map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveTab(item.id);
+                    if (isMobile) setMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                    activeTab === item.id
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Icon icon={item.icon} width={16} height={16} />
+                    <span>{item.label}</span>
+                  </div>
+                  {item.badge && (
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.2 rounded-md ${
+                        activeTab === item.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          <div>
+            <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Festival Management
+            </div>
+            <nav className="space-y-0.5">
+              {navItems.slice(2, 5).map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveTab(item.id);
+                    if (isMobile) setMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                    activeTab === item.id
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Icon icon={item.icon} width={16} height={16} />
+                    <span>{item.label}</span>
+                  </div>
+                  {item.badge && (
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.2 rounded-md ${
+                        activeTab === item.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          <div>
+            <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Settings &amp; Keys
+            </div>
+            <nav className="space-y-0.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('infrastructure');
+                  if (isMobile) setMobileNavOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                  activeTab === 'infrastructure'
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon icon="mage:folder-code" width={16} height={16} />
+                  <span>Infrastructure &amp; Keys</span>
+                </div>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      {/* Sidebar Footer User Card */}
+      <div className="p-3 border-t border-slate-100 space-y-2">
+        <div className="p-2.5 rounded-xl bg-slate-50 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0">
+              LS
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-slate-900 truncate">Dr. Leonardo Sagliocca</div>
+              <div className="text-[10.5px] text-slate-500 truncate">Chairman &amp; Artistic Dir.</div>
+            </div>
+          </div>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" title="Active Account" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-1.5 pt-1">
+          <button
+            type="button"
+            onClick={onSwitchToPublic}
+            className="w-full py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-medium text-center truncate cursor-pointer transition-colors"
+          >
+            Live Site ↗
+          </button>
+          {onSwitchToProposal && (
+            <button
+              type="button"
+              onClick={onSwitchToProposal}
+              className="w-full py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-medium text-center truncate cursor-pointer transition-colors"
+            >
+              Proposal 📄
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 flex">
       {/* Toast Notification */}
@@ -162,182 +329,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
       )}
 
-      {/* MOBILE DRAWER BACKDROP */}
+      {/* MOBILE DRAWER */}
       {mobileNavOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 lg:hidden"
-          onClick={() => setMobileNavOpen(false)}
-        />
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs"
+            onClick={() => setMobileNavOpen(false)}
+          />
+          <aside className="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 shadow-2xl z-50">
+            {renderNavContent(true)}
+          </aside>
+        </div>
       )}
 
-      {/* SIDEBAR NAVIGATION (APPLE MINIMALIST STYLE) */}
-      <aside
-        className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 transition-transform duration-200 ease-out ${
-          mobileNavOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}
-      >
-        <div className="flex flex-col h-full justify-between">
-          {/* Top Brand Bar */}
-          <div>
-            <div className="h-16 px-5 border-b border-slate-100 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#DC143C] text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                  ⚜
-                </div>
-                <div>
-                  <h1 className="font-display font-extrabold text-sm text-slate-900 tracking-tight leading-tight">
-                    Florence Choral
-                  </h1>
-                  <span className="text-[11px] text-slate-400 font-medium">Administration Console</span>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setMobileNavOpen(false)}
-                className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700"
-              >
-                <Icon icon="mage:multiply" width={18} height={18} />
-              </button>
-            </div>
-
-            {/* Navigation Groups */}
-            <div className="p-3 space-y-6">
-              <div>
-                <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Console Overview
-                </div>
-                <nav className="space-y-0.5">
-                  {navItems.slice(0, 2).map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        setActiveTab(item.id);
-                        setMobileNavOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
-                        activeTab === item.id
-                          ? 'bg-slate-900 text-white shadow-xs'
-                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Icon icon={item.icon} width={16} height={16} />
-                        <span>{item.label}</span>
-                      </div>
-                      {item.badge && (
-                        <span
-                          className={`text-[10px] font-bold px-1.5 py-0.2 rounded-md ${
-                            activeTab === item.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
-                          }`}
-                        >
-                          {item.badge}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </nav>
-              </div>
-
-              <div>
-                <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Festival Management
-                </div>
-                <nav className="space-y-0.5">
-                  {navItems.slice(2, 5).map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        setActiveTab(item.id);
-                        setMobileNavOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
-                        activeTab === item.id
-                          ? 'bg-slate-900 text-white shadow-xs'
-                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Icon icon={item.icon} width={16} height={16} />
-                        <span>{item.label}</span>
-                      </div>
-                      {item.badge && (
-                        <span
-                          className={`text-[10px] font-bold px-1.5 py-0.2 rounded-md ${
-                            activeTab === item.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
-                          }`}
-                        >
-                          {item.badge}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </nav>
-              </div>
-
-              <div>
-                <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Settings &amp; Keys
-                </div>
-                <nav className="space-y-0.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveTab('infrastructure');
-                      setMobileNavOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
-                      activeTab === 'infrastructure'
-                        ? 'bg-slate-900 text-white shadow-xs'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Icon icon="mage:folder-code" width={16} height={16} />
-                      <span>Infrastructure &amp; Keys</span>
-                    </div>
-                  </button>
-                </nav>
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar Footer User Card */}
-          <div className="p-3 border-t border-slate-100 space-y-2">
-            <div className="p-2.5 rounded-xl bg-slate-50 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0">
-                  LS
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-slate-900 truncate">Dr. Leonardo Sagliocca</div>
-                  <div className="text-[10.5px] text-slate-500 truncate">Chairman &amp; Artistic Dir.</div>
-                </div>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" title="Active Account" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-1.5 pt-1">
-              <button
-                type="button"
-                onClick={onSwitchToPublic}
-                className="w-full py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-medium text-center truncate cursor-pointer transition-colors"
-              >
-                Live Site ↗
-              </button>
-              {onSwitchToProposal && (
-                <button
-                  type="button"
-                  onClick={onSwitchToProposal}
-                  className="w-full py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-medium text-center truncate cursor-pointer transition-colors"
-                >
-                  Proposal 📄
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
+      {/* DESKTOP SIDEBAR (APPLE MINIMALIST STYLE) */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:sticky lg:top-0 h-screen bg-white border-r border-slate-200/80 shrink-0">
+        {renderNavContent(false)}
       </aside>
 
       {/* MAIN CONTENT CANVAS */}
