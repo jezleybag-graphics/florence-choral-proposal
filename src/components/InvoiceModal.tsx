@@ -14,8 +14,8 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
   isOpen,
   onClose,
   invoiceNumber = 'FC-2026-11',
-  planName = 'Option B — All-Inclusive Digital Retainer',
-  amount = 649,
+  planName = 'Option B — Full-Service Partner Retainer',
+  amount = 390,
   billingPeriod = '15 Nov 2026 – 15 Dec 2026',
 }) => {
   if (!isOpen) return null;

@@ -126,7 +126,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
   const [showCover, setShowCover] = useState(initialCover);
   const [activeSection, setActiveSection] = useState('introduction');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'planA' | 'planB'>('planA');
+  const [selectedPlan, setSelectedPlan] = useState<'planA' | 'planB' | 'planC'>('planB');
   const [planBBilling, setPlanBBilling] = useState<'monthly' | 'yearly'>('monthly');
   const [signerName, setSignerName] = useState('Dr. Leonardo Sagliocca');
   const [signTab, setSignTab] = useState<'type' | 'draw'>('type');
@@ -134,15 +134,22 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
   const [isSigned, setIsSigned] = useState(false);
   const [notifyStatus, setNotifyStatus] = useState<'idle' | 'sending' | 'sent' | 'fallback'>('idle');
 
+  const getSelectedPackageLabel = () => {
+    if (selectedPlan === 'planA') {
+      return 'Option A: Core Growth (€250/mo • €0 Setup)';
+    }
+    if (selectedPlan === 'planB') {
+      return `Option B: Full-Service Partner (${planBBilling === 'yearly' ? '€4,200/yr' : '€390/mo'} • €0 Setup)`;
+    }
+    return 'Option C: Performance Hybrid (€290/mo + €75/Choir • €0 Setup)';
+  };
+
   const handleSignProposal = async () => {
     if (!signerName.trim()) return;
     setIsSigning(true);
     setNotifyStatus('sending');
 
-    const packageName =
-      selectedPlan === 'planA'
-        ? 'Option A: Setup + Monthly (€1,599 + €499/mo)'
-        : `Option B: Monthly Partner (${planBBilling === 'yearly' ? '€6,853/yr' : '€649/mo'})`;
+    const packageName = getSelectedPackageLabel();
 
     const payload = {
       _subject: `🎉 Florence Choral Proposal Accepted & Signed by ${signerName}`,
@@ -1066,29 +1073,37 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
           {/* White Pricing Block */}
           <div className="bg-white text-[#333333] py-16 px-8 sm:px-14 lg:px-20">
             <div className="max-w-5xl">
-              {/* Plan Options */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                {/* Option A */}
+              {/* 3-Strategy Plan Options */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+                {/* Option A: Core Growth (€250/mo) */}
                 <div
                   onClick={() => setSelectedPlan('planA')}
-                  className={`p-8 rounded-lg border transition-all cursor-pointer ${
+                  className={`p-7 rounded-lg border transition-all cursor-pointer flex flex-col justify-between ${
                     selectedPlan === 'planA'
                       ? 'border-black bg-[#FAFAFA] shadow-lg ring-2 ring-black'
                       : 'border-neutral-200 hover:border-neutral-400'
                   }`}
                 >
-                  <div className="text-xs font-bold uppercase tracking-wider text-neutral-600 mb-1">
-                    Option A • Recommended
-                  </div>
-                  <div className="text-xl font-bold text-black mb-3">Setup + Monthly</div>
-                  <div className="text-4xl font-extrabold text-black mb-1">
-                    €499<span className="text-sm font-normal text-neutral-600">/month</span>
-                  </div>
-                  <div className="text-xs text-neutral-600 mb-2">
-                    + €1,599.00 one-time setup
-                  </div>
-                  <div className="text-xs font-semibold text-neutral-800 bg-neutral-200/60 inline-block px-2.5 py-1 rounded mb-6">
-                    Saves €17 per month vs Option B monthly**
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                      Option A • Web &amp; Outreach
+                    </div>
+                    <div className="text-xl font-bold text-black mb-3">Core Growth</div>
+                    <div className="text-4xl font-extrabold text-black mb-1">
+                      €250<span className="text-sm font-normal text-neutral-600">/month</span>
+                    </div>
+                    <div className="text-xs text-neutral-600 mb-3">
+                      €0 upfront website build fee
+                    </div>
+                    <div className="text-xs font-semibold text-neutral-800 bg-neutral-200/60 inline-block px-2.5 py-1 rounded mb-5">
+                      Web, CMS &amp; Choir Email List
+                    </div>
+                    <ul className="space-y-2 text-xs text-neutral-700 mb-6 border-t border-neutral-200 pt-4">
+                      <li>✓ 5-Festival Website &amp; Cloud Hosting</li>
+                      <li>✓ Client CMS &amp; Choir Inquiry Tracker</li>
+                      <li>✓ Choir Mailing List &amp; 2x/Mo Newsletters</li>
+                      <li className="text-neutral-500">• Posters, Booklets &amp; Video per festival</li>
+                    </ul>
                   </div>
                   <button
                     type="button"
@@ -1103,75 +1118,84 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                   </button>
                 </div>
 
-                {/* Option B */}
+                {/* Option B: Full-Service Partner (€390/mo — Recommended) */}
                 <div
                   onClick={() => setSelectedPlan('planB')}
-                  className={`p-8 rounded-lg border transition-all cursor-pointer ${
+                  className={`p-7 rounded-lg border transition-all cursor-pointer flex flex-col justify-between ${
                     selectedPlan === 'planB'
                       ? 'border-black bg-[#FAFAFA] shadow-lg ring-2 ring-black'
                       : 'border-neutral-200 hover:border-neutral-400'
                   }`}
                 >
-                  <div className="text-xs font-bold uppercase tracking-wider text-neutral-600 mb-1">
-                    Option B • Zero Upfront
-                  </div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="text-xl font-bold text-black">Monthly or Yearly</div>
-                    <div className="inline-flex p-0.5 bg-neutral-200 rounded text-[10px] font-bold">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPlanBBilling('monthly');
-                          setSelectedPlan('planB');
-                        }}
-                        className={`px-2 py-0.5 rounded ${
-                          planBBilling === 'monthly' ? 'bg-black text-white' : 'text-neutral-600'
-                        }`}
-                      >
-                        Monthly
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPlanBBilling('yearly');
-                          setSelectedPlan('planB');
-                        }}
-                        className={`px-2 py-0.5 rounded ${
-                          planBBilling === 'yearly' ? 'bg-black text-white' : 'text-neutral-600'
-                        }`}
-                      >
-                        Yearly
-                      </button>
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="text-xs font-bold uppercase tracking-wider text-black">
+                        Option B • Recommended
+                      </span>
+                      <div className="inline-flex p-0.5 bg-neutral-200 rounded text-[10px] font-bold">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPlanBBilling('monthly');
+                            setSelectedPlan('planB');
+                          }}
+                          className={`px-2 py-0.5 rounded cursor-pointer ${
+                            planBBilling === 'monthly' ? 'bg-black text-white' : 'text-neutral-600'
+                          }`}
+                        >
+                          Mo
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPlanBBilling('yearly');
+                            setSelectedPlan('planB');
+                          }}
+                          className={`px-2 py-0.5 rounded cursor-pointer ${
+                            planBBilling === 'yearly' ? 'bg-black text-white' : 'text-neutral-600'
+                          }`}
+                        >
+                          Yr
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                    <div className="text-xl font-bold text-black mb-3">Full-Service Partner</div>
 
-                  {planBBilling === 'monthly' ? (
-                    <>
-                      <div className="text-4xl font-extrabold text-black mb-1">
-                        €649<span className="text-sm font-normal text-neutral-600">/month</span>
-                      </div>
-                      <div className="text-xs text-neutral-600 mb-2">
-                        (€7,788/yr) or €6,853.00/year
-                      </div>
-                      <div className="text-xs font-semibold text-neutral-800 bg-neutral-200/60 inline-block px-2.5 py-1 rounded mb-6">
-                        Zero setup fee upfront
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-4xl font-extrabold text-black mb-1">
-                        €6,853<span className="text-sm font-normal text-neutral-600">/year</span>
-                      </div>
-                      <div className="text-xs text-neutral-600 mb-2">
-                        Equivalent to €571/mo
-                      </div>
-                      <div className="text-xs font-semibold text-emerald-800 bg-emerald-100 inline-block px-2.5 py-1 rounded mb-6">
-                        ✓ Save €935/year with Yearly Billing**
-                      </div>
-                    </>
-                  )}
+                    {planBBilling === 'monthly' ? (
+                      <>
+                        <div className="text-4xl font-extrabold text-black mb-1">
+                          €390<span className="text-sm font-normal text-neutral-600">/month</span>
+                        </div>
+                        <div className="text-xs text-neutral-600 mb-3">
+                          €0 upfront website build fee
+                        </div>
+                        <div className="text-xs font-semibold text-emerald-900 bg-emerald-100 inline-block px-2.5 py-1 rounded mb-5">
+                          All-Inclusive Web, Outreach &amp; Media
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-4xl font-extrabold text-black mb-1">
+                          €4,200<span className="text-sm font-normal text-neutral-600">/year</span>
+                        </div>
+                        <div className="text-xs text-neutral-600 mb-3">
+                          Equivalent to €350/mo • €0 setup
+                        </div>
+                        <div className="text-xs font-semibold text-emerald-900 bg-emerald-100 inline-block px-2.5 py-1 rounded mb-5">
+                          ✓ Save €480/year with Yearly Billing
+                        </div>
+                      </>
+                    )}
+
+                    <ul className="space-y-2 text-xs text-neutral-700 mb-6 border-t border-neutral-200 pt-4">
+                      <li>✓ Everything in Core Growth</li>
+                      <li>✓ Festival Poster Suites Included</li>
+                      <li>✓ 31-Page Competition Booklets Included</li>
+                      <li>✓ 4K Video Reportages &amp; Reels Included</li>
+                    </ul>
+                  </div>
 
                   <button
                     type="button"
@@ -1185,48 +1209,110 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                     {selectedPlan === 'planB' ? '✓ Selected Plan' : 'Select Plan'}
                   </button>
                 </div>
+
+                {/* Option C: Performance Hybrid (€290/mo + Choir Bonus) */}
+                <div
+                  onClick={() => setSelectedPlan('planC')}
+                  className={`p-7 rounded-lg border transition-all cursor-pointer flex flex-col justify-between ${
+                    selectedPlan === 'planC'
+                      ? 'border-black bg-[#FAFAFA] shadow-lg ring-2 ring-black'
+                      : 'border-neutral-200 hover:border-neutral-400'
+                  }`}
+                >
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                      Option C • Result-Linked
+                    </div>
+                    <div className="text-xl font-bold text-black mb-3">Performance Hybrid</div>
+                    <div className="text-4xl font-extrabold text-black mb-1">
+                      €290<span className="text-sm font-normal text-neutral-600">/month</span>
+                    </div>
+                    <div className="text-xs text-neutral-600 mb-3">
+                      + €75 per confirmed choir registration
+                    </div>
+                    <div className="text-xs font-semibold text-neutral-800 bg-neutral-200/60 inline-block px-2.5 py-1 rounded mb-5">
+                      Low Base + Outcome Incentive
+                    </div>
+                    <ul className="space-y-2 text-xs text-neutral-700 mb-6 border-t border-neutral-200 pt-4">
+                      <li>✓ 5-Festival Website, CMS &amp; Hosting</li>
+                      <li>✓ Choir Mailing List &amp; 2x/Mo Newsletters</li>
+                      <li>✓ Festival Poster Campaigns Included</li>
+                      <li className="text-neutral-500">• Booklets &amp; 4K Video per festival</li>
+                    </ul>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPlan('planC')}
+                    className={`w-full py-3 rounded text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+                      selectedPlan === 'planC'
+                        ? 'bg-black text-white'
+                        : 'bg-neutral-100 text-black hover:bg-neutral-200'
+                    }`}
+                  >
+                    {selectedPlan === 'planC' ? '✓ Selected Plan' : 'Select Plan'}
+                  </button>
+                </div>
               </div>
 
-              {/* Comparison Table */}
+              {/* Side-by-Side Comparison Matrix */}
               <div className="overflow-x-auto border border-neutral-200 rounded-lg">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-[#F8F9FA] border-b border-neutral-200 text-black uppercase tracking-wider font-bold">
                     <tr>
                       <th className="p-4">Inclusions &amp; Deliverables</th>
-                      <th className="p-4 text-center">Option A</th>
-                      <th className="p-4 text-center">Option B</th>
+                      <th className="p-4 text-center">Option A (€250/mo)</th>
+                      <th className="p-4 text-center bg-neutral-100/80">Option B (€390/mo)</th>
+                      <th className="p-4 text-center">Option C (€290/mo)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-200 text-neutral-800">
                     <tr>
-                      <td className="p-4 font-semibold">Client Dashboard &amp; Inquiry Tracker</td>
-                      <td className="p-4 text-center">✓ Live Tracker Included</td>
-                      <td className="p-4 text-center">✓ Live Tracker Included</td>
+                      <td className="p-4 font-semibold">Upfront Website Build Fee</td>
+                      <td className="p-4 text-center font-bold text-emerald-700">€0 (Included)</td>
+                      <td className="p-4 text-center font-bold text-emerald-700 bg-neutral-50">€0 (Included)</td>
+                      <td className="p-4 text-center font-bold text-emerald-700">€0 (Included)</td>
                     </tr>
                     <tr>
-                      <td className="p-4 font-semibold">5-Festival Modern Web Platform</td>
-                      <td className="p-4 text-center">✓ Included (100% Owned)</td>
-                      <td className="p-4 text-center">✓ Included (100% Owned)</td>
+                      <td className="p-4 font-semibold">5-Festival Web Platform &amp; Cloud Hosting</td>
+                      <td className="p-4 text-center">✓ Included</td>
+                      <td className="p-4 text-center font-semibold bg-neutral-50">✓ Included</td>
+                      <td className="p-4 text-center">✓ Included</td>
                     </tr>
                     <tr>
-                      <td className="p-4 font-semibold">Unlimited Festival Poster Campaigns</td>
-                      <td className="p-4 text-center">✓ Unlimited PDF Masters</td>
-                      <td className="p-4 text-center">✓ Unlimited PDF Masters</td>
+                      <td className="p-4 font-semibold">Client CMS &amp; Choir Inquiry Tracker</td>
+                      <td className="p-4 text-center">✓ Included</td>
+                      <td className="p-4 text-center font-semibold bg-neutral-50">✓ Included</td>
+                      <td className="p-4 text-center">✓ Included</td>
+                    </tr>
+                    <tr>
+                      <td className="p-4 font-semibold">Choir Email List &amp; 2x/Mo Newsletters</td>
+                      <td className="p-4 text-center">✓ Included</td>
+                      <td className="p-4 text-center font-semibold bg-neutral-50">✓ Included</td>
+                      <td className="p-4 text-center">✓ Included</td>
+                    </tr>
+                    <tr>
+                      <td className="p-4 font-semibold">Festival Poster Campaigns (Print PDF)</td>
+                      <td className="p-4 text-center text-neutral-500">Per-Festival Rate</td>
+                      <td className="p-4 text-center font-semibold bg-neutral-50">✓ Included</td>
+                      <td className="p-4 text-center">✓ Included</td>
                     </tr>
                     <tr>
                       <td className="p-4 font-semibold">31-Page Competition Booklets</td>
-                      <td className="p-4 text-center">✓ Unlimited Digital Layouts</td>
-                      <td className="p-4 text-center">✓ Unlimited Digital Layouts</td>
+                      <td className="p-4 text-center text-neutral-500">Per-Festival Rate</td>
+                      <td className="p-4 text-center font-semibold bg-neutral-50">✓ Included</td>
+                      <td className="p-4 text-center text-neutral-500">Per-Festival Rate</td>
                     </tr>
                     <tr>
-                      <td className="p-4 font-semibold">5–7 Min 4K Documentary Video Reportages</td>
-                      <td className="p-4 text-center">✓ Unlimited Renders</td>
-                      <td className="p-4 text-center">✓ Unlimited Renders</td>
+                      <td className="p-4 font-semibold">4K Documentary Video Reportages</td>
+                      <td className="p-4 text-center text-neutral-500">Per-Festival Rate</td>
+                      <td className="p-4 text-center font-semibold bg-neutral-50">✓ Included</td>
+                      <td className="p-4 text-center text-neutral-500">Per-Festival Rate</td>
                     </tr>
                     <tr>
-                      <td className="p-4 font-semibold">Global Choir Outreach &amp; Newsletters</td>
-                      <td className="p-4 text-center">✓ 2 / Month + Outbound</td>
-                      <td className="p-4 text-center">✓ 2 / Month + Outbound</td>
+                      <td className="p-4 font-semibold">Choir Registration Incentive</td>
+                      <td className="p-4 text-center text-neutral-500">None</td>
+                      <td className="p-4 text-center font-semibold bg-neutral-50">None</td>
+                      <td className="p-4 text-center font-semibold">+ €75 / Confirmed Choir</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1391,6 +1477,53 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                 </button>
               </div>
 
+              {/* Selected Package Selector */}
+              <div className="mb-5">
+                <div className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2">
+                  Selected Partnership Option
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPlan('planA')}
+                    className={`p-2.5 rounded-lg border text-left text-xs transition-all cursor-pointer ${
+                      selectedPlan === 'planA'
+                        ? 'border-black bg-neutral-900 text-white font-bold'
+                        : 'border-neutral-200 bg-neutral-50 text-neutral-700 hover:border-neutral-400'
+                    }`}
+                  >
+                    <div>Option A: Core Growth</div>
+                    <div className="text-[11px] opacity-80">€250/mo • €0 Setup</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPlan('planB')}
+                    className={`p-2.5 rounded-lg border text-left text-xs transition-all cursor-pointer ${
+                      selectedPlan === 'planB'
+                        ? 'border-black bg-neutral-900 text-white font-bold'
+                        : 'border-neutral-200 bg-neutral-50 text-neutral-700 hover:border-neutral-400'
+                    }`}
+                  >
+                    <div>Option B: Full-Service</div>
+                    <div className="text-[11px] opacity-80">
+                      {planBBilling === 'yearly' ? '€4,200/yr' : '€390/mo'} • €0 Setup
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPlan('planC')}
+                    className={`p-2.5 rounded-lg border text-left text-xs transition-all cursor-pointer ${
+                      selectedPlan === 'planC'
+                        ? 'border-black bg-neutral-900 text-white font-bold'
+                        : 'border-neutral-200 bg-neutral-50 text-neutral-700 hover:border-neutral-400'
+                    }`}
+                  >
+                    <div>Option C: Hybrid</div>
+                    <div className="text-[11px] opacity-80">€290/mo + €75/Choir</div>
+                  </button>
+                </div>
+              </div>
+
               {/* Input Header */}
               <div className="text-base sm:text-lg font-bold text-[#1F1F1F] mb-3">
                 To accept and sign, type your name below
@@ -1479,7 +1612,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                       Print / Save Signed PDF 📄
                     </button>
                     <a
-                      href={`mailto:jezreelleybag.graphics@gmail.com?subject=${encodeURIComponent(`Florence Choral Proposal Accepted & Signed by ${signerName}`)}&body=${encodeURIComponent(`Dear Jezreel,\n\nI have formally reviewed and accepted the Florence Choral Proposal.\n\nSigner: ${signerName}\nSelected Package: ${selectedPlan === 'planA' ? 'Option A: Setup + Monthly' : 'Option B: Monthly Partner'}\nDigital ID: FC-2026-SIG\nDate: ${new Date().toLocaleDateString('en-GB')}\n\nLooking forward to initiating our digital partnership!`)}`}
+                      href={`mailto:jezreelleybag.graphics@gmail.com?subject=${encodeURIComponent(`Florence Choral Proposal Accepted & Signed by ${signerName}`)}&body=${encodeURIComponent(`Dear Jezreel,\n\nI have formally reviewed and accepted the Florence Choral Proposal.\n\nSigner: ${signerName}\nSelected Package: ${getSelectedPackageLabel()}\nDigital ID: FC-2026-SIG\nDate: ${new Date().toLocaleDateString('en-GB')}\n\nLooking forward to initiating our digital partnership!`)}`}
                       className="text-xs font-semibold px-4 py-2 bg-emerald-800 text-white rounded-lg hover:bg-emerald-900 transition-colors shadow-sm inline-flex items-center gap-1.5"
                     >
                       <span>Send Direct Email Copy ✉</span>

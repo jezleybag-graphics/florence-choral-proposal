@@ -42,7 +42,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Subscription & Invoice State
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'planB' | 'planA'>('planB');
+  const [selectedPlan, setSelectedPlan] = useState<'planA' | 'planB' | 'planC'>('planB');
 
   // Inclusions Availment State
   const [availedItems, setAvailedItems] = useState<Record<string, boolean>>({
@@ -411,9 +411,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <span className="text-xs text-slate-400">Since Dec 2020</span>
                     </div>
                     <h2 className="font-display font-extrabold text-lg sm:text-xl text-slate-900">
-                      {selectedPlan === 'planB'
-                        ? 'Option B: All-Inclusive Retainer (€649/mo)'
-                        : 'Option A: Custom Festival Build & Retainer (€1,599 + €499/mo)'}
+                      {selectedPlan === 'planA' && 'Option A: Core Growth (€250/mo • €0 Setup)'}
+                      {selectedPlan === 'planB' && 'Option B: Full-Service Partner (€390/mo • €0 Setup)'}
+                      {selectedPlan === 'planC' && 'Option C: Performance Hybrid (€290/mo + €75/Choir)'}
                     </h2>
                   </div>
 
@@ -429,21 +429,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div className="flex rounded-lg border border-slate-200 p-0.5 text-xs font-bold text-slate-600">
                       <button
                         type="button"
-                        onClick={() => setSelectedPlan('planB')}
-                        className={`px-2 py-1 rounded-md cursor-pointer transition-colors ${
-                          selectedPlan === 'planB' ? 'bg-slate-900 text-white' : 'hover:text-slate-900'
-                        }`}
-                      >
-                        €649
-                      </button>
-                      <button
-                        type="button"
                         onClick={() => setSelectedPlan('planA')}
                         className={`px-2 py-1 rounded-md cursor-pointer transition-colors ${
                           selectedPlan === 'planA' ? 'bg-slate-900 text-white' : 'hover:text-slate-900'
                         }`}
                       >
-                        €499
+                        €250
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPlan('planB')}
+                        className={`px-2 py-1 rounded-md cursor-pointer transition-colors ${
+                          selectedPlan === 'planB' ? 'bg-slate-900 text-white' : 'hover:text-slate-900'
+                        }`}
+                      >
+                        €390
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPlan('planC')}
+                        className={`px-2 py-1 rounded-md cursor-pointer transition-colors ${
+                          selectedPlan === 'planC' ? 'bg-slate-900 text-white' : 'hover:text-slate-900'
+                        }`}
+                      >
+                        €290
                       </button>
                     </div>
                   </div>
@@ -1271,11 +1280,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         isOpen={isInvoiceModalOpen}
         onClose={() => setIsInvoiceModalOpen(false)}
         planName={
-          selectedPlan === 'planB'
-            ? 'Option B: All-Inclusive Digital Retainer (€649/mo • €0 Setup Fee)'
-            : 'Option A: Custom Festival Build & Maintenance (€1,599 + €499/mo)'
+          selectedPlan === 'planA'
+            ? 'Option A: Core Growth (€250/mo • €0 Setup Fee)'
+            : selectedPlan === 'planB'
+            ? 'Option B: Full-Service Partner (€390/mo • €0 Setup Fee)'
+            : 'Option C: Performance Hybrid (€290/mo + €75/Choir • €0 Setup Fee)'
         }
-        amount={selectedPlan === 'planB' ? 649 : 499}
+        amount={selectedPlan === 'planA' ? 250 : selectedPlan === 'planB' ? 390 : 290}
         invoiceNumber="FC-2026-11"
         billingPeriod="15 Nov 2026 – 15 Dec 2026"
       />
