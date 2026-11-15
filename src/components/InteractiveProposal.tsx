@@ -299,7 +299,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
               onClick={onOpenDashboard}
               className="px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all border border-white/15 cursor-pointer flex items-center gap-2"
             >
-              <span>Admin Dashboard</span>
+              <span>Client CMS Preview</span>
               <span>↗</span>
             </button>
           </div>
@@ -438,7 +438,7 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
             onClick={onOpenDashboard}
             className="w-full text-left py-1.5 text-neutral-400 hover:text-white transition-colors cursor-pointer flex items-center justify-between"
           >
-            <span>Admin Dashboard</span>
+            <span>Client CMS Preview</span>
             <span>↗</span>
           </button>
         </div>

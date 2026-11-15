@@ -19,74 +19,7 @@ interface AdminDashboardProps {
   onSwitchToPublic: () => void;
 }
 
-const CODE_FILES_PREVIEW: Record<
-  string,
-  { path: string; description: string; language: string; snippet: string }
-> = {
-  'florenceData.ts': {
-    path: 'src/data/florenceData.ts',
-    description:
-      'Contains all 5 Renaissance Festivals, 4-day programmes, rules, venues, jury members, and original image URLs.',
-    language: 'TypeScript',
-    snippet: `export const INITIAL_SITE_CONFIG: SiteConfig = {
-  siteTitle: 'Florence Choral',
-  tagline: 'Festivals recommended by the Greats',
-  email: 'chairman@florencechoral.com',
-  phone: '+39 388 8183714',
-  logoUrl: '/Florence_choral_quadrato.jpg',
-  patronageFirenzePdf: 'https://www.florencechoral.com/wp-content/uploads/2017/06/Patrocinio-Town-Council-Florence-Choral.pdf',
-};
-
-// All 5 Festivals: Leonardo Da Vinci, Andrea Del Verrocchio,
-// Michelangelo, Lorenzo De' Medici, and Botticelli`,
-  },
-  'index.css': {
-    path: 'src/index.css',
-    description:
-      'Master Design Tokens preserving original #DC143C Florentine Crimson, #136597 Renaissance Azure, and modern typography.',
-    language: 'CSS',
-    snippet: `:root {
-  --color-primary: #DC143C;        /* Original Florentine Crimson */
-  --color-primary-hover: #B81032;
-  --color-secondary: #136597;      /* Original Renaissance Azure */
-  --color-heading: #3B3B3B;
-  --font-display: 'Plus Jakarta Sans', 'Poppins', sans-serif;
-  --font-sans: 'Inter', sans-serif;
-}`,
-  },
-  'Header.tsx': {
-    path: 'src/components/Header.tsx',
-    description:
-      'Top Crimson contact bar, official social logos (FB, X, YouTube, IG, WhatsApp), and translucent sticky navigation.',
-    language: 'TypeScript / React',
-    snippet: `// Renders the top #DC143C Crimson Header Bar + Sticky Glass Navigation
-// Includes direct links to Festivals, Art. Committee, Composers,
-// Venues, Testimonials, Archives, FeelFlorence, and Contacts.`,
-  },
-  'FestivalsSection.tsx': {
-    path: 'src/components/FestivalsSection.tsx',
-    description:
-      'Interactive grid of the 5 Renaissance Festivals and the native <dialog> Programme & Rules modal.',
-    language: 'TypeScript / React',
-    snippet: `// Renders each Festival card and opens the 4-tab modal:
-// 1. 4-Day Programme Schedule
-// 2. Competition Categories & Repertoire Rules
-// 3. Trophies, Prizes & Historic Basilica Venues
-// 4. About the Renaissance Master`,
-  },
-  'PROJECT_DOCUMENTATION.md': {
-    path: 'PROJECT_DOCUMENTATION.md',
-    description:
-      'Full engineering handoff manual documenting every file, asset URL, and deployment step for Dr. Leonardo Sagliocca.',
-    language: 'Markdown',
-    snippet: `# Florence Choral Platform — Official Engineering & Architecture Documentation
-Client: Dr. Leonardo Sagliocca (Founder & Artistic Director)
-Guarantee: 100% Source Code, GitHub Repository, Domain & Dashboard Ownership.`,
-  },
-};
-
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
-  config,
   festivals,
   juryMembers,
   applications,
@@ -99,7 +32,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [activeTab, setActiveTab] = useState<
     'inclusions' | 'code' | 'festivals' | 'applications' | 'jury'
   >('inclusions');
-  const [selectedFileKey, setSelectedFileKey] = useState<string>('florenceData.ts');
   const [editingFestivalId, setEditingFestivalId] = useState<string>(festivals[0]?.id || '');
   const [savedNotice, setSavedNotice] = useState<string | null>(null);
 
@@ -108,7 +40,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleAvailInclusion = (serviceName: string, id: string) => {
     setAvailedItems((prev) => ({ ...prev, [id]: true }));
-    setSavedNotice(`Task Request for "${serviceName}" submitted to Jezreel Dave (24–48h delivery)!`);
+    setSavedNotice(`Preview Mode: Task Request for "${serviceName}" simulated. Service fulfillment activates upon contract signing.`);
     setTimeout(() => setSavedNotice(null), 5000);
   };
 
@@ -119,24 +51,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [newJuryCredentials, setNewJuryCredentials] = useState('');
 
   const currentFestival = festivals.find((f) => f.id === editingFestivalId) || festivals[0];
-
-  const handleDownloadFullBackup = () => {
-    const backupPayload = {
-      exportedAt: new Date().toISOString(),
-      owner: 'Dr. Leonardo Sagliocca (chairman@florencechoral.com)',
-      config,
-      festivals,
-      juryMembers,
-      applications,
-    };
-    const blob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'florence-choral-full-site-data.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   const handleFestivalFieldChange = (field: keyof Festival, value: string) => {
     if (!currentFestival) return;
@@ -173,27 +87,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Top Owner Banner */}
         <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#DC143C] text-white text-xs font-bold uppercase tracking-wider">
-              <Icon icon="mage:key" width={15} height={15} />
-              <span>Full Owner Access • Dr. Leonardo Sagliocca</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold uppercase tracking-wider">
+              <Icon icon="mage:lock" width={15} height={15} />
+              <span>Interactive Sandbox Preview • Agreement Pending</span>
             </div>
             <h1 className="font-display text-2xl sm:text-3xl font-extrabold">
-              Florence Choral — Source Code Vault &amp; CMS Dashboard
+              Florence Choral — Festival CMS (Sandbox Demo)
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              You hold 100% of the keys: inspect and download the source code files directly, manage
-              all 5 festivals in real time, and review incoming Choir Applications.
+              Experience the live festival content management and choir application workflows. Production source code repositories, domain keys, and full site data backups unlock immediately upon contract execution.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 shrink-0">
             <button
               type="button"
-              onClick={handleDownloadFullBackup}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs sm:text-sm font-semibold cursor-pointer apple-pressable"
+              onClick={() => {
+                setSavedNotice('🔒 Full Source Code Repositories & Data Backups unlock immediately upon signing the Proposal Agreement.');
+                setTimeout(() => setSavedNotice(null), 5000);
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 border border-white/10 text-xs sm:text-sm font-semibold cursor-pointer"
             >
-              <Icon icon="mage:file-download" width={18} height={18} />
-              <span>Export Full Site JSON Backup</span>
+              <Icon icon="mage:lock" width={18} height={18} className="text-amber-400" />
+              <span>Export Full Site JSON Backup (Locked)</span>
             </button>
             <button
               type="button"
@@ -249,8 +165,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 : 'text-[#3B3B3B] hover:bg-slate-100'
             }`}
           >
-            <Icon icon="mage:folder-open" width={18} height={18} />
+            <Icon icon="mage:lock" width={18} height={18} />
             <span>2. Source Code &amp; Keys</span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
+              LOCKED
+            </span>
           </button>
 
           <button
@@ -564,132 +483,69 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
         )}
 
-        {/* TAB 1: SOURCE CODE FILES & KEYS VAULT */}
+        {/* TAB 1: SOURCE CODE FILES & KEYS VAULT (LOCKED) */}
         {activeTab === 'code' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left Column: Ownership Keys & Guarantees */}
-            <div className="lg:col-span-5 space-y-5">
-              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
-                <h2 className="font-display text-lg font-extrabold text-[#3B3B3B] flex items-center gap-2">
-                  <Icon icon="mage:shield-check" width={22} height={22} className="text-[#DC143C]" />
-                  <span>Dr. Leo’s Anti-Lockout Ownership Protocol</span>
-                </h2>
-                <p className="text-xs sm:text-sm text-[#4A5568] leading-relaxed">
-                  Unlike the old WordPress installation that was lost when your phone and ID card
-                  were stolen, this new architecture guarantees you always retain direct access to
-                  every code file and account:
-                </p>
+          <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm text-center max-w-3xl mx-auto space-y-6">
+            <div className="w-20 h-20 rounded-full bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto shadow-inner text-3xl">
+              🔒
+            </div>
 
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                    <div className="font-display font-bold text-xs sm:text-sm text-[#3B3B3B] flex items-center justify-between">
-                      <span>1. Full Source Code Repository (GitHub)</span>
-                      <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold">
-                        Owner Access
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#4A5568] mt-1">
-                      All React, TypeScript, CSS, and image files are stored in a dedicated Git
-                      repository where <strong>{config.email}</strong> holds full Owner permissions
-                      and can download the complete ZIP at any time.
-                    </p>
-                  </div>
+            <div className="space-y-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-100/80 px-3 py-1 rounded-full">
+                Vault Protected • Proposal Execution Required
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#3B3B3B]">
+                Source Code &amp; Infrastructure Repository
+              </h2>
+              <p className="text-sm text-[#4A5568] max-w-xl mx-auto leading-relaxed">
+                Full GitHub repository access, production React/TypeScript files, custom domain registrar transfers, and architecture SOP documentation are securely staged and will be officially transferred to Dr. Leonardo Sagliocca immediately upon agreement execution.
+              </p>
+            </div>
 
-                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                    <div className="font-display font-bold text-xs sm:text-sm text-[#3B3B3B] flex items-center justify-between">
-                      <span>2. Domain Registrar (florencechoral.org)</span>
-                      <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold">
-                        Direct Control
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#4A5568] mt-1">
-                      Registered directly under your personal email with backup recovery codes so no
-                      third-party company can ever hijack your domain again.
-                    </p>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                    <div className="font-display font-bold text-xs sm:text-sm text-[#3B3B3B] flex items-center justify-between">
-                      <span>3. Step-by-Step Documentation</span>
-                      <span className="px-2 py-0.5 rounded bg-[#136597]/15 text-[#136597] text-[11px] font-bold">
-                        PROJECT_DOCUMENTATION.md
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#4A5568] mt-1">
-                      Every single file, image asset, and update is documented in plain English inside
-                      the codebase.
-                    </p>
-                  </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left pt-4 border-t border-slate-100">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                  <Icon icon="mage:folder-code" width={16} height={16} className="text-[#DC143C]" />
+                  <span>GitHub Repository</span>
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Full commit history &amp; direct ZIP export. <em>(Locked)</em>
+                </div>
+              </div>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                  <Icon icon="mage:globe" width={16} height={16} className="text-[#DC143C]" />
+                  <span>Domain &amp; Hosting Keys</span>
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Direct registrar assignment to chairman@florencechoral.com. <em>(Locked)</em>
+                </div>
+              </div>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                  <Icon icon="mage:book" width={16} height={16} className="text-[#DC143C]" />
+                  <span>Architecture SOP</span>
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Full handoff &amp; maintenance documentation. <em>(Locked)</em>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Interactive Code File Inspector */}
-            <div className="lg:col-span-7 bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 shadow-lg flex flex-col justify-between space-y-4">
-              <div className="space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
-                  <div>
-                    <span className="text-[11px] uppercase tracking-wider text-[#DC143C] font-bold block">
-                      Live Codebase File Tree
-                    </span>
-                    <h3 className="font-display text-lg font-bold">
-                      Inspect Project Source Code Files
-                    </h3>
-                  </div>
-                  <span className="text-xs px-2.5 py-1 rounded-lg bg-white/10 text-slate-300 font-mono">
-                    florence-choral/
-                  </span>
-                </div>
-
-                {/* File Selector Pills */}
-                <div className="flex flex-wrap gap-2">
-                  {Object.keys(CODE_FILES_PREVIEW).map((fileKey) => (
-                    <button
-                      key={fileKey}
-                      type="button"
-                      onClick={() => setSelectedFileKey(fileKey)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-mono cursor-pointer transition-colors ${
-                        selectedFileKey === fileKey
-                          ? 'bg-[#DC143C] text-white font-bold'
-                          : 'bg-white/8 text-slate-300 hover:bg-white/15'
-                      }`}
-                    >
-                      {fileKey}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Selected File Info & Code View */}
-                {CODE_FILES_PREVIEW[selectedFileKey] && (
-                  <div className="space-y-3">
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs">
-                      <span className="font-mono text-emerald-400">
-                        {CODE_FILES_PREVIEW[selectedFileKey].path}
-                      </span>
-                      <span className="text-slate-400">
-                        {CODE_FILES_PREVIEW[selectedFileKey].language}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-300">
-                      {CODE_FILES_PREVIEW[selectedFileKey].description}
-                    </p>
-                    <pre className="p-4 rounded-xl bg-black/60 border border-white/10 text-xs font-mono text-slate-200 overflow-x-auto leading-relaxed">
-                      <code>{CODE_FILES_PREVIEW[selectedFileKey].snippet}</code>
-                    </pre>
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
-                <span>All source files are modular, human-readable, and 100% owned by Florence Choral.</span>
-                <button
-                  type="button"
-                  onClick={onResetDemoData}
-                  className="text-slate-300 hover:text-white underline cursor-pointer"
-                >
-                  Reset Demo State to Defaults
-                </button>
-              </div>
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a
+                href="/?view=proposal#proposal-acceptance"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black hover:bg-[#222222] text-white text-xs sm:text-sm font-bold shadow-lg transition-all"
+              >
+                <span>Review Proposal &amp; Sign to Unlock ↗</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setActiveTab('festivals')}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold transition-all cursor-pointer"
+              >
+                <span>Preview Festival CMS Instead</span>
+              </button>
             </div>
           </div>
         )}
@@ -1001,6 +857,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           </div>
         )}
+
+        <div className="pt-6 border-t border-slate-200 text-center text-xs text-slate-400 flex flex-wrap items-center justify-between gap-3">
+          <span>Florence Choral Client CMS Demo Sandbox • Protected &amp; Secured</span>
+          <button
+            type="button"
+            onClick={onResetDemoData}
+            className="text-slate-500 hover:text-slate-800 underline cursor-pointer"
+          >
+            Reset Sandbox Demo Data
+          </button>
+        </div>
       </div>
     </section>
   );
