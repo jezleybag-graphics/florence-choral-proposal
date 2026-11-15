@@ -331,7 +331,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       {/* MOBILE DRAWER */}
       {mobileNavOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-50 md:hidden">
           <div
             className="fixed inset-0 bg-black/40 backdrop-blur-xs"
             onClick={() => setMobileNavOpen(false)}
@@ -343,7 +343,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       )}
 
       {/* DESKTOP SIDEBAR (APPLE MINIMALIST STYLE) */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:sticky lg:top-0 h-screen bg-white border-r border-slate-200/80 shrink-0">
+      <aside className="hidden md:flex md:flex-col md:w-64 md:sticky md:top-0 h-screen bg-white border-r border-slate-200/80 shrink-0">
         {renderNavContent(false)}
       </aside>
 
@@ -355,7 +355,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <button
               type="button"
               onClick={() => setMobileNavOpen(true)}
-              className="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 cursor-pointer"
+              className="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 cursor-pointer"
             >
               <Icon icon="mage:menu" width={20} height={20} />
             </button>
