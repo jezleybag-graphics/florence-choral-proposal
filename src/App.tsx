@@ -19,6 +19,7 @@ import { ApplicationModal } from './components/ApplicationModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
 import { InteractiveProposal } from './components/InteractiveProposal';
+import { OfficialAgreementView } from './components/OfficialAgreementView';
 
 const STORAGE_KEYS = {
   festivals: 'florence_choral_festivals_v1',
@@ -26,7 +27,7 @@ const STORAGE_KEYS = {
   applications: 'florence_choral_applications_v1',
 };
 
-type AppView = 'cover' | 'proposal' | 'contract' | 'public' | 'admin';
+type AppView = 'cover' | 'proposal' | 'contract' | 'public' | 'admin' | 'agreement';
 
 function getInitialView(): AppView {
   if (typeof window === 'undefined') return 'cover';
@@ -34,6 +35,7 @@ function getInitialView(): AppView {
   const viewParam = params.get('view')?.toLowerCase();
   const path = window.location.pathname.toLowerCase();
 
+  if (viewParam === 'agreement' || path.includes('/agreement')) return 'agreement';
   if (viewParam === 'cover' || path.includes('/cover')) return 'cover';
   if (viewParam === 'contract' || path.includes('/contract')) return 'contract';
   if (viewParam === 'public' || viewParam === 'prototype' || path.includes('/prototype') || path.includes('/website')) {
@@ -177,6 +179,15 @@ export function App() {
     localStorage.removeItem(STORAGE_KEYS.jury);
     localStorage.removeItem(STORAGE_KEYS.applications);
   };
+
+  if (activeView === 'agreement') {
+    return (
+      <OfficialAgreementView
+        onBackToDashboard={() => handleSwitchView('admin')}
+        onBackToProposal={() => handleSwitchView('proposal')}
+      />
+    );
+  }
 
   if (activeView === 'cover' || activeView === 'proposal' || activeView === 'contract') {
     return (

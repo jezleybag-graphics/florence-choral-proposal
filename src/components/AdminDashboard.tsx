@@ -374,6 +374,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
+            <a
+              href="?view=agreement"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold cursor-pointer transition-colors shadow-xs"
+            >
+              <Icon icon="mage:file-records" width={15} height={15} />
+              <span>Agreement Dossier 📜</span>
+            </a>
+
             <button
               type="button"
               onClick={() => setIsInvoiceModalOpen(true)}

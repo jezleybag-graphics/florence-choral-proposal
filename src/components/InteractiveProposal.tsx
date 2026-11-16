@@ -1611,12 +1611,18 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                    <a
+                      href="?view=agreement"
+                      className="text-xs font-semibold px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-black transition-colors shadow-sm inline-flex items-center gap-1.5"
+                    >
+                      <span>Official 1-Year Agreement Dossier 📜</span>
+                    </a>
                     <button
                       type="button"
                       onClick={() => window.print()}
                       className="text-xs font-semibold px-4 py-2 bg-white text-emerald-900 border border-emerald-300 rounded-lg hover:bg-emerald-100 transition-colors cursor-pointer shadow-sm"
                     >
-                      Print / Save Signed PDF 📄
+                      Print Signed Summary 📄
                     </button>
                     <a
                       href={`mailto:jezreelleybag.graphics@gmail.com?subject=${encodeURIComponent(`Florence Choral Proposal Accepted & Signed by ${signerName}`)}&body=${encodeURIComponent(`Dear Jezreel,\n\nI have formally reviewed and accepted the Florence Choral Proposal.\n\nSigner: ${signerName}\nSelected Package: ${getSelectedPackageLabel()}\nDigital ID: FC-2026-SIG\nDate: ${new Date().toLocaleDateString('en-GB')}\n\nLooking forward to initiating our digital partnership!`)}`}
