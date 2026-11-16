@@ -126,7 +126,14 @@ export const InteractiveProposal: React.FC<InteractiveProposalProps> = ({
   const [showCover, setShowCover] = useState(initialCover);
   const [activeSection, setActiveSection] = useState('introduction');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'planA' | 'planB' | 'planC'>('planB');
+  const [selectedPlan, setSelectedPlan] = useState<'planA' | 'planB' | 'planC'>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search).get('plan')?.toLowerCase();
+      if (p === 'plana' || p === 'a') return 'planA';
+      if (p === 'planb' || p === 'b') return 'planB';
+    }
+    return 'planC';
+  });
   const [planBBilling, setPlanBBilling] = useState<'monthly' | 'yearly'>('monthly');
   const [signerName, setSignerName] = useState('Dr. Leonardo Sagliocca');
   const [signTab, setSignTab] = useState<'type' | 'draw'>('type');

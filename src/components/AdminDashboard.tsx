@@ -42,7 +42,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Subscription & Invoice State
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'planA' | 'planB' | 'planC'>('planB');
+  const [selectedPlan, setSelectedPlan] = useState<'planA' | 'planB' | 'planC'>('planC');
 
   // Inclusions Availment State
   const [availedItems, setAvailedItems] = useState<Record<string, boolean>>({
